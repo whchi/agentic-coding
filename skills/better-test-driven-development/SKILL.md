@@ -1,10 +1,10 @@
 ---
-name: test-driven-development
+name: better-test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code. Enforces TDD with 80%+ coverage including unit, integration, and E2E tests.
 origin: ECC,superpowers
 ---
 
-# Test-Driven Development (TDD)
+# Better Test-Driven Development (TDD)
 
 ## Overview
 
