@@ -1,6 +1,6 @@
 ---
 name: better-useeffect
-description: Use when working on React or Next.js components that include useEffect, need component refactoring, code review, render-loop debugging, stale derived state cleanup, event-driven action flow, mount/unmount synchronization, or reset-on-prop-change behavior. Also use when the user wants to reduce race conditions or avoid direct useEffect usage even if they do not ask for this skill by name.
+description: Use when React/Next.js components have useEffect for derived state, data fetching, event-driven actions, or reset-on-prop-change. Invoke for code review, render-loop debugging, race conditions, or when reducing direct useEffect usage.
 ---
 
 # React Without Direct useEffect
@@ -180,6 +180,16 @@ When this skill is active for implementation or review work:
 - Re-implementing query lifecycle logic inside a component
 - Using dependency arrays to approximate remount behavior
 - Using `useMountEffect` for logic that should really be triggered by conditional rendering or explicit user actions
+
+## When useEffect Is Legitimate
+
+This skill discourages casual useEffect, but some uses are correct:
+
+- Synchronizing with external systems that React doesn't control (DOM measurements, browser APIs, third-party widgets)
+- Subscribing to external data sources that don't have a React integration layer
+- Cleaning up resources on unmount (intervals, event listeners, WebSocket connections)
+
+The key question: "Is this truly external-system synchronization, or can React's other control-flow paths express this more directly?"
 
 ## Output Expectations
 
