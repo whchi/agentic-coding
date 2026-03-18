@@ -1,21 +1,12 @@
 ---
 name: api-design
-description: REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs.
+description: Use when designing or implementing REST API endpoints—resource naming, status codes, pagination, filtering, error responses, versioning, or rate limiting. Invoke before writing endpoint handlers or reviewing API contracts.
 origin: ECC
 ---
 
 # API Design Patterns
 
-Conventions and best practices for designing consistent, developer-friendly REST APIs.
-
-## When to Activate
-
-- Designing new API endpoints
-- Reviewing existing API contracts
-- Adding pagination, filtering, or sorting
-- Implementing error handling for APIs
-- Planning API versioning strategy
-- Building public or partner-facing APIs
+Invoke when designing, implementing, or reviewing REST APIs. Covers resource naming, HTTP semantics, response formats, pagination, filtering, authentication, rate limiting, and versioning.
 
 ## Resource Design
 
@@ -521,3 +512,11 @@ Before shipping a new endpoint:
 - [ ] Response does not leak internal details (stack traces, SQL errors)
 - [ ] Consistent naming with existing endpoints (camelCase vs snake_case)
 - [ ] Documented (OpenAPI/Swagger spec updated)
+
+## Gotchas
+
+- **Don't version on day one**—start with `/api/v1/` but don't create v2 until you have actual breaking changes
+- **Avoid over-engineering**—cursor pagination isn't needed for small datasets; simple offset is fine
+- **Don't wrapper everything**—public APIs benefit from envelopes, internal APIs may not need them
+- **Watch response size**—sparse fieldsets and pagination matter more than envelope format
+- **404 vs 403**—return 404 for resources that don't exist, 403 for resources that exist but user can't access (or use 404 for both to avoid enumeration attacks)
