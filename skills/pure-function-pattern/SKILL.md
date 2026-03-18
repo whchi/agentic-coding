@@ -1,50 +1,54 @@
 ---
 name: pure-function-pattern
-description: This skill helps developers generate and refactor business logic into clean, testable, and deterministic pure function modules. It enforces strict separation from side effects, ensures immutability, and prepares the output for zero-mock unit testing by downstream agents.
+description: Use when implementing or refactoring business logic that should have no side effects — validation rules, calculations, data transformations, or any logic that can be expressed as input-in, output-out. Invoke this skill whenever someone asks to write testable business logic, extract logic from services, or eliminate mocks from unit tests.
 ---
 
-# Pure Function Pattern Skill
+# Pure Function Pattern
 
-This skill helps generate clean, testable pure function modules in the style used throughout the billboard-backend codebase. It assumes the user will provide either a description of the logic or an existing implementation that can be refactored into a module of small, deterministic helpers with a single exported entry point and a comprehensive suite of Vitest tests.
+## Skip When
 
-## When to invoke
-- You want to implement a business rule or validation logic that has strictly **no side effects** (no database calls, no network, no reading from `process.env`).
-- The logic must be **deterministic**: it cannot rely on global hidden state like `Date.now()` or `Math.random()`. Such values must be explicitly passed as input parameters.
-- You already have a code snippet and want to restructure it into reusable helpers plus a top-level `validateXxx`/`calculateXxx` function.
+- The logic inherently requires side effects (DB writes, HTTP calls, file I/O) — those belong in service or repository layers
+- The function is a thin adapter/mapper with no real logic to test
 
-## What the skill produces
-1. **Type definitions** – input payload types, response types, and error code unions. If referencing `Prisma` generated types, use them purely as plain data interfaces via `Pick` or `Omit` to avoid importing any runtime Prisma behaviour into the pure module.
-2. **Helper functions** – each independent rule gets its own `checkSomething()` function. These must not mutate inputs, must not throw, and must not produce side effects. Each helper must return a consistent discriminated union: `{ ok: true } | { ok: false; error: ValidationError }`. Do not mix this with nullable returns (`ValidationError | null`) — pick one shape and apply it uniformly across the module.
-3. **Response builder** – a pure mapping function that transforms the domain object into a serializable output. It must always return a value (never throw), must not mutate its input, and must have no dependencies beyond its arguments.
-4. **Main pure function** – orchestrates helpers in logical order, performs TypeScript narrowing, and returns a predictable `ValidationResult` union type. Add a block comment describing the validation sequence. All external dependencies (current time, random values, precomputed lookup tables, feature flags, etc.) must be passed as explicit arguments — nothing is read from the environment or module scope.
-5. **Unit tests** – colocated `.test.ts` file. Provide factory helpers (e.g., `createMockCoupon`) with reasonable default values. Cover every branch: missing data, each error code, boundary conditions, order-of-checks assertions, and success responses. **Since these are pure functions, strictly NO `vi.mock()` should be used in this file.** Every scenario is tested purely via input object variations.
-6. **Export statements** – export all helpers and types when expected to be used elsewhere.
+## What the Skill Produces
 
-## Quality criteria
-- **Absolute Purity**: Every function — helpers, response builders, and the main entry point — must be pure: same inputs always produce the same output, with no observable side effects and no mutations of input parameters.
-- **No Exceptions as Control Flow**: Pure functions must not `throw`. All error paths must be expressed through the return type. Use the `{ ok: false; error: ... }` discriminated union rather than exceptions.
-- **Time/Randomness as Data**: If logic depends on the current time or random generation, those values must be passed in as arguments (e.g., `currentTime: Date`). The same applies to any precomputed data such as whitelists, lookup tables, or feature flags — they must arrive as explicit parameters, not be derived inside the function.
-- Use explicit `!== undefined` checks for optional numeric/boolean fields following codebase convention.
-- Use `localeCompare` with `numeric: true` for natural sorting if the logic involves string arrays.
-- Use `zod` schemas only at the route boundary; pure modules should rely on TypeScript types.
-- Tests must assert the exact error message strings and error codes used in the helpers using Vitest (`describe`, `it`, `expect`).
-- File naming: `<feature>.ts` and `<feature>.test.ts`, placed in the same directory under services or utilities depending on context.
+1. **Type definitions** — input payload types, response types, and error code unions. When referencing ORM-generated types, use them via `Pick`/`Omit` to avoid importing runtime behavior.
+2. **Helper functions** — one function per independent rule. Each must: not mutate inputs, not throw, not produce side effects, and return a consistent discriminated union: `{ ok: true } | { ok: false; error: SomeError }`.
+3. **Response builder** — a pure mapping function that transforms domain data into serializable output. Always returns a value, never throws, no dependencies beyond its arguments.
+4. **Main pure function** — orchestrates helpers in logical order with TypeScript narrowing. All runtime-variable values (current time, random values, feature flags, lookup tables) must be passed as explicit arguments — never read from the environment or module scope.
+5. **Unit tests** — colocated `.test.ts` file using factory helpers (e.g., `createMockOrder`) with sensible defaults. Cover every branch: missing data, each error code, boundary conditions, order-of-checks, and success paths. No `vi.mock()` — every scenario is exercised through input variations only.
+6. **Exports** — export all helpers and types that are expected to be used elsewhere.
 
-## Example prompt (to the bot)
-```
-Here's a description of coupon validation logic that needs to be implemented:
-- coupon may be null
-- status must be ACTIVE
-- valid_from/valid_until bounds (requires passing 'now' as a Date parameter)
-- global usage limit
-- whitelist/product restrictions passed in as precomputed lookup parameters
-- per-user limit with claim override
+## Quality Criteria
 
-Generate a pure `validateCoupon` module along with types, helpers, and tests following our project conventions.
-```
+- **Absolute purity**: Same inputs → same outputs, always. No observable side effects, no input mutations.
+- **No exceptions as control flow**: Express all error paths through return types. Use `{ ok: false; error: ... }` unions, not `throw`.
+- **Time/randomness as data**: Pass `currentTime`, `randomSeed`, precomputed lookups, and feature flags as explicit parameters — never derive them inside the function.
+- Use `zod` schemas only at the route/API boundary; pure modules rely on TypeScript types only.
+- Tests assert exact error codes and message strings.
+- File naming: `<feature>.ts` and `<feature>.test.ts` in the same directory.
 
-## Implementation steps for the agent
-1. Read the provided description or code sample. Identify all independent checks, the input data shape, and any values that change at runtime (current time, random values, precomputed lookups, flags). Every such value must become an explicit parameter — never read inside the function.
-2. Produce the TypeScript file with strict type definitions. All helpers must be pure, immutable, non-throwing, and return the consistent `{ ok: true } | { ok: false; error: ValidationError }` discriminated union.
-3. Create the corresponding Vitest file with comprehensive input-output testing scenarios without any mocks.
-4. If the user already has one module, refactor it to this structure and explicitly call out any purity violations found (hidden dependencies, mutations, throws used as control flow, inconsistent return shapes).
+## Examples
+
+See `references/examples.md` for three fully worked examples:
+
+1. **Coupon validation** — discriminated union helpers, time injection, usage limits, order-of-checks tests
+2. **Order price calculation** — immutable multi-step accumulation, discount capping
+3. **Refactoring before/after** — annotated impure function with each violation called out and fixed
+
+Read the relevant example when you need to see the full file structure or test patterns in action.
+
+## Implementation Steps
+
+1. Read the description or code sample. Identify all independent checks, the input shape, and any values that change at runtime (time, random, flags, lookups). Every such value becomes an explicit parameter.
+2. Produce the TypeScript file with strict types. All helpers must be pure, non-mutating, non-throwing, returning the consistent `{ ok: true } | { ok: false; error: ... }` union.
+3. Create the colocated Vitest test file with comprehensive input/output coverage and zero mocks.
+4. If refactoring existing code, explicitly call out any purity violations found: hidden dependencies, mutations, throws used as control flow, inconsistent return shapes.
+
+## Gotchas
+
+- **Inconsistent return shapes are a silent bug**: mixing `{ ok: false; error }` with `ValidationError | null` across helpers makes the main function impossible to type-narrow cleanly — pick one shape and apply it everywhere.
+- **`Date.now()` inside the function breaks testability**: even one call makes the function non-deterministic. Always inject the current time as a parameter.
+- **Throw-on-invalid is not purity**: if a helper throws for an expected error case (e.g., "coupon not found"), callers need try/catch instead of type narrowing — encode it in the return type instead.
+- **Partial refactors leave mocks behind**: when extracting logic from a larger service, it's easy to miss one dependency that sneaks back in. After refactoring, verify the test file has zero `vi.mock()` calls.
+- **ORM type imports**: importing a Prisma/Drizzle model type directly can pull in runtime behavior. Use `Pick`/`Omit` to extract only the plain-data shape you need.

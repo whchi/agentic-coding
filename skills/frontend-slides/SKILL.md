@@ -1,6 +1,6 @@
 ---
 name: frontend-slides
-description: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual exploration rather than abstract choices.
+description: Use when creating HTML presentations, converting PPT/PPTX to web, or building slide decks for talks, pitches, or workshops. Produces zero-dependency, animation-rich single-file presentations.
 origin: ECC
 ---
 
@@ -9,13 +9,6 @@ origin: ECC
 Create zero-dependency, animation-rich HTML presentations that run entirely in the browser.
 
 Inspired by the visual exploration approach showcased in work by [zarazhangrui](https://github.com/zarazhangrui).
-
-## When to Activate
-
-- Creating a talk deck, pitch deck, workshop deck, or internal presentation
-- Converting `.ppt` or `.pptx` slides into an HTML presentation
-- Improving an existing HTML presentation's layout, motion, or typography
-- Exploring presentation styles with a user who does not know their design preference yet
 
 ## Non-Negotiables
 
@@ -86,7 +79,10 @@ Rules:
 - never solve overflow by shrinking text below readable sizes
 - never allow scrollbars inside a slide
 
-Use the density limits and mandatory CSS block in `STYLE_PRESETS.md`.
+See `STYLE_PRESETS.md` for:
+- Density limits per slide type
+- Mandatory CSS base block
+- Viewport checklist
 
 ### 6. Validate
 
@@ -145,19 +141,6 @@ Include:
 - keep contrast readable
 - support keyboard-only navigation
 - respect `prefers-reduced-motion`
-
-## Content Density Limits
-
-Use these maxima unless the user explicitly asks for denser slides and readability still holds:
-
-| Slide type | Limit |
-|------------|-------|
-| Title | 1 heading + 1 subtitle + optional tagline |
-| Content | 1 heading + 4-6 bullets or 2 short paragraphs |
-| Feature grid | 6 cards max |
-| Code | 8-10 lines max |
-| Quote | 1 quote + attribution |
-| Image | 1 image constrained by viewport |
 
 ## Anti-Patterns
 

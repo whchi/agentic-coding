@@ -1,20 +1,12 @@
 ---
 name: docker-patterns
-description: Docker and Docker Compose patterns for local development, container security, networking, volume strategies, and multi-service orchestration.
+description: Use when setting up Docker Compose for local development, designing multi-container architectures, troubleshooting container networking or volumes, or reviewing Dockerfiles for security and size.
 origin: ECC
 ---
 
 # Docker Patterns
 
 Docker and Docker Compose best practices for containerized development.
-
-## When to Activate
-
-- Setting up Docker Compose for local development
-- Designing multi-container architectures
-- Troubleshooting container networking or volume issues
-- Reviewing Dockerfiles for security and size
-- Migrating from local dev to containerized workflow
 
 ## Docker Compose for Local Development
 
@@ -301,44 +293,15 @@ tests/
 
 ## Debugging
 
-### Common Commands
+Key commands for troubleshooting:
 
 ```bash
-# View logs
-docker compose logs -f app           # Follow app logs
-docker compose logs --tail=50 db     # Last 50 lines from db
-
-# Execute commands in running container
-docker compose exec app sh           # Shell into app
-docker compose exec db psql -U postgres  # Connect to postgres
-
-# Inspect
-docker compose ps                     # Running services
-docker compose top                    # Processes in each container
-docker stats                          # Resource usage
-
-# Rebuild
-docker compose up --build             # Rebuild images
-docker compose build --no-cache app   # Force full rebuild
-
-# Clean up
-docker compose down                   # Stop and remove containers
-docker compose down -v                # Also remove volumes (DESTRUCTIVE)
-docker system prune                   # Remove unused images/containers
-```
-
-### Debugging Network Issues
-
-```bash
-# Check DNS resolution inside container
-docker compose exec app nslookup db
-
-# Check connectivity
-docker compose exec app wget -qO- http://api:3000/health
-
-# Inspect network
-docker network ls
-docker network inspect <project>_default
+docker compose logs -f app              # Follow app logs
+docker compose exec app sh              # Shell into container
+docker compose exec db psql -U postgres # Connect to postgres
+docker compose down -v                  # Remove containers + volumes (destructive)
+docker compose up --build               # Rebuild images
+docker network inspect <project>_default # Check network connectivity
 ```
 
 ## Anti-Patterns
@@ -362,3 +325,11 @@ docker network inspect <project>_default
 # BAD: Putting secrets in docker-compose.yml
 # Use .env files (gitignored) or Docker secrets
 ```
+## Gotchas
+
+- **Anonymous volumes prevent bind mount overwrites** — `/app/node_modules` preserves container deps when host mounts `.` to `/app`
+- **Named volumes persist data, bind mounts sync with host** — use named for DB data, bind for source code
+- **127.0.0.1 in ports binds to host only** — omit IP in ports to expose to all interfaces (larger attack surface)
+- **Dockerfile cache invalidates on any COPY change** — copy package files separately before copying source
+- **One process per container** — don't run app + cron + nginx in same container
+- **:latest tag breaks reproducibility** — always pin specific versions

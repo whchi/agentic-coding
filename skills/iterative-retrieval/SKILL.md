@@ -1,6 +1,6 @@
 ---
 name: iterative-retrieval
-description: Pattern for progressively refining context retrieval to solve the subagent context problem
+description: Use when subagents need codebase context they cannot predict upfront—multi-file refactors, unfamiliar codebases, or "context too large" failures. Provides a 4-phase loop for progressive context refinement.
 origin: ECC
 ---
 
@@ -8,13 +8,11 @@ origin: ECC
 
 Solves the "context problem" in multi-agent workflows where subagents don't know what context they need until they start working.
 
-## When to Activate
-
-- Spawning subagents that need codebase context they cannot predict upfront
-- Building multi-agent workflows where context is progressively refined
-- Encountering "context too large" or "missing context" failures in agent tasks
-- Designing RAG-like retrieval pipelines for code exploration
-- Optimizing token usage in agent orchestration
+## Skip When
+- Task affects a single known file
+- You already know which files are relevant
+- Task is trivial (typos, single-line changes)
+- Codebase is small enough to fit in context
 
 ## The Problem
 
@@ -198,11 +196,28 @@ When retrieving context for this task:
 
 ## Best Practices
 
-1. **Start broad, narrow progressively** - Don't over-specify initial queries
-2. **Learn codebase terminology** - First cycle often reveals naming conventions
-3. **Track what's missing** - Explicit gap identification drives refinement
-4. **Stop at "good enough"** - 3 high-relevance files beats 10 mediocre ones
-5. **Exclude confidently** - Low-relevance files won't become relevant
+1. **Start broad, narrow progressively** — Don't over-specify initial queries
+2. **Learn codebase terminology** — First cycle often reveals naming conventions
+3. **Track what's missing** — Explicit gap identification drives refinement
+4. **Stop at "good enough"**— 3 high-relevance files beats 10 mediocre ones
+5. **Exclude confidently** — Low-relevance files won't become relevant
+
+## Gotchas
+
+- **Over-engineering simple tasks** — Don't use iterative retrieval when you already know the target files
+- **Infinite refinement** — Stop after 3 cycles even if relevance is low; falling back is better than endless loops
+- **Context budget** —Each retrieval cycle consumes tokens; balance precision vs. budget
+- **Terminology mismatch** — First cycle often reveals naming conventions; expect to refine keywords
+- **No high-relevance matches** — If cycle 3 yields nothing >= 0.5, the task may need clarification, not more retrieval
+
+## When Retrieval Fails
+
+If after 3 cycles you have no high-relevance files:
+
+1. **Reframe the task** — The agent may misunderstand the goal
+2. **Broaden terminology** — Your keywords may not match codebase conventions
+3. **Ask for help** — Request user to point to relevant files
+4. **Proceed with partial context** — Sometimes low-relevance files are better than none
 
 ## Related
 

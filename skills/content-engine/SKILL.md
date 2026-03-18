@@ -1,88 +1,77 @@
 ---
 name: content-engine
-description: Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed multi-platform campaigns. Use when the user wants social posts, threads, scripts, content calendars, or one source asset adapted cleanly across platforms.
+description: Use when creating social posts, threads, scripts, content calendars, or adapting one asset across platforms (X, LinkedIn, TikTok, YouTube, newsletters). Invoke for content repurposing, launch campaigns, or multi-platform distribution.
 origin: ECC
 ---
 
 # Content Engine
 
-Turn one idea into strong, platform-native content instead of posting the same thing everywhere.
-
-## When to Activate
-
-- writing X posts or threads
-- drafting LinkedIn posts or launch updates
-- scripting short-form video or YouTube explainers
-- repurposing articles, podcasts, demos, or docs into social content
-- building a lightweight content plan around a launch, milestone, or theme
+Turn one idea into platform-native content instead of posting the same thing everywhere.
 
 ## First Questions
 
 Clarify:
-- source asset: what are we adapting from
-- audience: builders, investors, customers, operators, or general audience
+- source asset: what we're adapting from
+- audience: builders, investors, customers, operators, or general
 - platform: X, LinkedIn, TikTok, YouTube, newsletter, or multi-platform
-- goal: awareness, conversion, recruiting, authority, launch support, or engagement
+- goal: awareness, conversion, recruiting, authority, launch, or engagement
 
-## Core Rules
+## Principles
 
-1. Adapt for the platform. Do not cross-post the same copy.
-2. Hooks matter more than summaries.
-3. Every post should carry one clear idea.
-4. Use specifics over slogans.
-5. Keep the ask small and clear.
+1. **Adapt, don't cross-post.** Each platform has its own grammar.
+2. **Hooks > summaries.** The first line does the work.
+3. **One idea per piece.** Split rather than compress.
+4. **Specifics over slogans.** Replace hype with concrete claims.
+5. **Clear, small ask.** Every post should answer "what do I do with this?"
 
 ## Platform Guidance
 
 ### X
-- open fast
-- one idea per post or per tweet in a thread
-- keep links out of the main body unless necessary
-- avoid hashtag spam
+- Open fast. First tweet in a thread sets up the payoff.
+- One idea per post or tweet.
+- Keep links out of the main body unless necessary.
+- Avoid hashtag spam.
 
 ### LinkedIn
-- strong first line
-- short paragraphs
-- more explicit framing around lessons, results, and takeaways
+- Strong first line that states the takeaway.
+- Short paragraphs with explicit framing around lessons or results.
 
 ### TikTok / Short Video
-- first 3 seconds must interrupt attention
-- script around visuals, not just narration
-- one demo, one claim, one CTA
+- First 3 seconds interrupt attention.
+- Script for visual flow, not just narration.
+- One demo, one claim, one CTA.
 
 ### YouTube
-- show the result early
-- structure by chapter
-- refresh the visual every 20-30 seconds
+- Show the result early.
+- Structure by chapter.
+- Refresh visual every 20-30 seconds.
 
 ### Newsletter
-- deliver one clear lens, not a bundle of unrelated items
-- make section titles skimmable
-- keep the opening paragraph doing real work
+- One lens per issue, not a bundle.
+- Skimmable section titles.
+- Opening paragraph does real work.
 
 ## Repurposing Flow
 
-Default cascade:
-1. anchor asset: article, video, demo, memo, or launch doc
-2. extract 3-7 atomic ideas
-3. write platform-native variants
-4. trim repetition across outputs
-5. align CTAs with platform intent
+1. Anchor asset: article, video, demo, memo, or launch doc.
+2. Extract 3-7 atomic ideas.
+3. Write platform-native variants.
+4. Trim repetition across outputs.
+5. Align CTAs with platform intent.
 
-## Deliverables
+## Common Mistakes
 
-When asked for a campaign, return:
-- the core angle
-- platform-specific drafts
-- optional posting order
-- optional CTA variants
-- any missing inputs needed before publishing
+- **Generic content that works nowhere.** Each platform rewards its own format.
+- **Missing CTA.** Every post should have a clear next step.
+- **Over-production before publishing.** Ship imperfect content rather than perfect content that never ships.
+- **Same hook across platforms.** LinkedIn needs a different opening than X.
+- **Burying the idea.** If the core point isn't in the first line, rewrite.
 
 ## Quality Gate
 
 Before delivering:
-- each draft reads natively for its platform
-- hooks are strong and specific
-- no generic hype language
-- no duplicated copy across platforms unless requested
-- the CTA matches the content and audience
+- Each draft reads natively for its platform.
+- Hooks are strong and specific.
+- No generic hype language.
+- No duplicated copy across platforms unless requested.
+- CTA matches content and audience.
