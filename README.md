@@ -9,3 +9,9 @@ my agentic coding assets
 - https://x.com/trq212/status/2033949937936085378
 - https://github.com/Leonxlnx/taste-skill
 - https://github.com/garrytan/gstack
+```bash
+cd /path/to/project
+
+git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git .agents/skills/gstack
+cd .agents/skills/gstack && ./setup --host auto
+```
