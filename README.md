@@ -8,10 +8,20 @@ my agentic coding assets
 - https://x.com/alvinsng/status/2033969062834045089
 - https://x.com/trq212/status/2033949937936085378
 - https://github.com/Leonxlnx/taste-skill
-- https://github.com/garrytan/gstack
+- https://github.com/garrytan/gstack 產品決策 -> 架構把關
+
+`/office-hours` -> `/plan-ceo-review` -> `/plan-eng-review`
 ```bash
 cd /path/to/project
 
 git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git .agents/skills/gstack
 cd .agents/skills/gstack && ./setup --host auto
+```
+- https://github.com/EveryInc/compound-engineering-plugin 深度規劃、執行修正、專家審查、重複疊代
+
+`/ce:plan` -> `/ce:work` -> `/ce:review` -> `/ce:compound`
+```bash
+cd /path/to/project
+
+bunx @every-env/compound-plugin install compound-engineering --to opencode
 ```
