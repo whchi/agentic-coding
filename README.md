@@ -26,4 +26,4 @@ cd /path/to/project
 bunx @every-env/compound-plugin install compound-engineering --to opencode
 ```
 - https://github.com/pbakaus/impeccable
-- https://github.com/gsd-build/get-shit-done?tab=readme-ov-file
+- https://github.com/gsd-build/get-shit-done
