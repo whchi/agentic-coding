@@ -15,7 +15,7 @@ my agentic coding assets
 cd /path/to/project
 
 git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git .agents/skills/gstack
-cd .agents/skills/gstack && ./setup --host auto
+cd .agents/skills/gstack && ./setup --host auto --local
 ```
 - https://github.com/EveryInc/compound-engineering-plugin 深度規劃、執行修正、專家審查、重複疊代
 
