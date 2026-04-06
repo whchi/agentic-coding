@@ -28,3 +28,4 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/pbakaus/impeccable
 - https://github.com/gsd-build/get-shit-done
 - https://github.com/whchi/prompt2eng
+- https://github.com/mattpocock/skills
