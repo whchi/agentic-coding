@@ -41,3 +41,6 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/github/github-mcp-server
 - https://docs.devin.ai/work-with-devin/deepwiki-mcp
 - https://github.com/ChromeDevTools/chrome-devtools-mcp
+
+### Others
+- https://x.com/hylarucoder/status/2043202352447189368?s=20
