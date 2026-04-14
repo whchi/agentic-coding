@@ -2,6 +2,8 @@ my agentic coding assets
 
 ## References
 ### skills
+- https://github.com/muyen/meihua-yishu 梅花易數
+- https://github.com/jinchenma94/bazi-skill 算命
 - https://github.com/affaan-m/everything-claude-code
 - https://github.com/code-yeongyu/oh-my-openagent
 - https://github.com/obra/superpowers
