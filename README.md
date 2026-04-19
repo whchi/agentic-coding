@@ -1,4 +1,69 @@
-my agentic coding assets
+# agentic-coding
+
+My agentic coding assets — skills, commands, and references.
+
+## Quick Install
+
+```bash
+# Clone this repo
+git clone --depth 1 git@github.com:whchi/agentic-coding.git ~/agentic-coding
+cd ~/agentic-coding
+
+# Install all global skills + commands
+./install.sh all --global
+
+# Install project skills + commands into current project
+./install.sh all --project
+
+# Or pick individual items
+./install.sh skills --global api-design
+./install.sh skills --project frontend-patterns
+./install.sh commands --global tdd
+```
+
+## Structure
+
+| Directory | Target | Description |
+|---|---|---|
+| `global-skills/` | `~/.config/opencode/skills/` | Cross-project reusable skills |
+| `project-skills/` | `.opencode/skills/` | Stack-specific skills |
+| `commands/` | `~/.config/opencode/commands/` or `.opencode/commands/` | Reusable command templates |
+
+### Global Skills
+
+| Skill | Description |
+|---|---|
+| `api-design` | REST API design and review guidance |
+| `better-test-driven-development` | Strict TDD workflow with 80%+ coverage |
+| `content-engine` | Multi-platform content creation and repurposing |
+| `docker-patterns` | Docker / Compose architecture and troubleshooting |
+| `edit-article` | Article restructuring and editing workflow |
+| `grill-me` | Plan/design stress-testing via questioning |
+| `iterative-retrieval` | Progressive context retrieval for large codebases |
+| `write-a-prd` | PRD / spec writing workflow |
+
+### Project Skills
+
+| Skill | Description |
+|---|---|
+| `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
+| `database-migrations` | Production-safe schema migration guidance |
+| `frontend-patterns` | React / Next.js component, state, performance, a11y |
+| `frontend-slides` | HTML slide deck / PPTX conversion workflow |
+| `js-ts-coding-standards` | JS / TS / React / Node coding standards |
+| `pure-function-pattern` | Pure business logic extraction (TS-first) |
+| `skill-creator` | Skill authoring, evaluation, and benchmarking |
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `anthropic-skill-review` | Anthropic-style skill review |
+| `build-fix` | Build failure diagnosis and fix |
+| `code-review` | Code review workflow |
+| `learn` | Learning / exploration workflow |
+| `tdd` | TDD workflow |
+| `update-codemaps` | Code map update workflow |
 
 ## References
 ### skills
@@ -32,7 +97,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/Leonxlnx/taste-skill
 - https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 
-### commands
+### Commands
 - https://github.com/gsd-build/get-shit-done
 - https://x.com/alvinsng/status/2033969062834045089
 - https://x.com/trq212/status/2033949937936085378
