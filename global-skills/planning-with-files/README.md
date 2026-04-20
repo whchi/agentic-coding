@@ -49,12 +49,6 @@ Run before resuming work after a session break:
 node scripts/session-catchup.js "$(pwd)"
 ```
 
-Or use the Python wrapper (delegates to the JS version):
-
-```bash
-python3 scripts/session-catchup.py "$(pwd)"
-```
-
 ## File Structure
 
 ```
@@ -71,7 +65,6 @@ planning-with-files/
     ├── init-session.sh       # Initialize all planning files
     ├── check-complete.sh     # Verify all phases complete
     ├── session-catchup.js    # Session recovery (Node.js)
-    ├── session-catchup.py    # Session recovery (Python wrapper)
     └── planning-plugin.js    # OpenCode plugin (hooks replacement)
 ```
 
