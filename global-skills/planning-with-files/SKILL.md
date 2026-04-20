@@ -10,29 +10,14 @@ metadata:
 
 Work like Manus: Use persistent markdown files as your "working memory on disk."
 
-## FIRST: Check for Previous Session (v2.2.0)
+## The Core Pattern
 
-**Before starting work**, check for unsynced context from a previous session:
-
-```bash
-node ~/.config/opencode/skills/planning-with-files/scripts/session-catchup.js "$(pwd)"
 ```
+Context Window = RAM (volatile, limited)
+Filesystem = Disk (persistent, unlimited)
 
-If catchup report shows unsynced context:
-1. Run `git diff --stat` to see actual code changes
-2. Read current planning files
-3. Update planning files based on catchup + git diff
-4. Then proceed with task
-
-## Important: Where Files Go
-
-- **Templates** are in `~/.config/opencode/skills/planning-with-files/templates/`
-- **Your planning files** go in **your project directory**
-
-| Location | What Goes There |
-|----------|-----------------|
-| Skill directory (`~/.config/opencode/skills/planning-with-files/`) | Templates, scripts, reference docs |
-| Your project directory | `task_plan.md`, `findings.md`, `progress.md` |
+→ Anything important gets written to disk.
+```
 
 ## Quick Start
 
@@ -43,17 +28,6 @@ Before ANY complex task:
 3. **Create `progress.md`** — Use [templates/progress.md](templates/progress.md) as reference
 4. **Re-read plan before decisions** — Refreshes goals in attention window
 5. **Update after each phase** — Mark complete, log errors
-
-> **Note:** Planning files go in your project root, not the skill installation folder.
-
-## The Core Pattern
-
-```
-Context Window = RAM (volatile, limited)
-Filesystem = Disk (persistent, unlimited)
-
-→ Anything important gets written to disk.
-```
 
 ## File Purposes
 
@@ -69,9 +43,7 @@ Filesystem = Disk (persistent, unlimited)
 Never start a complex task without `task_plan.md`. Non-negotiable.
 
 ### 2. The 2-Action Rule
-> "After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files."
-
-This prevents visual/multimodal information from being lost.
+After every 2 view/browser/search operations, IMMEDIATELY save key findings to text files.
 
 ### 3. Read Before Decide
 Before major decisions, read the plan file. This keeps goals in your attention window.
@@ -84,14 +56,6 @@ After completing any phase:
 
 ### 5. Log ALL Errors
 Every error goes in the plan file. This builds knowledge and prevents repetition.
-
-```markdown
-## Errors Encountered
-| Error | Attempt | Resolution |
-|-------|---------|------------|
-| FileNotFoundError | 1 | Created default config |
-| API timeout | 2 | Added retry logic |
-```
 
 ### 6. Never Repeat Failures
 ```
@@ -137,8 +101,6 @@ AFTER 3 FAILURES: Escalate to User
 
 ## The 5-Question Reboot Test
 
-If you can answer these, your context management is solid:
-
 | Question | Answer Source |
 |----------|---------------|
 | Where am I? | Current phase in task_plan.md |
@@ -149,53 +111,9 @@ If you can answer these, your context management is solid:
 
 ## When to Use This Pattern
 
-**Use for:**
-- Multi-step tasks (3+ steps)
-- Research tasks
-- Building/creating projects
-- Tasks spanning many tool calls
-- Anything requiring organization
+**Use for:** Multi-step tasks (3+ steps), research tasks, building/creating projects, tasks spanning many tool calls, anything requiring organization.
 
-**Skip for:**
-- Simple questions
-- Single-file edits
-- Quick lookups
-
-## Templates
-
-Copy these templates to start:
-
-- [templates/task_plan.md](templates/task_plan.md) — Phase tracking
-- [templates/findings.md](templates/findings.md) — Research storage
-- [templates/progress.md](templates/progress.md) — Session logging
-
-## Scripts
-
-Helper scripts for automation:
-
-- `scripts/init-session.sh` — Initialize all planning files
-- `scripts/check-complete.sh` — Verify all phases complete
-- `scripts/session-catchup.js` — Recover context from previous session (v2.2.0)
-
-## OpenCode Plugin (Hooks Replacement)
-
-This skill uses an OpenCode plugin to replicate Claude Code hook behavior. Install by placing `scripts/planning-plugin.js` in your `.opencode/plugins/` directory or referencing it in `opencode.json`:
-
-```json
-{
-  "plugin": ["path/to/planning-plugin.js"]
-}
-```
-
-The plugin provides:
-- `tool.execute.before` — Injects plan context before tool execution (replaces PreToolUse)
-- `tool.execute.after` — Reminds to update progress after writes (replaces PostToolUse)
-- `session.idle` — Runs completion check when session ends (replaces Stop)
-
-## Advanced Topics
-
-- **Manus Principles:** See [reference.md](reference.md)
-- **Real Examples:** See [examples.md](examples.md)
+**Skip for:** Simple questions, single-file edits, quick lookups.
 
 ## Anti-Patterns
 
@@ -208,3 +126,30 @@ The plugin provides:
 | Start executing immediately | Create plan file FIRST |
 | Repeat failed actions | Track attempts, mutate approach |
 | Create files in skill directory | Create files in your project |
+
+## Templates
+
+- [templates/task_plan.md](templates/task_plan.md) — Phase tracking
+- [templates/findings.md](templates/findings.md) — Research storage
+- [templates/progress.md](templates/progress.md) — Session logging
+
+## Scripts
+
+- `scripts/init-session.sh` — Initialize all planning files
+- `scripts/check-complete.sh` — Verify all phases complete
+- `scripts/session-catchup.js` — Recover context from previous session
+
+## OpenCode Plugin (Hooks Replacement)
+
+Install `scripts/planning-plugin.js` in `.opencode/plugins/` or reference in `opencode.json`:
+
+```json
+{
+  "plugin": ["path/to/planning-plugin.js"]
+}
+```
+
+The plugin provides:
+- `tool.execute.before` — Injects plan context before tool execution
+- `tool.execute.after` — Reminds to update progress after writes
+- `session.idle` — Runs completion check when session ends
