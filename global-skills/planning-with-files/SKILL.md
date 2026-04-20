@@ -1,30 +1,9 @@
 ---
 name: planning-with-files
 description: Implements Manus-style file-based planning to organize and track progress on complex tasks. Creates task_plan.md, findings.md, and progress.md. Use when asked to plan out, break down, or organize a multi-step project, research task, or any work requiring 5+ tool calls. Supports automatic session recovery after /clear.
-user-invocable: true
-allowed-tools: "Read Write Edit Bash Glob Grep"
-hooks:
-  UserPromptSubmit:
-    - hooks:
-        - type: command
-          command: "if [ -f task_plan.md ]; then echo '[planning-with-files] ACTIVE PLAN — current state:'; head -50 task_plan.md; echo ''; echo '=== recent progress ==='; tail -20 progress.md 2>/dev/null; echo ''; echo '[planning-with-files] Read findings.md for research context. Continue from the current phase.'; fi"
-  PreToolUse:
-    - matcher: "Write|Edit|Bash|Read|Glob|Grep"
-      hooks:
-        - type: command
-          command: "cat task_plan.md 2>/dev/null | head -30 || true"
-  PostToolUse:
-    - matcher: "Write|Edit"
-      hooks:
-        - type: command
-          command: "if [ -f task_plan.md ]; then echo '[planning-with-files] Update progress.md with what you just did. If a phase is now complete, update task_plan.md status.'; fi"
-  Stop:
-    - hooks:
-        - type: command
-          command: "SD=\"${OPENCODE_SKILL_ROOT:-$HOME/.config/opencode/skills/planning-with-files}/scripts\"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"$SD/check-complete.ps1\" 2>/dev/null || sh \"$SD/check-complete.sh\""
+compatibility: opencode
 metadata:
   version: "2.34.1"
-
 ---
 
 # Planning with Files
@@ -36,13 +15,7 @@ Work like Manus: Use persistent markdown files as your "working memory on disk."
 **Before starting work**, check for unsynced context from a previous session:
 
 ```bash
-# Linux/macOS (auto-detects python3 or python)
-$(command -v python3 || command -v python) ~/.config/opencode/skills/planning-with-files/scripts/session-catchup.py "$(pwd)"
-```
-
-```powershell
-# Windows PowerShell
-python "$env:USERPROFILE\.opencode\skills\planning-with-files\scripts\session-catchup.py" (Get-Location)
+node ~/.config/opencode/skills/planning-with-files/scripts/session-catchup.js "$(pwd)"
 ```
 
 If catchup report shows unsynced context:
@@ -202,7 +175,22 @@ Helper scripts for automation:
 
 - `scripts/init-session.sh` — Initialize all planning files
 - `scripts/check-complete.sh` — Verify all phases complete
-- `scripts/session-catchup.py` — Recover context from previous session (v2.2.0)
+- `scripts/session-catchup.js` — Recover context from previous session (v2.2.0)
+
+## OpenCode Plugin (Hooks Replacement)
+
+This skill uses an OpenCode plugin to replicate Claude Code hook behavior. Install by placing `scripts/planning-plugin.js` in your `.opencode/plugins/` directory or referencing it in `opencode.json`:
+
+```json
+{
+  "plugin": ["path/to/planning-plugin.js"]
+}
+```
+
+The plugin provides:
+- `tool.execute.before` — Injects plan context before tool execution (replaces PreToolUse)
+- `tool.execute.after` — Reminds to update progress after writes (replaces PostToolUse)
+- `session.idle` — Runs completion check when session ends (replaces Stop)
 
 ## Advanced Topics
 
@@ -213,7 +201,7 @@ Helper scripts for automation:
 
 | Don't | Do Instead |
 |-------|------------|
-| Use TodoWrite for persistence | Create task_plan.md file |
+| Use todowrite for persistence | Create task_plan.md file |
 | State goals once and forget | Re-read plan before decisions |
 | Hide errors and retry silently | Log errors to plan file |
 | Stuff everything in context | Store large content in files |
