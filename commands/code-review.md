@@ -2,6 +2,8 @@
 
 Review the current change set directly, then integrate with the superpowers review model by dispatching the `superpowers:code-reviewer` agent when practical.
 
+Use the same approval standard as a strong human reviewer: approve when the change clearly improves the codebase overall, even if it is not perfect. Do not block solely because you would have written it differently. Do not rubber-stamp changes without evidence.
+
 ## Default Scope
 
 If the user does not specify a scope, review current uncommitted changes.
@@ -15,9 +17,11 @@ Supported scopes:
 ## Workflow
 
 1. Detect the scope to review.
-2. Perform a direct review using the checklist below.
-3. If practical, dispatch the superpowers `code-reviewer` agent with structured context for a second review.
-4. If review feedback must be applied, verify each suggestion before changing code.
+2. Understand the intent, expected behavior change, and any stated requirements.
+3. Review tests first when they exist.
+4. Perform a direct review using the process and checklist below.
+5. If practical, dispatch the superpowers `code-reviewer` agent with structured context for a second review.
+6. If review feedback must be applied, verify each suggestion before changing code.
 
 ## Scope Detection
 
@@ -31,7 +35,29 @@ Use this priority order:
 
 Always perform a direct review, even if a secondary reviewer may also be used.
 
-Review the selected changes for:
+Before reviewing line-by-line, establish:
+
+1. What is this change trying to accomplish?
+2. What requirement, bug, or task is it meant to address?
+3. What behavior is expected to change?
+
+Review tests before implementation when they exist. Use tests to infer intent and coverage:
+
+1. Do tests exist for the change?
+2. Do they test behavior rather than implementation details?
+3. Are edge cases covered?
+4. Would the tests catch a regression?
+
+If the change is too large to review confidently in one pass, say so and recommend splitting it. As a rule of thumb, around 100 lines is easy to review, around 300 lines is acceptable for one logical change, and around 1000 lines is usually too large.
+
+Review the selected changes across these five axes:
+
+### Correctness
+
+- whether the change matches the stated task or requirements
+- off-by-one errors, state inconsistencies, misleading logic, or broken edge cases
+- missing error-path handling, not just happy-path behavior
+- missing regression coverage for bug fixes
 
 ### Security Issues
 
@@ -42,10 +68,19 @@ Review the selected changes for:
 - insecure dependencies
 - path traversal risks
 
+### Readability And Simplicity
+
+- unclear naming, especially generic names that hide intent
+- control flow that is hard to follow, including deep nesting or clever shortcuts
+- abstractions that do not justify their complexity
+- dead code artifacts, compatibility shims, or commented-out leftovers that should be called out
+
 ### Architecture And Design
 
+- whether the change follows existing patterns or introduces a new one without justification
 - scalability problems, including inefficient algorithms and unoptimized queries
 - hidden complexity or unnecessarily convoluted logic
+- code duplication that should be shared
 - circular dependencies between modules, classes, or components
 - misleading logic that appears correct but behaves incorrectly or ambiguously
 - DB query N+1 issues
@@ -71,6 +106,15 @@ Review the selected changes for:
 - missing tests for new code
 - missing edge-case coverage
 - accessibility issues where relevant
+
+### Verification Story
+
+Check how the author verified the change:
+
+- what tests were run
+- whether the build passed
+- whether manual verification was done when relevant
+- for UI changes, whether screenshots or before/after evidence exist
 
 ## Superpowers Integration
 
@@ -112,6 +156,8 @@ Fallback examples:
 
 Do not approve code with unresolved `CRITICAL` or `HIGH` issues.
 
+Use severity to distinguish blockers from suggestions. Minor style preferences should not be escalated into blocking findings.
+
 ## Output Format
 
 Return findings first.
@@ -125,6 +171,8 @@ For each finding include:
 3. Issue description
 4. Why it matters
 5. Suggested fix when not obvious
+
+Findings should focus on bugs, regressions, security issues, missing verification, architectural risks, and meaningful maintainability problems. Avoid filler comments.
 
 ### Questions / Assumptions
 
@@ -141,6 +189,8 @@ End with one of:
 1. `Ready to merge: Yes`
 2. `Ready to merge: With fixes`
 3. `Ready to merge: No`
+
+Base the assessment on overall code health improvement, not personal style preference.
 
 ## When Applying Review Feedback
 
@@ -160,3 +210,5 @@ Do not:
 - use performative agreement instead of technical verification
 
 Push back with technical reasoning when feedback is incorrect, incomplete, or conflicts with repo context.
+
+If the change leaves clearly orphaned code behind, identify it explicitly and ask before deleting it unless removal is already unambiguously in scope.

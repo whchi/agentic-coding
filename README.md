@@ -67,6 +67,7 @@ cd ~/agentic-coding
 
 ## References
 ### skills
+- https://github.com/addyosmani/agent-skills.git
 - https://github.com/othmanadi/planning-with-files
 - https://github.com/muyen/meihua-yishu 梅花易數
 - https://github.com/jinchenma94/bazi-skill 算命
