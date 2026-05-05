@@ -23,29 +23,17 @@ Do not use this skill when:
 
 ## Workflow
 
-1. Identify the plan being tested.
+1. **Establish the target.** If the user hasn't provided a written plan or design artifact, ask them to describe the proposal briefly. Then restate back: what the plan proposes, what success looks like, and what the key decisions are. Do not start grilling until you have a clear target.
 
-State the proposal, goal, and success condition in simple terms.
+2. **Question one issue at a time.** Ask one sharp question per turn. Wait for the user's response before asking the next. Focus on assumptions, edge cases, dependencies, failure modes, and tradeoffs.
 
-2. Question one issue at a time.
+3. **Filter out answerable questions.** Before asking, check whether the codebase, documentation, or configuration can answer the question. If it can, inspect the evidence and skip asking — note the resolved issue and move on. Only ask questions the user uniquely holds the answer to.
 
-Ask one sharp question per turn. Focus on assumptions, edge cases, dependencies, failure modes, and tradeoffs.
+4. **Provide your recommended answer.** With each question you do ask, state your own current recommendation and reasoning. This keeps the conversation grounded and prevents fishing without direction.
 
-3. Prefer evidence over speculation.
+5. **Prioritize high-risk gaps.** Target questions that would change the design, scope, or feasibility if answered differently. Do not chase low-impact edge cases while major risks remain unexamined.
 
-If the codebase or docs can answer the question, inspect them instead of asking the user.
-
-4. Give a recommended answer.
-
-After each question, provide the answer or direction you currently recommend.
-
-5. Keep pressure on the highest-risk gaps.
-
-Prioritize questions that would change the design, scope, or feasibility if answered differently.
-
-6. Stop when the plan is coherent.
-
-End when the major assumptions, decisions, and tradeoffs are explicit enough to move forward.
+6. **Stop when coherent.** End when assumptions, decisions, and tradeoffs are explicit enough to move forward.
 
 ## Good Questions
 

@@ -17,31 +17,23 @@ Use this skill when:
 
 Do not use this skill when:
 
-- The user only wants typo fixes or copyediting
+- The user only wants typo fixes or surface-level copyediting — unless structural issues are also present
 - The user wants a full rewrite into a completely different format
 - The source text is not really an article
 
 ## Workflow
 
-1. Identify the article structure.
+1. **Get the draft.** If the user hasn't provided the article text, ask for it. Optionally ask what they most want improved (structure, flow, argument clarity, cuts).
 
-Break the draft into sections based on headings or implied topic shifts.
+2. **Identify the article structure.** Break the draft into sections based on headings or implied topic shifts. Note what each section introduces or depends on.
 
-2. Check information order.
+3. **Check information order.** List the key ideas each section introduces. A later section should not depend on a concept that hasn't been introduced yet. If ideas appear out of order, note where they should move.
 
-Treat the article as a dependency graph. Earlier sections should introduce ideas that later sections depend on.
+4. **Confirm restructuring if needed.** If the fix involves major section reordering (not just local flow), propose the new order and confirm with the user before rewriting. Small moves within a section don't need confirmation.
 
-3. Confirm the structure if needed.
+5. **Rewrite section by section.** Improve clarity, flow, transitions, and sentence economy. Preserve the author's core argument, evidence, and voice. Cut repetition and filler.
 
-If the draft has major structural issues, propose a better section order and confirm it with the user before rewriting.
-
-4. Rewrite section by section.
-
-Improve clarity, flow, transitions, and sentence economy while preserving the author's meaning.
-
-5. Do a final pass.
-
-Check for repetition, abrupt transitions, missing context, and weak conclusions.
+6. **Final pass and handoff.** Check for leftover repetition, abrupt transitions, missing context, and weak conclusions. Then present the revised article. Briefly note significant structural changes at the top so the author knows what moved and why.
 
 ## Writing Principles
 
