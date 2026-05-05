@@ -10,7 +10,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 2. This file is a map, not an encyclopedia: keep it around 100 lines and point to deeper content in `docs/`. Each level should show only its own information and the next step.
 3. Turn good taste into rules: use tools like linters, structural tests, type checks, and CI checks to enforce rules, not just written guidelines. Things that can be checked by machines are better than long text.
 4. Plans are first-class artifacts: for multi-step or risky work, execution plans should include progress logs, be versioned, and be stored in `docs/`.
-5. Do continuous cleanup: fix technical debt in small steps over time instead of waiting for a big cleanup.
+5. Do continuous cleanup: fix technical debt in small steps over time instead of waiting for a big cleanup. Track gaps in `docs/tech-debt-tracker.md`.
 6. When stuck, fix the environment, not by trying harder: when the agent has problems, ask **"what context, tools, or constraints are missing?"** and then add them into the repo.
 
 ## 2. Think Before Coding
@@ -59,7 +59,9 @@ For every non-trivial task:
 2. Add or identify a verification method.
 3. Implement the smallest change.
 4. Run the relevant check.
-5. Report what was changed and what was verified. Do not claim verification you did not perform. If you could not run a check, say so and explain why.
+5. Report what changed and what was verified.
+
+Do not claim verification you did not perform. If you could not run a check, say so and explain why.
 
 When finished, report:
 - What changed
