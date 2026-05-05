@@ -1,100 +1,77 @@
 ---
-description: "Review a draft skill using Anthropic's skill-writing heuristics: trigger quality, structure, gotchas, progressive disclosure, and long-term maintainability. Use when the user wants to refine a reusable skill rather than just summarize it."
+description: "Review or refine a reusable skill/command. Use when the user provides a draft SKILL.md, command, source notes, or an article and wants actionable improvements to trigger quality, structure, gotchas, progressive disclosure, or maintainability."
 ---
 
 # /anthropic-skill-review
 
-Review the target skill using the principles from Anthropic's article on writing effective skills.
-
-## When to use
-
-Use this command when the user wants to:
-
-- turn notes or an article into a reusable skill
-- review a draft `SKILL.md`
-- improve trigger wording, structure, or maintainability
-- catch weak spots before sharing a skill with others
+Review a draft skill or command using practical skill-writing heuristics. Do not summarize the source material; turn it into actionable review feedback and targeted rewrites.
 
 ## Inputs
 
-Expect one of these:
+Accept pasted content, a file path if repository access is available, or source notes that should become a reusable skill.
 
-- a `SKILL.md` path
-- pasted skill content
-- a source article or notes plus a request to turn it into a reusable skill
-
-If the target is ambiguous, identify the most likely file from context and state that assumption before reviewing.
+If the target is ambiguous, identify the most likely target from context, state the assumption briefly, then continue.
 
 ## Review lens
 
-Evaluate the target against these questions:
+Evaluate the skill in this order:
 
-1. **Purpose clarity**
-   - Is it obvious what the command is for?
-   - Does it solve a repeatable problem instead of restating generic advice?
+1. **Trigger and scope**
+   - Is it clear when the skill should activate?
+   - Does it solve a repeatable problem rather than restating generic advice?
+   - Is the scope narrow enough to be useful?
 
-2. **Trigger quality**
-   - Does the description tell the model when to use it, not just what it is?
-   - Are the trigger phrases concrete enough to avoid under-triggering?
-
-3. **Signal over noise**
-   - Does it avoid stating the obvious?
+2. **Structure and token economy**
    - Does every section earn its tokens?
+   - Is the core file focused?
+   - Should heavy examples, references, or scripts move into supporting files?
 
-4. **Progressive disclosure**
-   - Is the main file focused?
-   - If the content is heavy, should parts move into supporting references instead of bloating the core skill?
+3. **Operational usefulness**
+   - Does the skill tell the model what to do, what to avoid, and what counts as done?
+   - Are the instructions specific where correctness matters, and flexible where judgment matters?
 
-5. **Gotchas**
-   - Does it call out common failure modes or misuse patterns?
-   - Does it warn about over-constraining the model, vague descriptions, or missing context?
+4. **Gotchas and failure modes**
+   - Does it warn about likely misuse, under-triggering, over-triggering, vague context, or over-constraining the model?
+   - Does it prevent the model from producing a summary when the user needs reusable skill design?
 
-6. **Flexibility**
-   - Does it guide the model without railroading it?
-   - Are instructions specific where fragility matters, and loose where judgment is needed?
-
-7. **Reuse and maintenance**
-   - Will this still make sense after the original conversation is forgotten?
-   - Is it suitable for sharing, iterating, and improving over time?
+5. **Reuse and maintenance**
+   - Will it still make sense after the original conversation is forgotten?
+   - Can others share, revise, and extend it without needing hidden context?
 
 ## Output format
 
-Return a practical review in this structure:
-
 ### Verdict
-- 1-2 sentences on whether the skill is usable as-is
+- 1-2 sentences on whether the skill is usable as-is.
 
 ### Strong parts
-- Short bullets of what already works well
+- Short bullets of what already works well.
 
 ### Problems to fix
-- Prioritized bullets
-- Explain why each issue matters
+- Prioritized bullets.
+- Explain why each issue matters.
+- Focus on issues that materially affect trigger quality, usability, or maintenance.
+
+### Redundant parts
+- List sections, lines, or ideas that can be removed or merged.
+- Explain what to keep instead.
 
 ### Suggested rewrite
-- Provide improved frontmatter and any rewritten sections that would materially improve the result
+- Provide improved frontmatter.
+- Rewrite only the sections that materially improve the skill.
+- Do not replace the entire skill unless the structure itself is the main problem.
 
 ### Recommendation
-- End with one of:
-   - `Keep as skill`
-   - `Revise skill structure`
-   - `Split skill core + references`
+End with one of:
+- `Keep as-is`
+- `Revise core skill`
+- `Split core skill + references`
 
-## Rewrite guidance
+## Rewrite rules
 
-When rewriting:
+Preserve the user's intent.
+Prefer concise wording.
+Do not over-optimize style.
+Keep working structure unless it causes under-triggering, over-triggering, confusion, or maintenance cost.
 
-- preserve the user's intent
-- prefer concise wording
-- make the description more triggerable
-- remove generic filler
-- add a gotchas section if the draft lacks one
-- keep the skill practical and easy to invoke in future sessions
-
-## Important defaults
-
-- If the content is too broad, recommend splitting the skill into a focused core file plus supporting references.
-- If the content is too procedural or repetitive, recommend moving repeatable helper steps into scripts or assets inside the skill folder.
-- If the description is vague, rewrite it so it describes when the skill should trigger, not just what the skill is.
-
-Do not just summarize the source article. Turn it into actionable review guidance.
+If the content is broad, recommend splitting the core skill from supporting references.
+If the content is procedural and repetitive, recommend moving repeatable steps into scripts, templates, or assets.
