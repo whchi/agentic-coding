@@ -11,7 +11,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 3. Turn good taste into rules: use tools like linters, structural tests, type checks, and CI checks to enforce rules, not just written guidelines. Things that can be checked by machines are better than long text.
 4. Plans are first-class artifacts: for multi-step or risky work, execution plans should include progress logs, be versioned, and be stored in `docs/`.
 5. Do continuous cleanup: fix technical debt in small steps over time instead of waiting for a big cleanup. Track gaps in `docs/tech-debt-tracker.md`.
-6. When stuck, fix the environment, not by trying harder: when the agent has problems, ask **"what context, tools, or constraints are missing?"** and then add them into the repo.
+6. When stuck, fix the context or tooling, not by trying harder: when the agent has problems, ask **"what context, tools, or constraints are missing?"** and then add them into the repo.
 
 ## 2. Think Before Coding
 
