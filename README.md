@@ -69,6 +69,7 @@ cd ~/agentic-coding
 ### AGENTS.md
 - https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
+- https://github.com/anthropics/skills
 - https://github.com/coreyhaines31/marketingskills 行銷技能
 ```bash
 git submodule add https://github.com/coreyhaines31/marketingskills.git .agents/marketingskills
