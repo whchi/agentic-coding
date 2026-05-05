@@ -66,7 +66,13 @@ cd ~/agentic-coding
 | `update-codemaps` | Code map update workflow |
 
 ## References
+### AGENTS.md
+- https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
+- https://github.com/coreyhaines31/marketingskills 行銷技能
+```bash
+git submodule add https://github.com/coreyhaines31/marketingskills.git .agents/marketingskills
+```
 - https://github.com/addyosmani/agent-skills.git
 - https://github.com/othmanadi/planning-with-files
 - https://github.com/muyen/meihua-yishu 梅花易數
