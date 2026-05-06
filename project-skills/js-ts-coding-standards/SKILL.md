@@ -1,77 +1,110 @@
 ---
 name: js-ts-coding-standards
-description: Use when writing or reviewing TypeScript, JavaScript, React, or Node.js code. Invoke for naming conventions, immutability patterns, async best practices, component structure, and code smell detection.
+description: Use when writing or reviewing JavaScript or TypeScript for naming, type safety, immutability, async control flow, error handling, file organization, and code smell detection. Do NOT use for React architecture, useEffect rewrites, or REST API contract design.
 origin: ECC
 ---
 
-# Coding Standards & Best Practices
+# JavaScript And TypeScript Coding Standards
 
-Universal coding standards for TypeScript, JavaScript, React, and Node.js development.
+Universal JavaScript and TypeScript code quality standards. This skill owns language-level maintainability, not React architecture or API contract design.
+
+## When To Use
+
+Use this skill for:
+- naming conventions and file organization
+- type safety, `any` avoidance, interfaces, type guards
+- immutability at boundaries
+- async control flow and concurrency
+- error handling and input validation
+- code smell detection during implementation or review
+
+Do NOT use for:
+- React component architecture, forms, accessibility, or render performance — use `frontend-patterns`
+- direct `useEffect` review or rewrites — use `better-useeffect`
+- REST endpoint contracts, status codes, pagination, or error shapes — use `api-design`
 
 ## Core Principles
 
 ### 1. Readability First
-Code is read more than written. Prefer clear names over comments.
 
-### 2. Immutability (Critical)
-Never mutate state directly. Always use spread operator or return new values.
+Code is read more than written. Prefer clear names and simple control flow over clever abstractions or explanatory comments.
 
-### 3. Explicit > Implicit
-Prefer explicit types, explicit returns, explicit error handling.
+### 2. Immutability At Boundaries
+
+Do not mutate React state, function inputs, shared objects, or cached data directly. Local mutation is acceptable when it is contained, clearer, and not observable outside the function.
+
+### 3. Explicit Over Implicit
+
+Prefer explicit types, return values, and error handling at module boundaries. Let inference handle obvious local variables.
 
 ### 4. Fail Fast
-Validate inputs early, return early, throw meaningful errors.
+
+Validate inputs early, return early, and throw meaningful errors before doing irreversible work.
 
 ## Key Patterns
 
 ### Immutability
 
 ```typescript
-// ✅ ALWAYS use spread operator
-const updated = { ...user, name: 'New Name' }
-const items = [...oldItems, newItem]
+const updatedUser = { ...user, name: 'New Name' }
+const nextItems = [...oldItems, newItem]
 
-// ❌ NEVER mutate directly
-user.name = 'New Name'      // BAD
-items.push(newItem)          // BAD
+// Avoid mutating shared inputs or state directly.
+user.name = 'New Name'
+oldItems.push(newItem)
 ```
 
-### Async/Await
+Use local mutation only when contained:
 
 ```typescript
-// ✅ Parallel when independent
+function groupById(items: Item[]) {
+  const groups: Record<string, Item[]> = {}
+
+  for (const item of items) {
+    groups[item.id] ??= []
+    groups[item.id].push(item)
+  }
+
+  return groups
+}
+```
+
+### Async Control Flow
+
+```typescript
+// Independent work should run in parallel.
 const [users, markets] = await Promise.all([
   fetchUsers(),
   fetchMarkets()
 ])
 
-// ❌ Sequential when unnecessary
-const users = await fetchUsers()
-const markets = await fetchMarkets()
+// Sequential work is only for true dependencies.
+const user = await fetchUser(userId)
+const orders = await fetchOrders(user.id)
 ```
 
 ### Error Handling
 
 ```typescript
-// ✅ Comprehensive error handling
-async function fetchData(url: string) {
-  try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Fetch failed:', error)
-    throw new Error('Failed to fetch data')
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`)
   }
+
+  return response.json() as Promise<T>
 }
 ```
+
+Rules:
+- Do not swallow errors with empty `catch` blocks.
+- Add context when rethrowing errors.
+- Do not expose secrets, raw SQL errors, tokens, or stack traces to users.
 
 ### Type Safety
 
 ```typescript
-// ✅ Proper types
 interface Market {
   id: string
   name: string
@@ -79,8 +112,11 @@ interface Market {
 }
 
 function getMarket(id: string): Promise<Market>
+```
 
-// ❌ Using 'any'
+Avoid:
+
+```typescript
 function getMarket(id: any): Promise<any>
 ```
 
@@ -88,26 +124,30 @@ function getMarket(id: any): Promise<any>
 
 | Smell | Detection | Fix |
 |-------|-----------|-----|
-| Long functions | > 50 lines | Split into smaller functions |
-| Deep nesting | 5+ levels | Early returns, extract functions |
-| Magic numbers | Unexplained constants | Named constants |
-| Mutable state | Direct mutations | Spread operator, immutable updates |
-| Missing types | `any`, implicit | Explicit interfaces, type guards |
-| Catch-all handlers | Empty catch blocks | Specific error handling, logging |
+| Long functions | Hard to scan, many responsibilities | Split by purpose, not by arbitrary line count |
+| Deep nesting | 4+ levels or hard-to-follow branches | Early returns, guard clauses, extract functions |
+| Magic values | Unexplained constants or strings | Named constants or domain enums |
+| Shared mutation | Mutating inputs/state/cache | Return new values or isolate mutation locally |
+| Missing types | `any`, implicit boundary types | Interfaces, generics, type guards |
+| Catch-all handlers | Empty catch blocks or generic logs | Specific handling with useful context |
+| Premature abstraction | One-off helper or indirection | Inline until the pattern repeats with stable shape |
 
 ## Gotchas
 
-- **Over-memoization** — `useMemo`/`useCallback` add complexity; only use when profiling shows re-renders are a problem
-- **Premature abstraction** — DRY doesn't mean deduplicate immediately; wait for the third instance
-- **Defensive redundancy** — Don't check for null twice; trust your types
-- **Async in loops** — `for...of` with `await` is sequential; use `Promise.all` for parallel
-- **Stale closures** — Variables in async callbacks can be stale; use refs or functional updates
+- **Async in loops** — `for...of` with `await` is sequential; use `Promise.all` only when operations are independent.
+- **Defensive redundancy** — don't check the same invariant repeatedly; validate once at the boundary.
+- **Type assertions hide bugs** — prefer narrowing and validation over `as SomeType`.
+- **DRY too early** — duplication is cheaper than the wrong abstraction; wait for a stable repeated shape.
+- **Mutable APIs leak** — copying once at a boundary is often cheaper than debugging shared mutation.
 
 ## References
 
 For detailed examples, see:
-- `references/naming-conventions.md` — Variable, function, file naming
-- `references/react-patterns.md` — Components, hooks, state management
-- `references/api-design.md` — REST conventions, validation, responses
-- `references/testing.md` — Test structure, naming, AAA pattern
-- `references/file-organization.md` — Project structure, file naming
+- `references/naming-conventions.md` — variable, function, file naming
+- `references/testing.md` — test structure, naming, AAA pattern
+- `references/file-organization.md` — project structure, imports, file naming
+
+Use related skills instead of duplicating their guidance:
+- `frontend-patterns` for React component architecture, forms, accessibility, and performance patterns
+- `better-useeffect` for direct `useEffect` review or rewrites
+- `api-design` for REST endpoint contracts, status codes, pagination, and error responses

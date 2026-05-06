@@ -1,6 +1,6 @@
 # Frontend Patterns Examples
 
-Code examples for patterns described in SKILL.md.
+Code examples for patterns described in SKILL.md. Keep examples when they fix project style or show APIs the model may get wrong; do not include outdated patterns only because they are familiar.
 
 ## Component Patterns
 
@@ -23,12 +23,6 @@ export function CardHeader({ children }: { children: React.ReactNode }) {
 export function CardBody({ children }: { children: React.ReactNode }) {
   return <div className="card-body">{children}</div>
 }
-
-// Usage
-<Card>
-  <CardHeader>Title</CardHeader>
-  <CardBody>Content</CardBody>
-</Card>
 ```
 
 ### Compound Components
@@ -54,211 +48,159 @@ export function Tabs({ children, defaultTab }: {
   )
 }
 
-export function TabList({ children }: { children: React.ReactNode }) {
-  return <div className="tab-list">{children}</div>
-}
-
 export function Tab({ id, children }: { id: string, children: React.ReactNode }) {
   const context = useContext(TabsContext)
   if (!context) throw new Error('Tab must be used within Tabs')
 
   return (
-    <button
-      className={context.activeTab === id ? 'active' : ''}
-      onClick={() => context.setActiveTab(id)}
-    >
+    <button className={context.activeTab === id ? 'active' : ''} onClick={() => context.setActiveTab(id)}>
       {children}
     </button>
   )
 }
-
-// Usage
-<Tabs defaultTab="overview">
-  <TabList>
-    <Tab id="overview">Overview</Tab>
-    <Tab id="details">Details</Tab>
-  </TabList>
-</Tabs>
-```
-
-### Render Props
-
-```typescript
-interface DataLoaderProps<T> {
-  url: string
-  children: (data: T | null, loading: boolean, error: Error | null) => React.ReactNode
-}
-
-export function DataLoader<T>({ url, children }: DataLoaderProps<T>) {
-  const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    fetch(url)
-      .then(res => res.json())
-      .then(setData)
-      .catch(setError)
-      .finally(() => setLoading(false))
-  }, [url])
-
-  return <>{children(data, loading, error)}</>
-}
-
-// Usage
-<DataLoader<Market[]> url="/api/markets">
-  {(markets, loading, error) => {
-    if (loading) return <Spinner />
-    if (error) return <Error error={error} />
-    return <MarketList markets={markets!} />
-  }}
-</DataLoader>
 ```
 
 ## Custom Hooks
 
 ### useToggle
 
+Use tiny custom hooks to standardize repeated UI state. Do not add `useCallback` by default unless the project expects stable function identities for this hook.
+
 ```typescript
-export function useToggle(initialValue = false): [boolean, () => void] {
+export function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue)
 
-  const toggle = useCallback(() => {
-    setValue(v => !v)
-  }, [])
+  const toggle = () => setValue(current => !current)
+  const setTrue = () => setValue(true)
+  const setFalse = () => setValue(false)
 
-  return [value, toggle]
-}
-
-// Usage
-const [isOpen, toggleOpen] = useToggle()
-```
-
-### useQuery
-
-```typescript
-interface UseQueryOptions<T> {
-  onSuccess?: (data: T) => void
-  onError?: (error: Error) => void
-  enabled?: boolean
-}
-
-export function useQuery<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  options?: UseQueryOptions<T>
-) {
-  const [data, setData] = useState<T | null>(null)
-  const [error, setError] = useState<Error | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  const refetch = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const result = await fetcher()
-      setData(result)
-      options?.onSuccess?.(result)
-    } catch (err) {
-      const error = err as Error
-      setError(error)
-      options?.onError?.(error)
-    } finally {
-      setLoading(false)
-    }
-  }, [fetcher, options])
-
-  useEffect(() => {
-    if (options?.enabled !== false) {
-      refetch()
-    }
-  }, [key, refetch, options?.enabled])
-
-  return { data, error, loading, refetch }
+  return { value, toggle, setTrue, setFalse, setValue }
 }
 ```
 
 ### useDebounce
 
+Keep debouncing as value transformation. Trigger user actions from handlers or query abstractions, not from a second effect that watches the debounced value.
+
 ```typescript
 export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => clearTimeout(handler)
+    const timer = window.setTimeout(() => setDebouncedValue(value), delay)
+    return () => window.clearTimeout(timer)
   }, [value, delay])
 
   return debouncedValue
 }
 
-// Usage
-const [searchQuery, setSearchQuery] = useState('')
-const debouncedQuery = useDebounce(searchQuery, 500)
-
-useEffect(() => {
-  if (debouncedQuery) {
-    performSearch(debouncedQuery)
-  }
-}, [debouncedQuery])
+const debouncedQuery = useDebounce(searchQuery, 300)
 ```
 
 ## State Management
 
 ### Context + Reducer
 
+Use this for deep-tree client state with related transitions. Split contexts when values update at different frequencies.
+
 ```typescript
 interface State {
-  markets: Market[]
-  selectedMarket: Market | null
-  loading: boolean
+  items: Item[]
+  selectedId: string | null
+  status: 'idle' | 'loading' | 'ready' | 'error'
 }
 
-type Action=
-  | { type: 'SET_MARKETS'; payload: Market[] }
-  | { type: 'SELECT_MARKET'; payload: Market }
-  | { type: 'SET_LOADING'; payload: boolean }
+type Action =
+  | { type: 'itemsLoaded'; items: Item[] }
+  | { type: 'itemSelected'; id: string }
+  | { type: 'loadingStarted' }
+  | { type: 'loadingFailed' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'SET_MARKETS':
-      return { ...state, markets: action.payload }
-    case 'SELECT_MARKET':
-      return { ...state, selectedMarket: action.payload }
-    case 'SET_LOADING':
-      return { ...state, loading: action.payload }
-    default:
-      return state
+    case 'itemsLoaded':
+      return { ...state, items: action.items, status: 'ready' }
+    case 'itemSelected':
+      return { ...state, selectedId: action.id }
+    case 'loadingStarted':
+      return { ...state, status: 'loading' }
+    case 'loadingFailed':
+      return { ...state, status: 'error' }
   }
 }
 
-const MarketContext = createContext<{
-  state: State
-  dispatch: Dispatch<Action>
-} | undefined>(undefined)
+const ItemsContext = createContext<{ state: State; dispatch: Dispatch<Action> } | undefined>(undefined)
 
-export function MarketProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, {
-    markets: [],
-    selectedMarket: null,
-    loading: false
-  })
+export function useItems() {
+  const context = useContext(ItemsContext)
+  if (!context) throw new Error('useItems must be used within ItemsProvider')
+  return context
+}
+```
+
+## Forms
+
+### Short Controlled Form
+
+```typescript
+export function NameForm({ onSubmit }: { onSubmit: (name: string) => void }) {
+  const [name, setName] = useState('')
+  const error = name.trim() ? null : 'Name is required'
 
   return (
-    <MarketContext.Provider value={{ state, dispatch }}>
-      {children}
-    </MarketContext.Provider>
+    <form
+      onSubmit={event => {
+        event.preventDefault()
+        if (!error) onSubmit(name.trim())
+      }}
+    >
+      <label htmlFor="name">Name</label>
+      <input
+        id="name"
+        value={name}
+        onChange={event => setName(event.target.value)}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? 'name-error' : undefined}
+      />
+      {error && <p id="name-error">{error}</p>}
+      <button type="submit" disabled={Boolean(error)}>Save</button>
+    </form>
   )
 }
+```
 
-export function useMarkets() {
-  const context = useContext(MarketContext)
-  if (!context) throw new Error('useMarkets must be used within MarketProvider')
-  return context
+## Error Boundaries
+
+### Class Error Boundary
+
+React error boundaries still require class components unless the project uses a dedicated library.
+
+```typescript
+interface ErrorBoundaryState {
+  error: Error | null
+}
+
+export class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback?: React.ReactNode },
+  ErrorBoundaryState
+> {
+  state: ErrorBoundaryState = { error: null }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error boundary caught:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.error) {
+      return this.props.fallback ?? <p>Something went wrong.</p>
+    }
+
+    return this.props.children
+  }
 }
 ```
 
@@ -266,25 +208,19 @@ export function useMarkets() {
 
 ### Memoization
 
-```typescript
-// ✅ useMemo for expensive computations
-const sortedMarkets = useMemo(() => {
-  return markets.sort((a, b) => b.volume - a.volume)
-}, [markets])
+Profile before memoizing. Use these only when render cost or prop identity churn is measured or obvious from the component boundary.
 
-// ✅ useCallback for functions passed to children
-const handleSearch = useCallback((query: string) => {
-  setSearchQuery(query)
+```typescript
+const sortedItems = useMemo(() => {
+  return [...items].sort((a, b) => a.label.localeCompare(b.label))
+}, [items])
+
+const handleSelect = useCallback((id: string) => {
+  setSelectedId(id)
 }, [])
 
-// ✅ React.memo for pure components
-export const MarketCard = React.memo<MarketCardProps>(({ market }) => {
-  return (
-    <div className="market-card">
-      <h3>{market.name}</h3>
-      <p>{market.description}</p>
-    </div>
-  )
+export const ItemRow = React.memo(function ItemRow({ item }: { item: Item }) {
+  return <li>{item.label}</li>
 })
 ```
 
@@ -294,19 +230,12 @@ export const MarketCard = React.memo<MarketCardProps>(({ market }) => {
 import { lazy, Suspense } from 'react'
 
 const HeavyChart = lazy(() => import('./HeavyChart'))
-const ThreeJsBackground = lazy(() => import('./ThreeJsBackground'))
 
-export function Dashboard() {
+export function Dashboard({ data }: { data: ChartData }) {
   return (
-    <div>
-      <Suspense fallback={<ChartSkeleton />}>
-        <HeavyChart data={data} />
-      </Suspense>
-
-      <Suspense fallback={null}>
-        <ThreeJsBackground />
-      </Suspense>
-    </div>
+    <Suspense fallback={<ChartSkeleton />}>
+      <HeavyChart data={data} />
+    </Suspense>
   )
 }
 ```
@@ -316,11 +245,11 @@ export function Dashboard() {
 ```typescript
 import { useVirtualizer } from '@tanstack/react-virtual'
 
-export function VirtualMarketList({ markets }: { markets: Market[] }) {
+export function VirtualItemList({ items }: { items: Item[] }) {
   const parentRef = useRef<HTMLDivElement>(null)
 
   const virtualizer = useVirtualizer({
-    count: markets.length,
+    count: items.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 100,
     overscan: 5
@@ -328,12 +257,7 @@ export function VirtualMarketList({ markets }: { markets: Market[] }) {
 
   return (
     <div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}>
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          position: 'relative'
-        }}
-      >
+      <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
         {virtualizer.getVirtualItems().map(virtualRow => (
           <div
             key={virtualRow.index}
@@ -346,134 +270,13 @@ export function VirtualMarketList({ markets }: { markets: Market[] }) {
               transform: `translateY(${virtualRow.start}px)`
             }}
           >
-            <MarketCard market={markets[virtualRow.index]} />
+            <ItemRow item={items[virtualRow.index]} />
           </div>
         ))}
       </div>
     </div>
   )
 }
-```
-
-## Forms
-
-### Controlled Form with Validation
-
-```typescript
-interface FormData {
-  name: string
-  description: string
-  endDate: string
-}
-
-interface FormErrors {
-  name?: string
-  description?: string
-  endDate?: string
-}
-
-export function CreateMarketForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    description: '',
-    endDate: ''
-  })
-
-  const [errors, setErrors] = useState<FormErrors>({})
-
-  const validate = (): boolean => {
-    const newErrors: FormErrors = {}
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
-    } else if (formData.name.length > 200) {
-      newErrors.name = 'Name must be under 200 characters'
-    }
-
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required'
-    }
-
-    if (!formData.endDate) {
-      newErrors.endDate = 'End date is required'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validate()) return
-
-    try {
-      await createMarket(formData)
-    } catch (error) {
-      // Error handling
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={formData.name}
-        onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-        placeholder="Market name"
-      />
-      {errors.name && <span className="error">{errors.name}</span>}
-
-      <button type="submit">Create Market</button>
-    </form>
-  )
-}
-```
-
-## Error Boundary
-
-```typescript
-interface ErrorBoundaryState {
-  hasError: boolean
-  error: Error | null
-}
-
-export class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  ErrorBoundaryState
-> {
-  state: ErrorBoundaryState = {
-    hasError: false,
-    error: null
-  }
-
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught:', error, errorInfo)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-fallback">
-          <h2>Something went wrong</h2>
-          <p>{this.state.error?.message}</p>
-          <button onClick={() => this.setState({ hasError: false })}>
-            Try again
-          </button>
-        </div>
-      )
-    }
-
-    return this.props.children
-  }
-}
-
-// Usage
-<ErrorBoundary>
-  <App />
-</ErrorBoundary>
 ```
 
 ## Animation
@@ -483,48 +286,20 @@ export class ErrorBoundary extends React.Component<
 ```typescript
 import { motion, AnimatePresence } from 'framer-motion'
 
-// List animations
-export function AnimatedMarketList({ markets }: { markets: Market[] }) {
+export function AnimatedItemList({ items }: { items: Item[] }) {
   return (
     <AnimatePresence>
-      {markets.map(market => (
+      {items.map(item => (
         <motion.div
-          key={market.id}
+          key={item.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <MarketCard market={market} />
+          <ItemRow item={item} />
         </motion.div>
       ))}
-    </AnimatePresence>
-  )
-}
-
-// Modal animations
-export function Modal({ isOpen, onClose, children }: ModalProps) {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            className="modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <motion.div
-            className="modal-content"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          >
-            {children}
-          </motion.div>
-        </>
-      )}
     </AnimatePresence>
   )
 }
@@ -539,18 +314,18 @@ export function Dropdown({ options, onSelect }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    switch (e.key) {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
       case 'ArrowDown':
-        e.preventDefault()
-        setActiveIndex(i => Math.min(i + 1, options.length - 1))
+        event.preventDefault()
+        setActiveIndex(index => Math.min(index + 1, options.length - 1))
         break
       case 'ArrowUp':
-        e.preventDefault()
-        setActiveIndex(i => Math.max(i - 1, 0))
+        event.preventDefault()
+        setActiveIndex(index => Math.max(index - 1, 0))
         break
       case 'Enter':
-        e.preventDefault()
+        event.preventDefault()
         onSelect(options[activeIndex])
         setIsOpen(false)
         break
@@ -560,16 +335,7 @@ export function Dropdown({ options, onSelect }: DropdownProps) {
     }
   }
 
-  return (
-    <div
-      role="combobox"
-      aria-expanded={isOpen}
-      aria-haspopup="listbox"
-      onKeyDown={handleKeyDown}
-    >
-      {/* Dropdown implementation */}
-    </div>
-  )
+  return <div role="combobox" aria-expanded={isOpen} aria-haspopup="listbox" onKeyDown={handleKeyDown} />
 }
 ```
 
@@ -590,13 +356,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
   }, [isOpen])
 
   return isOpen ? (
-    <div
-      ref={modalRef}
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
-      onKeyDown={e => e.key === 'Escape' && onClose()}
-    >
+    <div ref={modalRef} role="dialog" aria-modal="true" tabIndex={-1} onKeyDown={event => event.key === 'Escape' && onClose()}>
       {children}
     </div>
   ) : null
