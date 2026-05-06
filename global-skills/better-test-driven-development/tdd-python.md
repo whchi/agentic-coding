@@ -1,11 +1,11 @@
 ---
 name: tdd-python
-description: Python specific test patterns, commands, fixtures, mocking, parametrization, and coverage. Always used together with `/test-driven-development` base skill.
+description: Use when applying TDD in Python projects and choosing pytest commands, fixtures, parametrization, mocks, async tests, or coverage configuration.
 ---
 
 # TDD — Python
-> **Before proceeding, read `.config/opencode/test-driven-development/SKILL.md` first.**
-> Read the base skill first for TDD philosophy and cycle.
+
+Read `SKILL.md` first for the TDD philosophy and cycle. This file only covers Python commands and examples.
 
 ---
 
@@ -24,7 +24,7 @@ pytest
 # Watch mode during development
 ptw                                      # pip install pytest-watch
 
-# Coverage report
+# Coverage report, if configured by the project
 pytest --cov=src --cov-report=term-missing
 pytest --cov=src --cov-fail-under=80
 
@@ -47,6 +47,8 @@ pytest --pdb
 ---
 
 ## Coverage Config
+
+Example coverage gate when the project chooses an 80% threshold:
 
 `pyproject.toml`:
 ```toml
@@ -441,13 +443,4 @@ tests/
 
 ## CI/CD
 
-```yaml
-# GitHub Actions
-- name: Run Tests
-  run: pytest --cov=src --cov-report=xml --cov-fail-under=80
-
-- name: Upload Coverage
-  uses: codecov/codecov-action@v3
-  with:
-    file: ./coverage.xml
-```
+Project CI owns exact commands. The TDD requirement is that CI runs the relevant test suite and any configured coverage gate.

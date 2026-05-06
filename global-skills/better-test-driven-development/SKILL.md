@@ -1,6 +1,6 @@
 ---
 name: better-test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code. Enforces TDD with 80%+ coverage including unit, integration, and E2E tests.
+description: Use when implementing any feature, bugfix, refactor, or behavior change before writing implementation code. Use when tests are missing, behavior is unclear, or an agent is tempted to code first.
 origin: ECC,superpowers
 ---
 
@@ -14,10 +14,13 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-> **Language-specific commands, frameworks, and examples are in the language skill.**
-> Read the appropriate skill before starting:
-> - TypeScript / JavaScript → @tdd-typescript.md
-> - Python → @tdd-python.md
+## Language References
+
+Read language-specific references only when they match the stack:
+- TypeScript / JavaScript: `tdd-typescript.md`
+- Python: `tdd-python.md`
+
+Read `testing-anti-patterns.md` before adding mocks, test utilities, or test-only production APIs.
 
 ---
 
@@ -90,13 +93,20 @@ Don't add features, refactor other code, or "improve" beyond what the test deman
 
 ### Step 5: Verify GREEN — **MANDATORY.**
 
-Run the full test suite. Confirm:
-- Test passes
-- All other tests still pass
-- Output is pristine (no errors, no warnings)
+First run the targeted test you just made pass.
+
+Then run the relevant test scope:
+- Same test file for tight loops
+- Related package/module tests before refactor
+- Full suite before claiming completion or merging
+
+Confirm:
+- The new test passes
+- No relevant existing tests regressed
+- Output has no unexpected errors or warnings
 
 **Test fails?** Fix code, not the test.
-**Other tests fail?** Fix them now.
+**Relevant tests fail?** Fix them now.
 
 ### Step 6: REFACTOR — Clean Up
 
@@ -109,7 +119,7 @@ Keep tests green. Don't add behavior.
 
 ### Step 7: Verify Coverage
 
-Run coverage report. Verify **80%+** across branches, functions, lines, statements.
+Run the repository's configured coverage check when one exists. If no gate exists, verify meaningful behavior coverage for the code you changed.
 
 ### Repeat
 
@@ -117,12 +127,15 @@ Next failing test for next behavior.
 
 ---
 
-## Coverage Requirements
+## Coverage And Verification
 
-- Minimum **80%** across branches, functions, lines, statements
-- All edge cases covered
-- Error scenarios tested
-- Boundary conditions verified
+Default target: meet the repository's configured coverage gate.
+
+If no project gate exists, aim for meaningful behavior coverage:
+- New behavior has focused unit or integration tests
+- Bug fixes include a regression test that fails before the fix
+- Edge cases and error paths are covered when they affect behavior
+- Broad coverage targets such as 80% are useful only when the project can enforce them consistently
 
 ---
 
@@ -182,7 +195,7 @@ Next failing test for next behavior.
 
 Before marking work complete:
 
-- [ ] Every new function/method has a test
+- [ ] Every new or changed behavior has a test
 - [ ] Watched each test **fail** before implementing
 - [ ] Each test failed for the expected reason (feature missing, not typo)
 - [ ] Wrote minimal code to pass each test
@@ -190,13 +203,13 @@ Before marking work complete:
 - [ ] Output pristine (no errors, warnings)
 - [ ] Tests use real code (mocks only if unavoidable)
 - [ ] Edge cases and error paths covered
-- [ ] 80%+ coverage verified
+- [ ] Repository coverage gate verified, or meaningful behavior coverage documented
 
 Can't check all boxes? You skipped TDD. Start over.
 
 ---
 ## Testing Anti-Patterns
-When adding mocks or test utilities, read @testing-anti-patterns.md to avoid common pitfalls:
+When adding mocks or test utilities, read `testing-anti-patterns.md` to avoid common pitfalls:
 
 - Testing mock behavior instead of real behavior
 - Adding test-only methods to production classes

@@ -1,11 +1,11 @@
 ---
 name: tdd-typescript
-description: TypeScript and JavaScript specific test patterns, commands, and examples. Always used together with `/test-driven-development` base skill.
+description: Use when applying TDD in TypeScript or JavaScript projects and choosing test commands, framework patterns, fixtures, mocks, or coverage configuration.
 ---
 
 # TDD — TypeScript / JavaScript
-> **Before proceeding, read `.config/opencode/test-driven-development/SKILL.md` first.**
-> Read the base skill first for TDD philosophy and cycle.
+
+Read `SKILL.md` first for the TDD philosophy and cycle. This file only covers TypeScript/JavaScript commands and examples.
 
 ---
 
@@ -22,7 +22,7 @@ npm test
 # Watch mode during development
 npm test -- --watch
 
-# Coverage report
+# Coverage report, if configured by the project
 npm run test:coverage
 ```
 
@@ -30,10 +30,12 @@ npm run test:coverage
 
 ## Coverage Config
 
+Example coverage gate when the project chooses an 80% threshold:
+
 ```json
 {
   "jest": {
-    "coverageThresholds": {
+    "coverageThreshold": {
       "global": {
         "branches": 80,
         "functions": 80,
@@ -111,16 +113,14 @@ import { test, expect } from '@playwright/test'
 
 test('user can search and filter markets', async ({ page }) => {
   await page.goto('/markets')
-  await expect(page.locator('h1')).toContainText('Markets')
+  await expect(page.getByRole('heading', { name: /markets/i })).toBeVisible()
 
-  await page.fill('input[placeholder="Search markets"]', 'election')
-  await page.waitForTimeout(600) // debounce
+  await page.getByRole('textbox', { name: /search/i }).fill('election')
 
-  const results = page.locator('[data-testid="market-card"]')
-  await expect(results).toHaveCount(5, { timeout: 5000 })
-  await expect(results.first()).toContainText('election', { ignoreCase: true })
+  const results = page.getByTestId('market-card')
+  await expect(results.first()).toContainText(/election/i)
 
-  await page.click('button:has-text("Active")')
+  await page.getByRole('button', { name: /active/i }).click()
   await expect(results).toHaveCount(3)
 })
 ```
@@ -129,39 +129,29 @@ test('user can search and filter markets', async ({ page }) => {
 
 ## Mocking External Services
 
-### Supabase
+Prefer real code with fake boundaries over deep module mocks. Before adding mocks, read `testing-anti-patterns.md`.
+
 ```typescript
-jest.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => Promise.resolve({
-          data: [{ id: 1, name: 'Test Market' }],
-          error: null
-        }))
-      }))
-    }))
+interface EmailClient {
+  sendWelcomeEmail(email: string): Promise<void>
+}
+
+class FakeEmailClient implements EmailClient {
+  sentTo: string[] = []
+
+  async sendWelcomeEmail(email: string) {
+    this.sentTo.push(email)
   }
-}))
-```
+}
 
-### Redis
-```typescript
-jest.mock('@/lib/redis', () => ({
-  searchMarketsByVector: jest.fn(() => Promise.resolve([
-    { slug: 'test-market', similarity_score: 0.95 }
-  ])),
-  checkRedisHealth: jest.fn(() => Promise.resolve({ connected: true }))
-}))
-```
+test('sends welcome email after signup', async () => {
+  const emailClient = new FakeEmailClient()
+  const service = new SignupService({ emailClient })
 
-### OpenAI
-```typescript
-jest.mock('@/lib/openai', () => ({
-  generateEmbedding: jest.fn(() => Promise.resolve(
-    new Array(1536).fill(0.1)
-  ))
-}))
+  await service.signup({ email: 'alice@example.com' })
+
+  expect(emailClient.sentTo).toEqual(['alice@example.com'])
+})
 ```
 
 ---
@@ -216,7 +206,7 @@ src/
 │           ├── route.ts
 │           └── route.test.ts     # Integration tests
 └── e2e/
-    ├── markets.spec.ts           # E2E tests
+    ├── markets.spec.ts           # E2E tests, when the project has browser coverage
     └── auth.spec.ts
 ```
 
@@ -224,10 +214,4 @@ src/
 
 ## CI/CD
 
-```yaml
-# GitHub Actions
-- name: Run Tests
-  run: npm test -- --coverage
-- name: Upload Coverage
-  uses: codecov/codecov-action@v3
-```
+Project CI owns exact commands. The TDD requirement is that CI runs the relevant test suite and any configured coverage gate.
