@@ -10,24 +10,26 @@ git clone --depth 1 git@github.com:whchi/agentic-coding.git ~/agentic-coding
 cd ~/agentic-coding
 
 # Install all global skills + commands
-./install.sh all --global
+./install.sh opencode all --global
+./install.sh codex all --global
 
 # Install project skills + commands into current project
-./install.sh all --project
+./install.sh opencode all --project
+./install.sh codex all --project
 
 # Or pick individual items
-./install.sh skills --global api-design
-./install.sh skills --project frontend-patterns
-./install.sh commands --global tdd
+./install.sh opencode skills --global api-design
+./install.sh codex skills --project frontend-patterns
+./install.sh opencode commands --global tdd
 ```
 
 ## Structure
 
 | Directory | Target | Description |
 |---|---|---|
-| `global-skills/` | `~/.config/opencode/skills/` | Cross-project reusable skills |
-| `project-skills/` | `.opencode/skills/` | Stack-specific skills |
-| `commands/` | `~/.config/opencode/commands/` or `.opencode/commands/` | Reusable command templates |
+| `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project reusable skills |
+| `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific skills |
+| `commands/` | OpenCode `commands/` or Codex `prompts/` | Reusable command templates |
 
 ### Global Skills
 

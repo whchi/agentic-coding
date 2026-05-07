@@ -1,29 +1,50 @@
 #!/usr/bin/env bash
 #
-# install.sh — Install skills and commands from this repo into OpenCode directories.
+# install.sh - Install skills and commands from this repo into OpenCode or Codex directories.
 #
 # Usage:
-#   ./install.sh                                    # interactive menu
-#   ./install.sh skills --global                    # install all global skills
-#   ./install.sh skills --project                   # install all project skills
-#   ./install.sh skills --global api-design         # install one global skill
-#   ./install.sh skills --project frontend-patterns # install one project skill
-#   ./install.sh commands --global                  # install all global commands
-#   ./install.sh commands --project                 # install all project commands
-#   ./install.sh commands --global tdd              # install one global command
-#   ./install.sh all --global                       # install all global skills + commands
-#   ./install.sh all --project                      # install all project skills + commands
+#   ./install.sh opencode                           # menu
+#   ./install.sh codex                              # menu
+#   ./install.sh opencode skills --global           # install all global skills
+#   ./install.sh codex skills --project             # install all project skills
+#   ./install.sh opencode skills --global api-design # install one global skill
+#   ./install.sh codex skills --project frontend-patterns # install one project skill
+#   ./install.sh opencode commands --global         # install all global commands
+#   ./install.sh codex commands --project           # install all project commands
+#   ./install.sh opencode commands --global tdd     # install one global command
+#   ./install.sh codex all --global                 # install all global skills + commands
+#   ./install.sh opencode all --project             # install all project skills + commands
 #
-# Global installs → ~/.config/opencode/
-# Project installs → .opencode/ (current working directory)
+# OpenCode global installs -> ~/.config/opencode/
+# OpenCode project installs -> .opencode/ (current working directory)
+# Codex global installs -> ~/.codex/
+# Codex project installs -> .codex/ (current working directory)
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-GLOBAL_SKILLS_DIR="$HOME/.config/opencode/skills"
-GLOBAL_COMMANDS_DIR="$HOME/.config/opencode/commands"
-PROJECT_SKILLS_DIR=".opencode/skills"
-PROJECT_COMMANDS_DIR=".opencode/commands"
+PROVIDER="${1:-}"
+
+if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" ]]; then
+  echo "error: provider is required: opencode or codex" >&2
+  echo "" >&2
+  echo "Usage: ./install.sh <opencode|codex> [skills|commands|all] [--global|--project] [name]" >&2
+  exit 1
+fi
+
+shift
+
+if [[ "$PROVIDER" == "opencode" ]]; then
+  GLOBAL_SKILLS_DIR="$HOME/.config/opencode/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.config/opencode/commands"
+  PROJECT_SKILLS_DIR=".opencode/skills"
+  PROJECT_COMMANDS_DIR=".opencode/commands"
+else
+  GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
+  PROJECT_SKILLS_DIR=".codex/skills"
+  PROJECT_COMMANDS_DIR=".codex/prompts"
+fi
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -133,7 +154,7 @@ install_commands() {
 # ── interactive menu ─────────────────────────────────────────────────────────
 
 menu() {
-  echo "agentic-coding installer"
+  echo "agentic-coding installer ($PROVIDER)"
   echo ""
   echo "  Skills (global):"
   for s in "${GLOBAL_SKILLS[@]}"; do echo "    $s"; done
@@ -145,10 +166,10 @@ menu() {
   for c in "${COMMANDS[@]}"; do echo "    $c"; done
   echo ""
   echo "Run with arguments to install directly, e.g.:"
-  echo "  ./install.sh skills --global"
-  echo "  ./install.sh skills --project frontend-patterns"
-  echo "  ./install.sh commands --global tdd"
-  echo "  ./install.sh all --global"
+  echo "  ./install.sh $PROVIDER skills --global"
+  echo "  ./install.sh $PROVIDER skills --project frontend-patterns"
+  echo "  ./install.sh $PROVIDER commands --global tdd"
+  echo "  ./install.sh $PROVIDER all --global"
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
