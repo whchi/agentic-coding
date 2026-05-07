@@ -48,6 +48,15 @@ Review tests before implementation when they exist. Use tests to infer intent an
 3. Are edge cases covered?
 4. Would the tests catch a regression?
 
+When requirements, specs, or behavior changed, treat unchanged tests as a review smell. Check:
+
+1. What behavior changed?
+2. Which tests changed with it?
+3. Are tests asserting behavior rather than implementation details?
+4. Did edge cases and error paths change with the behavior?
+5. Do mocks still describe the real boundary, or are they hiding integration breakage?
+6. What is the smallest missing test that would catch a regression?
+
 If the change is too large to review confidently in one pass, say so and recommend splitting it. As a rule of thumb, around 100 lines is easy to review, around 300 lines is acceptable for one logical change, and around 1000 lines is usually too large.
 
 Review the selected changes across these five axes:

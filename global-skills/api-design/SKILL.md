@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: Use when designing, implementing, or reviewing REST API endpoints, API contracts, resource URLs, HTTP status codes, pagination, filtering, error responses, auth boundaries, versioning, or rate limits.
+description: Use when designing, implementing, or reviewing REST API endpoints, API contracts, resource URLs, HTTP status codes, pagination, filtering, response shapes, request validation, error handling, auth boundaries, versioning, rate limits, SPA update flows, or REST/RPC/GraphQL tradeoffs.
 origin: ECC
 ---
 
@@ -15,8 +15,18 @@ Use this for REST API design and review. Optimize for consistent contracts, corr
 3. Choose response shape: envelope for public/partner APIs, flat allowed for internal APIs if existing conventions use it.
 4. Choose list behavior: pagination, filtering, sorting, and field selection.
 5. Define error shape and status codes before implementation.
-6. Confirm auth, authorization, rate limits, and documentation updates.
-7. Check existing endpoints for naming and response consistency.
+6. Define where request validation, authorization, and exception mapping happen.
+7. Confirm auth, rate limits, and documentation updates.
+8. Check existing endpoints for naming and response consistency.
+
+## Boundaries
+
+Use related skills instead of stretching this one:
+
+- `domain-driven-design-advisor` for DDD fit, aggregate design, bounded contexts, and domain modeling.
+- `repository-boundary-review` for whether persistence, use cases, and aggregates own the right behavior.
+- `testing-strategy` for choosing test level, mocks, fixtures, and coverage.
+- `frontend-robust-data-handling` for adapting API payloads into render-safe frontend view models.
 
 ## Audience Defaults
 
@@ -65,6 +75,12 @@ POST   /api/v1/auth/refresh
 /api/v1/users/123/getOrders
 ```
 
+## Endpoint Style
+
+Use REST for resource lifecycle operations and common CRUD. Use RPC-style endpoints for operation-heavy workflows that do not naturally map to a resource update. Use GraphQL only when clients need flexible relationship traversal and the team can manage the added complexity, authorization, and performance risks.
+
+Do not bind route params directly to data type selection or query behavior without explicit validation.
+
 ## Methods And Status Codes
 
 | Method | Idempotent | Safe | Use For |
@@ -112,6 +128,8 @@ For more detail, see `references/status-codes.md`.
   }
 }
 ```
+
+For SPA create/update flows, return useful updated data when it prevents an immediate redundant GET. Do this only when the extra payload is stable and clearly useful to the client workflow.
 
 ### Collection
 
@@ -179,6 +197,50 @@ Rules:
 - Use `404` instead of `403` only when intentionally avoiding resource enumeration.
 - Never include stack traces, SQL errors, token contents, or secret values in responses.
 
+## Request Boundary
+
+Validate route params, query params, headers, body fields, and file metadata when the request enters the backend. Normalize values once near the request boundary, then pass typed or validated data inward.
+
+Keep validation and authorization separate:
+
+- Validation proves the request shape is acceptable.
+- Authorization proves the caller may perform the action on the target resource.
+- Route params should not select data type, tenant, mode, or query behavior until explicitly validated.
+
+## Error Boundaries
+
+Map known application errors to status codes at a shared outer boundary such as a controller, route handler, or adapter. Internally log enough detail to debug, but expose only stable public error codes and messages.
+
+Do not expose:
+
+- SQL errors
+- Stack traces
+- Vendor exception names
+- Raw DB, Redis, network, or file-system details
+- Secret or token values
+
+## Localization Ownership
+
+Frontend owns presentation strings by default because it knows the locale and rendering context.
+
+Backend owns text when it is:
+
+- API error content
+- User-entered content that needs server-side control, moderation, transformation, or persistence
+- Backend-generated ordering, ranking, grouping, or configuration that affects displayed text
+- Admin-configured content later rendered to end users
+
+## Backend Layering Notes
+
+When the backend uses DDD or clean architecture:
+
+- Controllers and request handlers parse input and call application use cases.
+- DTOs belong near the application or interface-adapter boundary, not inside pure domain objects.
+- Domain objects should not depend on HTTP, request schemas, ORM models, or response presenters.
+- Use cases decide output shape; aggregate roots should not change because a screen needs a different response.
+- Repository interfaces should reflect aggregate roots and domain language, while repository implementations can use ORM, DAO, or query-builder details.
+- External systems should enter through adapters so their domain language does not leak into the core domain.
+
 ## Rate Limiting
 
 ```text
@@ -220,7 +282,9 @@ Before shipping a new endpoint:
 - [ ] HTTP method matches the operation
 - [ ] Status codes are semantic, not `200` for everything
 - [ ] Request input is validated with a schema or equivalent contract
+- [ ] Validation happens at the request boundary before business logic or persistence
 - [ ] Error responses follow the standard shape with stable codes
+- [ ] Low-level IO exceptions are mapped before crossing user-facing boundaries
 - [ ] List endpoints have pagination and documented limits
 - [ ] Filtering, sorting, search, and field selection match existing conventions
 - [ ] Authentication is required or the endpoint is explicitly public
@@ -243,4 +307,5 @@ Before shipping a new endpoint:
 Read supporting files only when needed:
 - `references/status-codes.md` for detailed HTTP status guidance
 - `references/pagination.md` for offset/cursor examples and stable cursor rules
+- `references/review-rules.md` for endpoint review checklists covering response shape, request validation, API-facing return contracts, and edge cases
 - `references/implementation-examples.md` for TypeScript, Django REST Framework, and Go handlers

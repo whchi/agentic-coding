@@ -11,7 +11,7 @@
 #   ./install.sh codex skills --project frontend-patterns # install one project skill
 #   ./install.sh opencode commands --global         # install all global commands
 #   ./install.sh codex commands --project           # install all project commands
-#   ./install.sh opencode commands --global tdd     # install one global command
+#   ./install.sh opencode commands --global mock-or-not # install one global command
 #   ./install.sh codex all --global                 # install all global skills + commands
 #   ./install.sh opencode all --project             # install all project skills + commands
 #
@@ -71,10 +71,17 @@ GLOBAL_SKILLS=(
   api-design
   better-test-driven-development
   content-engine
+  debugging-playbook
   docker-patterns
+  domain-driven-design-advisor
   edit-article
   grill-me
   iterative-retrieval
+  maintainable-code-review
+  product-engineering-mvp
+  project-structure-advisor
+  repository-boundary-review
+  testing-strategy
   write-a-prd
 )
 
@@ -82,10 +89,10 @@ PROJECT_SKILLS=(
   better-useeffect
   database-migrations
   frontend-patterns
+  frontend-robust-data-handling
   frontend-slides
   js-ts-coding-standards
   pure-function-pattern
-  skill-creator
 )
 
 install_skills() {
@@ -120,7 +127,10 @@ COMMANDS=(
   anthropic-skill-review
   build-fix
   code-review
+  ddd-fit-check
+  debug-triage
   learn
+  mock-or-not
   update-codemaps
 )
 
@@ -167,7 +177,7 @@ menu() {
   echo "Run with arguments to install directly, e.g.:"
   echo "  ./install.sh $PROVIDER skills --global"
   echo "  ./install.sh $PROVIDER skills --project frontend-patterns"
-  echo "  ./install.sh $PROVIDER commands --global tdd"
+  echo "  ./install.sh $PROVIDER commands --global mock-or-not"
   echo "  ./install.sh $PROVIDER all --global"
 }
 

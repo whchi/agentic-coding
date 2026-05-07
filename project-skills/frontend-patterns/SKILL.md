@@ -1,6 +1,6 @@
 ---
 name: frontend-patterns
-description: Use when designing React component architecture, choosing client/server state patterns, optimizing render performance, implementing forms, error boundaries, accessibility, virtualization, or animation patterns. Do NOT use for useEffect-specific rewrites, JS/TS language conventions, or HTML slide decks.
+description: Use when designing React component architecture, choosing client/server state patterns, optimizing render performance, implementing forms, error boundaries, accessibility, virtualization, or animation patterns. Do NOT use for useEffect-specific rewrites, JS/TS language conventions, render-safe API adapters, or HTML slide decks.
 origin: ECC
 ---
 
@@ -19,6 +19,7 @@ Use this skill when the task involves:
 Do NOT use when:
 - the task is specifically about removing or reviewing `useEffect` usage — use `better-useeffect`
 - the task is about JS/TS naming, immutability, async, or type standards — use `js-ts-coding-standards`
+- the task is about adapting raw backend payloads into stable UI view models — use `frontend-robust-data-handling`
 - the task is about HTML slide decks — use `frontend-slides`
 
 ## Approach

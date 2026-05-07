@@ -1,6 +1,8 @@
 # agentic-coding
 
-My agentic coding assets — skills, commands, and references.
+My agentic coding assets — engineering-focused skills, commands, and references.
+
+This repo is built primarily for software engineering work. In this context, `global-skills/` means "reusable across engineering projects", not "useful for every possible Codex conversation." Non-engineering skills are included only when they support common builder workflows such as writing, planning, product thinking, or content.
 
 ## Quick Install
 
@@ -20,15 +22,15 @@ cd ~/agentic-coding
 # Or pick individual items
 ./install.sh opencode skills --global api-design
 ./install.sh codex skills --project frontend-patterns
-./install.sh opencode commands --global tdd
+./install.sh opencode commands --global mock-or-not
 ```
 
 ## Structure
 
 | Directory | Target | Description |
 |---|---|---|
-| `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project reusable skills |
-| `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific skills |
+| `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project engineering skills |
+| `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific or project-local engineering skills |
 | `commands/` | OpenCode `commands/` or Codex `prompts/` | Reusable command templates |
 
 ### Global Skills
@@ -38,10 +40,17 @@ cd ~/agentic-coding
 | `api-design` | REST API design and review guidance |
 | `better-test-driven-development` | Strict TDD workflow with 80%+ coverage |
 | `content-engine` | Multi-platform content creation and repurposing |
+| `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `docker-patterns` | Docker / Compose architecture and troubleshooting |
+| `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
 | `grill-me` | Plan/design stress-testing via questioning |
 | `iterative-retrieval` | Progressive context retrieval for large codebases |
+| `maintainable-code-review` | Maintainability, abstraction, and readability review guidance |
+| `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
+| `project-structure-advisor` | Folder structure and module boundary guidance |
+| `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
+| `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
 | `write-a-prd` | PRD / spec writing workflow |
 
 ### Project Skills
@@ -51,10 +60,10 @@ cd ~/agentic-coding
 | `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
 | `database-migrations` | Production-safe schema migration guidance |
 | `frontend-patterns` | React / Next.js component, state, performance, a11y |
+| `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
 | `frontend-slides` | HTML slide deck / PPTX conversion workflow |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
 | `pure-function-pattern` | Pure business logic extraction (TS-first) |
-| `skill-creator` | Skill authoring, evaluation, and benchmarking |
 
 ### Commands
 
@@ -63,8 +72,10 @@ cd ~/agentic-coding
 | `anthropic-skill-review` | Anthropic-style skill review |
 | `build-fix` | Build failure diagnosis and fix |
 | `code-review` | Code review workflow |
+| `ddd-fit-check` | DDD adoption fit check |
+| `debug-triage` | Environment/data/logic debugging triage |
 | `learn` | Learning / exploration workflow |
-| `tdd` | TDD workflow |
+| `mock-or-not` | Test dependency mock/fake/real decision checklist |
 | `update-codemaps` | Code map update workflow |
 
 ## References
