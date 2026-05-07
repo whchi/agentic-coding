@@ -52,6 +52,23 @@ die() { echo "error: $*" >&2; exit 1; }
 
 ensure_dir() { mkdir -p "$1"; }
 
+contains_item() {
+  local needle="$1"
+  shift
+  local item
+  for item in "$@"; do
+    [[ "$item" == "$needle" ]] && return 0
+  done
+  return 1
+}
+
+require_known_item() {
+  local kind="$1" name="$2"
+  shift 2
+  contains_item "$name" "$@" && return 0
+  die "unknown $kind: $name (available: $*)"
+}
+
 install_dir() {
   local src="$1" dest="$2"
   echo "  → $src → $dest"
@@ -78,6 +95,7 @@ GLOBAL_SKILLS=(
   grill-me
   iterative-retrieval
   maintainable-code-review
+  planning-with-files
   product-engineering-mvp
   project-structure-advisor
   repository-boundary-review
@@ -101,6 +119,7 @@ install_skills() {
   if [[ "$scope" == "--global" ]]; then
     ensure_dir "$GLOBAL_SKILLS_DIR"
     if [[ -n "$name" ]]; then
+      require_known_item "global skill" "$name" "${GLOBAL_SKILLS[@]}"
       install_dir "$SCRIPT_DIR/global-skills/$name" "$GLOBAL_SKILLS_DIR/$name"
     else
       for s in "${GLOBAL_SKILLS[@]}"; do
@@ -110,6 +129,7 @@ install_skills() {
   elif [[ "$scope" == "--project" ]]; then
     ensure_dir "$PROJECT_SKILLS_DIR"
     if [[ -n "$name" ]]; then
+      require_known_item "project skill" "$name" "${PROJECT_SKILLS[@]}"
       install_dir "$SCRIPT_DIR/project-skills/$name" "$PROJECT_SKILLS_DIR/$name"
     else
       for s in "${PROJECT_SKILLS[@]}"; do
@@ -140,6 +160,7 @@ install_commands() {
   if [[ "$scope" == "--global" ]]; then
     ensure_dir "$GLOBAL_COMMANDS_DIR"
     if [[ -n "$name" ]]; then
+      require_known_item "command" "$name" "${COMMANDS[@]}"
       install_file "$SCRIPT_DIR/commands/$name.md" "$GLOBAL_COMMANDS_DIR/$name.md"
     else
       for c in "${COMMANDS[@]}"; do
@@ -149,6 +170,7 @@ install_commands() {
   elif [[ "$scope" == "--project" ]]; then
     ensure_dir "$PROJECT_COMMANDS_DIR"
     if [[ -n "$name" ]]; then
+      require_known_item "command" "$name" "${COMMANDS[@]}"
       install_file "$SCRIPT_DIR/commands/$name.md" "$PROJECT_COMMANDS_DIR/$name.md"
     else
       for c in "${COMMANDS[@]}"; do

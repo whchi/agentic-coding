@@ -1,6 +1,6 @@
 ---
 name: api-design
-description: Use when designing, implementing, or reviewing REST API endpoints, API contracts, resource URLs, HTTP status codes, pagination, filtering, response shapes, request validation, error handling, auth boundaries, versioning, rate limits, SPA update flows, or REST/RPC/GraphQL tradeoffs.
+description: Use when designing, implementing, or reviewing REST API endpoints, API contracts, resource URLs, HTTP methods and status codes, pagination, filtering, response shapes, request validation, error handling, auth boundaries, versioning, or rate limits.
 origin: ECC
 ---
 
@@ -18,6 +18,17 @@ Use this for REST API design and review. Optimize for consistent contracts, corr
 6. Define where request validation, authorization, and exception mapping happen.
 7. Confirm auth, rate limits, and documentation updates.
 8. Check existing endpoints for naming and response consistency.
+
+## When Reviewing
+
+Return:
+
+- Contract issues
+- Compatibility risks
+- Missing request validation
+- Error-boundary leaks
+
+Use `references/review-rules.md` when the detailed review checklist is needed.
 
 ## Boundaries
 
@@ -77,7 +88,7 @@ POST   /api/v1/auth/refresh
 
 ## Endpoint Style
 
-Use REST for resource lifecycle operations and common CRUD. Use RPC-style endpoints for operation-heavy workflows that do not naturally map to a resource update. Use GraphQL only when clients need flexible relationship traversal and the team can manage the added complexity, authorization, and performance risks.
+Use REST for resource lifecycle operations and common CRUD. Use RPC-style endpoints sparingly for operation-heavy workflows that do not naturally map to a resource update.
 
 Do not bind route params directly to data type selection or query behavior without explicit validation.
 
@@ -218,28 +229,6 @@ Do not expose:
 - Vendor exception names
 - Raw DB, Redis, network, or file-system details
 - Secret or token values
-
-## Localization Ownership
-
-Frontend owns presentation strings by default because it knows the locale and rendering context.
-
-Backend owns text when it is:
-
-- API error content
-- User-entered content that needs server-side control, moderation, transformation, or persistence
-- Backend-generated ordering, ranking, grouping, or configuration that affects displayed text
-- Admin-configured content later rendered to end users
-
-## Backend Layering Notes
-
-When the backend uses DDD or clean architecture:
-
-- Controllers and request handlers parse input and call application use cases.
-- DTOs belong near the application or interface-adapter boundary, not inside pure domain objects.
-- Domain objects should not depend on HTTP, request schemas, ORM models, or response presenters.
-- Use cases decide output shape; aggregate roots should not change because a screen needs a different response.
-- Repository interfaces should reflect aggregate roots and domain language, while repository implementations can use ORM, DAO, or query-builder details.
-- External systems should enter through adapters so their domain language does not leak into the core domain.
 
 ## Rate Limiting
 

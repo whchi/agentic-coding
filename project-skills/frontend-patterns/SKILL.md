@@ -1,6 +1,6 @@
 ---
 name: frontend-patterns
-description: Use when designing React component architecture, choosing client/server state patterns, optimizing render performance, implementing forms, error boundaries, accessibility, virtualization, or animation patterns. Do NOT use for useEffect-specific rewrites, JS/TS language conventions, render-safe API adapters, or HTML slide decks.
+description: Use when designing React or Next.js component structure, state placement, form patterns, accessibility, UI performance boundaries, or interaction behavior. Do NOT use for useEffect-specific rewrites, JS/TS language conventions, render-safe API adapters, or HTML slide decks.
 origin: ECC
 ---
 
@@ -13,7 +13,7 @@ Modern frontend patterns for React, Next.js, and performant interfaces. This ski
 Use this skill when the task involves:
 - component structure: composition, compound components, controlled/uncontrolled APIs
 - state decisions: local state, lifted state, Context, reducer, Zustand/Jotai/Redux, server state
-- performance: memoization, virtualization, code splitting
+- performance boundaries: interaction latency, virtualization, code splitting, measured render cost
 - UI patterns: forms, error boundaries, animation, accessibility
 
 Do NOT use when:
@@ -66,13 +66,13 @@ Context rules:
 
 | Pattern | When to Use | Gotcha |
 |---------|-------------|--------|
-| `useMemo` | Expensive computation visible in profiler | Adds complexity; avoid by default |
-| `useCallback` | Function identity matters to memoized children or external subscriptions | Unneeded if children are not memoized |
-| `React.memo` | Component re-renders with same props and cost is measured | Compare prop changes first |
+| `startTransition` | Non-urgent updates should not block interaction | Keep urgent visual feedback outside the transition |
+| `useDeferredValue` | Derived UI can lag slightly behind user input | Do not use when the UI must update synchronously |
 | Virtualization | Large lists or complex rows | Adds layout complexity |
 | Code splitting | Heavy routes, charts, editors, 3D, rarely-used panels | Add useful fallback states |
+| `useMemo` / `useCallback` / `React.memo` | Only when profiling shows they help, or the project already relies on them | Avoid by default; they add cognitive cost |
 
-Rule: profile before memoizing. Prefer simpler rendering until there is measured cost or an obvious high-cost boundary.
+Rule: measure first. Prefer simpler rendering until there is measured cost or an obvious high-cost boundary. Follow project React Compiler guidance when present.
 
 ## Forms
 
@@ -105,9 +105,21 @@ Common patterns:
 
 - **Over-using Context** — frequently changing values re-render broad subtrees.
 - **Memoizing without measuring** — `useMemo`/`useCallback` can add complexity for no gain.
+- **Duplicating derived state** — store the source of truth once and derive the rest.
+- **Escalating to global state too early** — local or lifted state is often enough.
 - **Wrong keys** — unstable list keys cause incorrect item state retention.
+- **Blurring server/client boundaries** — avoid pushing server concerns into client components without a clear need.
 - **Inventing a pattern before checking conventions** — existing project patterns usually matter more than generic preference.
 - **Treating effect problems as frontend architecture** — use `better-useeffect` for direct `useEffect` review.
+
+## Output
+
+Return:
+
+- Recommended pattern
+- Simpler alternatives rejected and why
+- Project conventions to preserve
+- Verification points: behavior, accessibility, and performance checks when relevant
 
 ## References
 

@@ -2,25 +2,31 @@
 
 Use these rules when reviewing or designing endpoint contracts, request boundaries, response shapes, and API-facing interface contracts.
 
+Review in this order:
+
+1. Existing public contract or published API docs
+2. Existing local conventions for this API surface
+3. These defaults when the contract is new or the convention is still being decided
+
 ## Response And Route Shape
 
 Check:
 
-1. Endpoints do not end with a trailing slash.
+1. Route style is consistent. Flag trailing slashes only when they create mixed policy, redirects, or compatibility risk.
 2. Route parameters are validated before they decide what data to fetch.
-3. Response keys use camelCase unless the existing contract uses another convention.
-4. Success responses return the payload directly or follow the existing envelope convention.
+3. Response keys follow one stable convention, such as camelCase when that is already the API style.
+4. Success responses use one stable shape for the API surface instead of mixing payload-direct and envelope responses arbitrarily.
 5. Error responses use one explicit, consistent shape.
 6. Internal exception details, SQL errors, stack traces, and low-level IO details are not exposed.
 7. Create/update endpoints for SPA clients return useful data when it prevents an immediate redundant GET.
-8. Public APIs include readable links when relationships or follow-up actions matter.
+8. Public APIs include links only when navigation or follow-up actions materially help clients.
 
 Output:
 
 - Contract issues
 - Compatibility risks
-- Suggested response shape
-- Suggested status codes
+- Consumer impact
+- Smallest safe fix
 
 ## Request Validation
 
@@ -63,6 +69,7 @@ Output:
 - Leaky errors
 - Missing mappings
 - Suggested error shape/status code
+- Consumer impact
 
 ## API Contract Return Shape
 

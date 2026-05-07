@@ -47,6 +47,7 @@ cd ~/agentic-coding
 | `grill-me` | Plan/design stress-testing via questioning |
 | `iterative-retrieval` | Progressive context retrieval for large codebases |
 | `maintainable-code-review` | Maintainability, abstraction, and readability review guidance |
+| `planning-with-files` | File-based planning artifacts for complex work |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
