@@ -121,7 +121,6 @@ COMMANDS=(
   build-fix
   code-review
   learn
-  tdd
   update-codemaps
 )
 
