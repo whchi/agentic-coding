@@ -12,6 +12,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 4. Plans are first-class artifacts: for multi-step or risky work, execution plans should include progress logs, be versioned, and be stored in `docs/`.
 5. Do continuous cleanup: fix technical debt in small steps over time instead of waiting for a big cleanup. Track gaps in `docs/tech-debt-tracker.md`.
 6. When stuck, fix the context or tooling, not by trying harder: when the agent has problems, ask **"what context, tools, or constraints are missing?"** and then add them into the repo.
+7. No batch file removal without approval: the agent is forbidden from deleting multiple files in a single command or operation. All file removals must be done one file at a time. Any batch removal, cleanup, glob-based deletion, or recursive deletion requires explicit user approval after showing the exact target list.
 
 ## 2. Think Before Coding
 
