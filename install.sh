@@ -147,6 +147,7 @@ COMMANDS=(
   anthropic-skill-review
   build-fix
   code-review
+  design-pattern-fit
   ddd-fit-check
   debug-triage
   learn

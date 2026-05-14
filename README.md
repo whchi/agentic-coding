@@ -73,6 +73,7 @@ cd ~/agentic-coding
 | `anthropic-skill-review` | Anthropic-style skill review |
 | `build-fix` | Build failure diagnosis and fix |
 | `code-review` | Code review workflow |
+| `design-pattern-fit` | Design pattern fit and overengineering check |
 | `ddd-fit-check` | DDD adoption fit check |
 | `debug-triage` | Environment/data/logic debugging triage |
 | `learn` | Learning / exploration workflow |
