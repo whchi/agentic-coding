@@ -135,3 +135,4 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 ### Others
 - https://x.com/hylarucoder/status/2043202352447189368?s=20
 - https://addyosmani.com/blog/agent-skills/
+- https://x.com/Mnilax/status/2053116311132155938
