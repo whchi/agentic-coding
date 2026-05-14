@@ -336,37 +336,37 @@ If one simpler construct can express the whole design, do not recommend a mix.
 ## Required Output Format
 
 ```md
-## 重點摘要
+## Summary
 
 - ...
 
-## 設計壓力判斷
+## Design Pressure Diagnosis
 
 - Primary pressure: ...
 - Evidence: ...
 - Non-goals: ...
 
-## 候選 Patterns
+## Candidate Patterns
 
 ### 1. Pattern Name
 
-- 適用場景：
-- 為什麼可能適合：
-- 代價：
-- Anti-pattern 風險：
+- Fit:
+- Why it may fit:
+- Cost:
+- Anti-pattern risk:
 
-## 建議採用
+## Recommended Approach
 
 - Pattern: ...
 - Reason: ...
 - Smallest useful design: ...
 
-## 不建議採用
+## Rejected Patterns
 
 - Pattern: ...
 - Reason: ...
 
-## 建議設計
+## Proposed Design
 
 ### Responsibility Boundaries
 
@@ -387,7 +387,7 @@ If one simpler construct can express the whole design, do not recommend a mix.
 - Contract tests:
 - Integration tests:
 
-## 最小遷移步驟
+## Minimal Migration Steps
 
 1. ...
 2. ...
@@ -402,8 +402,10 @@ If one simpler construct can express the whole design, do not recommend a mix.
 
 ## Final Guardrail
 
-If no design pattern is justified, say so directly:
+If no design pattern is justified, say so directly.
 
-> 目前不建議套用 GoF Design Pattern。最小改法是：...
+Do not force a GoF pattern just because the user asked for one. A valid recommendation may be:
 
-That is a valid and often preferred result.
+> No GoF design pattern is justified here. The smallest useful refactor is: ...
+
+This is often the best answer when the code has no stable variation point, no repeated abstraction pressure, and no boundary that needs protection.
