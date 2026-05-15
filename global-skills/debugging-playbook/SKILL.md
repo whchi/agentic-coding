@@ -29,19 +29,24 @@ If logic inspection has gone on for about 30 minutes without a strong lead, deli
 1. Write the symptom in one sentence.
 2. Write the expected behavior in one sentence.
 3. Confirm whether the issue reproduces locally, in tests, in staging, or only in production.
-4. Split hypotheses into environment, data, and logic.
-5. Gather cheap evidence:
+4. Build a feedback loop: failing test, command, HTTP script, browser script, trace replay, or other rerunnable check.
+5. Confirm the loop fails for the same symptom the user reported.
+6. Minimize the reproduction until it separates the smallest useful behavior.
+7. Split 3 to 5 falsifiable hypotheses into environment, data, and logic.
+8. Gather cheap evidence:
    - Environment: versions, env vars, feature flags, container image, deployment, network, time zone, cache, external service status.
    - Data: actual records, nulls, duplicates, stale state, migrations, payload shape, permissions, deleted rows.
    - Logic: branching, transformations, async order, state transitions, boundary values.
-6. Minimize the reproduction.
-7. Once the likely cause is known, write a failing test or reproducible command if practical.
-8. Fix the confirmed cause, then run the smallest relevant verification.
+9. Instrument only where it distinguishes hypotheses. Tag temporary logs so they can be removed.
+10. Once the likely cause is known, write a failing test or reproducible command if practical.
+11. Fix the confirmed cause, then re-run the original loop and the smallest relevant verification.
 
 ## Guardrails
 
 - Do not keep rereading the same code without adding new evidence.
 - Do not change multiple unrelated variables at once.
+- Do not proceed on vibes when no feedback loop exists. State what context or artifact is missing.
+- Do not leave temporary instrumentation behind.
 - Do not assume frontend data is trustworthy.
 - Do not expose low-level IO details while adding diagnostics.
 - Preserve useful logs and trace IDs.

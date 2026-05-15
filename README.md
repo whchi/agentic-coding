@@ -32,6 +32,9 @@ cd ~/agentic-coding
 | `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project engineering skills |
 | `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific or project-local engineering skills |
 | `commands/` | OpenCode `commands/` or Codex `prompts/` | Reusable command templates |
+| `CONTEXT.md` | Repo root | Domain glossary for this distribution |
+
+Project context docs such as `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `engineering-context` or `setup-agentic-coding-project` when a project needs them.
 
 ### Global Skills
 
@@ -41,18 +44,22 @@ cd ~/agentic-coding
 | `better-test-driven-development` | Strict TDD workflow with 80%+ coverage |
 | `content-engine` | Multi-platform content creation and repurposing |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
-| `docker-patterns` | Docker / Compose architecture and troubleshooting |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
+| `frontend-slides` | HTML slide deck / PPTX conversion workflow |
 | `grill-me` | Plan/design stress-testing via questioning |
-| `iterative-retrieval` | Progressive context retrieval for large codebases |
-| `maintainable-code-review` | Maintainability, abstraction, and readability review guidance |
+| `grill-with-docs` | Stress-test plans against project docs, domain language, code evidence, and ADRs |
+| `handoff` | Compact current work into a durable handoff for another session or agent |
+| `iterative-retrieval` | Progressive context retrieval for large or unfamiliar codebases |
+| `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
 | `planning-with-files` | File-based planning artifacts for complex work |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
 | `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
+| `write-a-skill` | Create or refine concise, composable agent skills |
 | `write-a-prd` | PRD / spec writing workflow |
+| `zoom-out` | Higher-level module map before editing unfamiliar code |
 
 ### Project Skills
 
@@ -60,11 +67,12 @@ cd ~/agentic-coding
 |---|---|
 | `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
 | `database-migrations` | Production-safe schema migration guidance |
+| `docker-patterns` | Docker / Compose architecture and troubleshooting |
+| `engineering-context` | Project-level CONTEXT.md, CONTEXT-MAP.md, ADR, and agent docs setup |
 | `frontend-patterns` | React / Next.js component, state, performance, a11y |
 | `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
-| `frontend-slides` | HTML slide deck / PPTX conversion workflow |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
-| `pure-function-pattern` | Pure business logic extraction (TS-first) |
+| `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
 
 ### Commands
 
@@ -78,7 +86,18 @@ cd ~/agentic-coding
 | `debug-triage` | Environment/data/logic debugging triage |
 | `learn` | Learning / exploration workflow |
 | `mock-or-not` | Test dependency mock/fake/real decision checklist |
+| `setup-agentic-coding-project` | Initialize a minimal project context layer |
 | `update-codemaps` | Code map update workflow |
+
+## Skill Taxonomy
+
+| Area | Skills / Commands |
+|---|---|
+| Alignment | `grill-me`, `grill-with-docs`, `write-a-prd` |
+| Context | `iterative-retrieval`, `zoom-out`, `engineering-context`, `update-codemaps` |
+| Delivery | `better-test-driven-development`, `debugging-playbook`, `planning-with-files` |
+| Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |
+| Handoff | `handoff`, `write-a-skill`, `setup-agentic-coding-project` |
 
 ## References
 ### AGENTS.md
@@ -120,7 +139,6 @@ cd /path/to/project
 bunx @every-env/compound-plugin install compound-engineering --to opencode
 ```
 - https://github.com/whchi/prompt2eng
-- https://github.com/mattpocock/skills
 - https://github.com/yetone/native-feel-skill
 - https://github.com/tw93/waza engineer 思維
 

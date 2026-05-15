@@ -2,6 +2,8 @@
 
 Use this command before introducing DDD, aggregates, repositories, domain services, clean architecture layers, or domain-based folders.
 
+Before judging fit, read `CONTEXT.md`, `CONTEXT-MAP.md`, and relevant ADRs when they exist. DDD terms should match the project's ubiquitous language, not generic textbook names.
+
 ## Fit Check
 
 DDD is useful when:
@@ -28,5 +30,6 @@ Return:
 - DDD fit: strong, partial, or weak
 - Core domain, supporting subdomains, and generic subdomains
 - Candidate bounded contexts
+- Existing domain terms or ADRs that support or conflict with the proposal
 - Whether MVC/function folders are enough for now
 - Smallest useful DDD pattern to adopt

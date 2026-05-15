@@ -23,6 +23,8 @@ Use this command when the user asks things like:
 5. Always name the cost: indirection, lifecycle complexity, test burden, or debugging overhead.
 6. In JavaScript, TypeScript, Python, Go, or functional code, translate GoF class patterns into simpler language-native forms when appropriate.
 7. A mixed pattern is justified only when there are independent pressures. Do not stack patterns for style.
+8. Apply the deletion test: if deleting the abstraction makes complexity disappear, it is probably pass-through code; if complexity reappears across callers, it may be earning its keep.
+9. Distinguish real seams from hypothetical seams. One adapter usually means direct code may be enough; two or more adapters make the seam more credible.
 
 ## Decision Workflow
 
@@ -42,6 +44,11 @@ Identify what is actually changing or hurting:
 - State changes behavior or transition validity.
 - Events need subscribers.
 - Traversal, history, grammar evaluation, or operations over a stable structure are the main issue.
+
+Also identify whether the current module is deep or shallow:
+
+- Deep: small interface hides meaningful behavior and improves locality.
+- Shallow: callers must understand nearly as much as the implementation.
 
 ### 2. Classify The Primary Pressure
 

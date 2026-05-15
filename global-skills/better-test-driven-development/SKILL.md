@@ -14,11 +14,7 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-## Language References
-
-Read language-specific references only when they match the stack:
-- TypeScript / JavaScript: `tdd-typescript.md`
-- Python: `tdd-python.md`
+## Supporting Reference
 
 Read `testing-anti-patterns.md` before adding mocks, test utilities, or test-only production APIs.
 
@@ -61,6 +57,10 @@ Thinking "skip TDD just this once"? Stop. That's rationalization.
 
 ## Red-Green-Refactor Cycle
 
+Work in vertical slices: one behavior, one failing test, one minimal implementation. Do not write a batch of imagined tests and then a batch of code.
+
+Use a tracer bullet first: one test that proves the path works end-to-end through the public interface. Each next test should respond to what the previous cycle taught you.
+
 ### Step 1: Write User Journey
 ```
 As a [role], I want to [action], so that [benefit]
@@ -74,6 +74,9 @@ Requirements:
 - One behavior per test
 - Clear, descriptive name
 - Real code (no mocks unless unavoidable)
+- Test names and public interfaces use the repo's domain language when `CONTEXT.md` exists
+- Test through the public interface that callers use
+- Describe what the system does, not how the implementation does it
 
 ### Step 3: Verify RED — **MANDATORY. Never skip.**
 
@@ -114,6 +117,8 @@ After green only:
 - Remove duplication
 - Improve naming
 - Extract helpers
+- Deepen modules when the test reveals a shallow interface
+- Move behavior behind smaller public interfaces when setup is too complex
 
 Keep tests green. Don't add behavior.
 
@@ -143,10 +148,27 @@ If no project gate exists, aim for meaningful behavior coverage:
 
 | Quality | Good | Bad |
 |---------|------|-----|
+| **Behavioral** | Verifies observable behavior | Asserts internal calls or private methods |
+| **Public** | Uses the same interface as callers | Reaches into storage or internals to prove side effects |
 | **Minimal** | One thing. "and" in name? Split it. | `test('validates email and domain and whitespace')` |
 | **Clear** | Name describes behavior | `test('test1')` |
 | **Shows intent** | Demonstrates desired API | Obscures what code should do |
 | **Isolated** | Each test sets up its own data | Tests depend on each other |
+
+Good tests survive refactors. If renaming or moving an internal helper breaks the test while behavior is unchanged, the test was coupled to implementation.
+
+Prefer integration-style tests through real code paths. Mock only at true system boundaries such as external APIs, time, randomness, file systems, or slow infrastructure. Do not mock your own internal collaborators just to make setup easier.
+
+## Interface Pressure
+
+Let tests shape the interface:
+
+- Hard-to-write tests often mean the interface is unclear.
+- Huge setup often means behavior is behind the wrong boundary.
+- A deep module has a small public interface with meaningful behavior behind it.
+- A shallow module exposes too much setup or passes calls through without leverage.
+- Accept dependencies instead of constructing external clients inside business logic.
+- Return observable results where possible instead of forcing tests to inspect side effects.
 
 ---
 
@@ -188,6 +210,7 @@ If no project gate exists, aim for meaningful behavior coverage:
 | Test too complicated | Design too complicated. Simplify the interface. |
 | Must mock everything | Code too coupled. Use dependency injection. |
 | Test setup huge | Extract helpers. Still complex? Simplify the design. |
+| Need to test through internals | Move behavior behind a public interface that represents the real capability. |
 
 ---
 

@@ -44,7 +44,7 @@ Ask for the problem, desired outcome, constraints, and any existing solution ide
 
 2. Inspect the current system.
 
-Explore the repo and surrounding product surface to verify assumptions, constraints, and likely integration points.
+Explore the repo and surrounding product surface to verify assumptions, constraints, and likely integration points. When present, read `CONTEXT.md`, `CONTEXT-MAP.md`, relevant ADRs, and existing plans before drafting. Use them to avoid inventing domain terms or reopening settled tradeoffs.
 
 3. Frame the problem.
 
@@ -64,7 +64,7 @@ Understand both:
 
 4. Identify implementation shape.
 
-Sketch the major modules or system areas likely to change. Prefer deep modules with stable interfaces when possible.
+Sketch the major modules or system areas likely to change, including touched modules, upstream/downstream flows, and likely test surfaces. Prefer deep modules with stable interfaces when possible.
 
 A deep module (as opposed to a shallow module) is one which encapsulates a lot of functionality in a simple, testable interface which rarely changes.
 
@@ -81,6 +81,7 @@ Use the template below. Expand sections in proportion to their importance; do no
 - Be concrete. Replace vague phrases with observable user problems, specific workflows, and meaningful tradeoffs.
 - Stay user-centered. A PRD should explain why the feature matters to users, not just what engineers will build.
 - Stay technically grounded. Do not promise behavior that conflicts with the current codebase or architecture.
+- Use repo vocabulary. If the repo has a glossary or ADRs, align terminology and call out conflicts explicitly.
 - Surface uncertainty honestly. If something needs validation, say so explicitly instead of fabricating certainty.
 - Prefer stable decisions over fragile detail. Include architectural and interface decisions, but avoid file paths and code snippets that will become stale quickly.
 - Make the document useful for implementation. The PRD should help someone plan the work, not just admire the thinking.
@@ -142,6 +143,8 @@ A list of implementation decisions that were made. This can include:
 
 - The modules that will be built/modified
 - The interfaces of those modules that will be modified
+- Domain terms from `CONTEXT.md` that define the feature language
+- ADRs or documented decisions that constrain the implementation
 - Technical clarifications from the developer
 - Architectural decisions
 - Schema changes

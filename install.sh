@@ -89,10 +89,12 @@ GLOBAL_SKILLS=(
   better-test-driven-development
   content-engine
   debugging-playbook
-  docker-patterns
   domain-driven-design-advisor
   edit-article
+  frontend-slides
   grill-me
+  grill-with-docs
+  handoff
   iterative-retrieval
   maintainable-code-review
   planning-with-files
@@ -100,15 +102,18 @@ GLOBAL_SKILLS=(
   project-structure-advisor
   repository-boundary-review
   testing-strategy
+  write-a-skill
   write-a-prd
+  zoom-out
 )
 
 PROJECT_SKILLS=(
   better-useeffect
   database-migrations
+  docker-patterns
+  engineering-context
   frontend-patterns
   frontend-robust-data-handling
-  frontend-slides
   js-ts-coding-standards
   pure-function-pattern
 )
@@ -152,6 +157,7 @@ COMMANDS=(
   debug-triage
   learn
   mock-or-not
+  setup-agentic-coding-project
   update-codemaps
 )
 

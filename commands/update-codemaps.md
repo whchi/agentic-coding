@@ -6,6 +6,8 @@ description: Scan project structure and generate token-lean architecture codemap
 
 Analyze the codebase structure and generate token-lean architecture documentation.
 
+When `CONTEXT.md` or `CONTEXT-MAP.md` exists, use the same domain vocabulary in generated codemaps. If those files are missing, do not invent domain terms; describe modules by observed responsibility.
+
 ## Step 1: Scan Project Structure
 
 1. Identify the project type (monorepo, single app, library, microservice)
@@ -23,6 +25,7 @@ Create or update codemaps in `docs/CODEMAPS/` (or `.reports/codemaps/`):
 | `frontend.md` | Page tree, component hierarchy, state management flow |
 | `data.md` | Database tables, relationships, migration history |
 | `dependencies.md` | External services, third-party integrations, shared libraries |
+| `contexts.md` | Context map, module responsibilities, upstream/downstream relationships |
 
 ### Codemap Format
 
@@ -65,6 +68,7 @@ Write a summary to `.reports/codemap-diff.txt`:
 - Files added/removed/modified since last scan
 - New dependencies detected
 - Architecture changes (new routes, new services, etc.)
+- Context-map changes or stale domain terms
 - Staleness warnings for docs not updated in 90+ days
 
 ## Tips

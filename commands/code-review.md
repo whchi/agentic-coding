@@ -93,6 +93,9 @@ Review the selected changes across these five axes:
 - circular dependencies between modules, classes, or components
 - misleading logic that appears correct but behaves incorrectly or ambiguously
 - DB query N+1 issues
+- shallow modules or pass-through abstractions that fail the deletion test
+- hypothetical seams with only one adapter and no current variation pressure
+- interface changes that make the test surface broader without adding leverage
 
 ### Reliability And Robustness
 

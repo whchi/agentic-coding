@@ -1,11 +1,11 @@
 ---
 name: iterative-retrieval
-description: Use when subagents need codebase context they cannot predict upfront—multi-file refactors, unfamiliar codebases, or "context too large" failures. Provides a 4-phase loop for progressive context refinement.
+description: Use when codebase context cannot be predicted upfront for multi-file refactors, unfamiliar systems, zoom-out exploration, or "context too large" failures. Provides a 4-phase loop for progressive context refinement.
 ---
 
 # Iterative Retrieval
 
-A 4-phase loop that progressively refines context for subagents.
+A 4-phase loop that progressively refines context. Use it for your own exploration or for preparing a subagent brief.
 
 ## Skip When
 - Task affects a single known file
@@ -15,7 +15,7 @@ A 4-phase loop that progressively refines context for subagents.
 
 ## Workflow
 
-When retrieving context for a subagent task:
+When retrieving context:
 
 1. **Dispatch.** Start with a broad search using the task's keywords and likely file patterns. Don't over-specify — the first cycle is for discovery.
 
@@ -29,7 +29,9 @@ When retrieving context for a subagent task:
 
 3. **Refine.** Update the search: add terminology discovered in high-relevance files, add file patterns from their locations, exclude confirmed irrelevant paths, and target specific gaps identified in step 2.
 
-4. **Repeat.** Run the refined search. Stop when you have 3+ high-relevance files with no critical gaps, or after 3 cycles maximum — whichever comes first. Send the files scored >= 0.7 to the subagent.
+4. **Repeat.** Run the refined search. Stop when you have 3+ high-relevance files with no critical gaps, or after 3 cycles maximum — whichever comes first. Use files scored >= 0.7 as the working context or send them to the subagent.
+
+For unfamiliar code, run `zoom-out` after the final cycle so the gathered files become a module map rather than a pile of snippets.
 
 ## When to Stop
 - 3+ files scored >= 0.7 and no critical gaps → send context

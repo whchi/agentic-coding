@@ -28,12 +28,15 @@ Simple problems should use simple solutions. Complex problems may need complex s
 1. Identify the change intent and the future maintenance surface.
 2. Read surrounding code to learn existing patterns before judging style.
 3. Check whether the abstraction level fits the team and codebase.
-4. Prefer explicit constants, enums, and named concepts over primitive condition strings.
-5. Check return contracts: avoid functions returning more than two unrelated shapes.
-6. Check parameter contracts: avoid broad unions or many unrelated accepted types unless the runtime behavior truly requires it.
-7. Flag clever dynamic behavior when it hides control flow, validation, or data shape.
-8. Check whether DDD or clean architecture abstractions are paying for themselves.
-9. Keep recommendations proportional: do not request large rewrites for local issues.
+4. Check module depth: does a small interface hide meaningful behavior, or does the caller still need to understand the implementation?
+5. Apply the deletion test: if deleting an abstraction makes complexity disappear, it is likely pass-through code; if complexity reappears across callers, the abstraction may be earning its keep.
+6. Distinguish real seams from hypothetical seams. One adapter usually means direct code may be enough; two or more adapters make the seam more credible.
+7. Prefer explicit constants, enums, and named concepts over primitive condition strings.
+8. Check return contracts: avoid functions returning more than two unrelated shapes.
+9. Check parameter contracts: avoid broad unions or many unrelated accepted types unless the runtime behavior truly requires it.
+10. Flag clever dynamic behavior when it hides control flow, validation, or data shape.
+11. Check whether DDD or clean architecture abstractions are paying for themselves.
+12. Keep recommendations proportional: do not request large rewrites for local issues.
 
 ## Review Signals
 
@@ -44,6 +47,7 @@ Good signs:
 - Condition values use constants, enums, or discriminated unions.
 - Functions return one stable shape or an explicit result type.
 - Abstractions remove meaningful duplication or complexity.
+- Modules improve locality: related behavior, invariants, and tests are concentrated behind a useful interface.
 
 Bad smells:
 
@@ -55,6 +59,9 @@ Bad smells:
 - DDD folders exist but contain anemic models, getters/setters only, and business logic scattered elsewhere.
 - Domain objects know about HTTP, ORM, vendor SDKs, or response formatting.
 - Clean architecture layers are present but dependency direction is reversed.
+- Pass-through modules add names without leverage.
+- Interfaces exist only for hypothetical future variation.
+- Test seams are broader than the behavior they protect.
 
 ## Output
 
