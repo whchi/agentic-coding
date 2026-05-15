@@ -4,6 +4,8 @@ Set up a project-level engineering context layer for agent-friendly work.
 
 Use this command when a repo needs `CONTEXT.md`, `CONTEXT-MAP.md`, ADRs, plan folders, or issue-tracker conventions. Do not overwrite existing docs without reading them first.
 
+This is the one-time setup entrypoint for the `engineering-context` project skill.
+
 ## Workflow
 
 1. Inspect existing project docs:

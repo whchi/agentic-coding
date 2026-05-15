@@ -7,6 +7,14 @@ description: Use when setting up or maintaining project-level engineering contex
 
 Use this skill to make the repository itself the source of truth for agent work.
 
+## Boundaries
+
+Use `grill-with-docs` when the user wants to stress-test a plan against existing docs and code evidence.
+
+Use `setup-agentic-coding-project` for one-time project scaffolding.
+
+Use this skill for ongoing maintenance of context artifacts after a project already has, or clearly needs, a durable context layer.
+
 ## Goal
 
 Create a small context layer that helps agents use the project's real language and decisions:

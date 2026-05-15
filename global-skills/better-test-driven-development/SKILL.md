@@ -230,14 +230,6 @@ Before marking work complete:
 
 Can't check all boxes? You skipped TDD. Start over.
 
----
-## Testing Anti-Patterns
-When adding mocks or test utilities, read `testing-anti-patterns.md` to avoid common pitfalls:
-
-- Testing mock behavior instead of real behavior
-- Adding test-only methods to production classes
-- Mocking without understanding dependencies
-
 ## Final Rule
 
 ```
