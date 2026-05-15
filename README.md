@@ -95,9 +95,15 @@ git submodule add https://github.com/coreyhaines31/marketingskills.git .agents/m
 - https://github.com/jinchenma94/bazi-skill 算命
 - https://github.com/affaan-m/everything-claude-code
 - https://github.com/code-yeongyu/oh-my-openagent
-- https://github.com/obra/superpowers
+- https://github.com/obra/superpowers 放在 project-level 執行
+```bash
+cd path/to/project
+# opencode.json[c]
+{
+    "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+}
+```
 - https://github.com/garrytan/gstack 產品決策 -> 架構把關
-
 `/office-hours` -> `/plan-ceo-review` -> `/plan-eng-review`
 ```bash
 cd /path/to/project
@@ -116,6 +122,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/whchi/prompt2eng
 - https://github.com/mattpocock/skills
 - https://github.com/yetone/native-feel-skill
+- https://github.com/tw93/waza engineer 思維
 
 #### UI/UX
 - https://github.com/pbakaus/impeccable
