@@ -137,7 +137,6 @@ PROJECT_SKILLS=(
   better-useeffect
   database-migrations
   docker-patterns
-  engineering-context
   frontend-patterns
   frontend-robust-data-handling
   js-ts-coding-standards
@@ -195,7 +194,6 @@ COMMANDS=(
   debug-triage
   learn
   mock-or-not
-  setup-agentic-coding-project
   update-codemaps
 )
 

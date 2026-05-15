@@ -32,9 +32,9 @@ cd ~/agentic-coding
 | `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project engineering skills |
 | `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific or project-local engineering skills |
 | `commands/` | OpenCode `commands/` or Codex `prompts/` | Reusable command templates |
-| `CONTEXT.md` | Repo root | Domain glossary for this distribution |
+| `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
-Project context docs such as `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `engineering-context` or `setup-agentic-coding-project` when a project needs them.
+Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.
 
 ### Global Skills
 
@@ -68,7 +68,6 @@ Project context docs such as `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `
 | `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
 | `database-migrations` | Production-safe schema migration guidance |
 | `docker-patterns` | Docker / Compose architecture and troubleshooting |
-| `engineering-context` | Project-level CONTEXT.md, CONTEXT-MAP.md, ADR, and agent docs setup |
 | `frontend-patterns` | React / Next.js component, state, performance, a11y |
 | `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
@@ -86,7 +85,6 @@ Project context docs such as `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `
 | `debug-triage` | Environment/data/logic debugging triage |
 | `learn` | Learning / exploration workflow |
 | `mock-or-not` | Test dependency mock/fake/real decision checklist |
-| `setup-agentic-coding-project` | Initialize a minimal project context layer |
 | `update-codemaps` | Code map update workflow |
 
 ## Skill Taxonomy
@@ -94,10 +92,10 @@ Project context docs such as `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `
 | Area | Skills / Commands |
 |---|---|
 | Alignment | `grill-me`, `grill-with-docs`, `write-a-prd` |
-| Context | `iterative-retrieval`, `zoom-out`, `engineering-context`, `update-codemaps` |
+| Context | `iterative-retrieval`, `zoom-out`, `update-codemaps` |
 | Delivery | `better-test-driven-development`, `debugging-playbook`, `planning-with-files` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |
-| Handoff | `handoff`, `write-a-skill`, `setup-agentic-coding-project` |
+| Handoff | `handoff`, `write-a-skill` |
 
 ## References
 ### AGENTS.md
