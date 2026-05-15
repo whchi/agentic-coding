@@ -115,6 +115,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 ```
 - https://github.com/whchi/prompt2eng
 - https://github.com/mattpocock/skills
+- https://github.com/yetone/native-feel-skill
 
 #### UI/UX
 - https://github.com/pbakaus/impeccable
