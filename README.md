@@ -4,7 +4,7 @@ My agentic coding assets — engineering-focused skills, commands, and reference
 
 This repo is built primarily for software engineering work. In this context, `global-skills/` means "reusable across engineering projects", not "useful for every possible Codex conversation." Non-engineering skills are included only when they support common builder workflows such as writing, planning, product thinking, or content.
 
-## Quick Install
+## Quick Setup
 
 ```bash
 # Clone this repo
@@ -12,17 +12,17 @@ git clone --depth 1 git@github.com:whchi/agentic-coding.git ~/agentic-coding
 cd ~/agentic-coding
 
 # Install all global skills + commands
-./install.sh opencode all --global
-./install.sh codex all --global
+./setup.sh opencode install all --global
+./setup.sh codex install all --global
 
 # Install project skills + commands into current project
-./install.sh opencode all --project
-./install.sh codex all --project
+./setup.sh opencode install all --project
+./setup.sh codex install all --project
 
 # Or pick individual items
-./install.sh opencode skills --global api-design
-./install.sh codex skills --project frontend-patterns
-./install.sh opencode commands --global mock-or-not
+./setup.sh opencode install skills --global api-design
+./setup.sh codex reinstall skills --project frontend-patterns
+./setup.sh opencode uninstall commands --global mock-or-not
 ```
 
 ## Structure

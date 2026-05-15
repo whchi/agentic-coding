@@ -1,19 +1,13 @@
 #!/usr/bin/env bash
 #
-# install.sh - Install skills and commands from this repo into OpenCode or Codex directories.
+# setup.sh - Install, reinstall, or uninstall skills and commands from this repo.
 #
 # Usage:
-#   ./install.sh opencode                           # menu
-#   ./install.sh codex                              # menu
-#   ./install.sh opencode skills --global           # install all global skills
-#   ./install.sh codex skills --project             # install all project skills
-#   ./install.sh opencode skills --global api-design # install one global skill
-#   ./install.sh codex skills --project frontend-patterns # install one project skill
-#   ./install.sh opencode commands --global         # install all global commands
-#   ./install.sh codex commands --project           # install all project commands
-#   ./install.sh opencode commands --global mock-or-not # install one global command
-#   ./install.sh codex all --global                 # install all global skills + commands
-#   ./install.sh opencode all --project             # install all project skills + commands
+#   ./setup.sh opencode                             # menu
+#   ./setup.sh codex                                # menu
+#   ./setup.sh opencode install skills --global     # install all global skills
+#   ./setup.sh codex reinstall all --global         # reinstall all global skills + commands
+#   ./setup.sh opencode uninstall commands --project mock-or-not
 #
 # OpenCode global installs -> ~/.config/opencode/
 # OpenCode project installs -> .opencode/ (current working directory)
@@ -28,11 +22,18 @@ PROVIDER="${1:-}"
 if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" ]]; then
   echo "error: provider is required: opencode or codex" >&2
   echo "" >&2
-  echo "Usage: ./install.sh <opencode|codex> [skills|commands|all] [--global|--project] [name]" >&2
+  echo "Usage: ./setup.sh <opencode|codex> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name]" >&2
   exit 1
 fi
 
 shift
+ACTION="${1:-menu}"
+if [[ "$ACTION" == "install" || "$ACTION" == "reinstall" || "$ACTION" == "uninstall" ]]; then
+  shift
+elif [[ "$ACTION" != "menu" ]]; then
+  echo "error: unknown action: $ACTION (expected install, reinstall, uninstall)" >&2
+  exit 1
+fi
 
 if [[ "$PROVIDER" == "opencode" ]]; then
   GLOBAL_SKILLS_DIR="$HOME/.config/opencode/skills"
@@ -71,14 +72,39 @@ require_known_item() {
 
 install_dir() {
   local src="$1" dest="$2"
-  echo "  → $src → $dest"
+  [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
+  echo "  install $src → $dest"
+  cp -R "$src" "$dest"
+}
+
+reinstall_dir() {
+  local src="$1" dest="$2"
+  echo "  reinstall $src → $dest"
   rm -rf "$dest"
   cp -R "$src" "$dest"
 }
 
+uninstall_path() {
+  local dest="$1"
+  if [[ -e "$dest" ]]; then
+    echo "  uninstall $dest"
+    rm -rf "$dest"
+  else
+    echo "  skip missing $dest"
+  fi
+}
+
 install_file() {
   local src="$1" dest="$2"
-  echo "  → $src → $dest"
+  [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
+  echo "  install $src → $dest"
+  cp -f "$src" "$dest"
+}
+
+reinstall_file() {
+  local src="$1" dest="$2"
+  echo "  reinstall $src → $dest"
+  rm -f "$dest"
   cp -f "$src" "$dest"
 }
 
@@ -118,27 +144,39 @@ PROJECT_SKILLS=(
   pure-function-pattern
 )
 
-install_skills() {
-  local scope="$1" name="$2"
+install_one_skill() {
+  local action="$1" source_dir="$2" dest_root="$3" name="$4"
+  local src="$SCRIPT_DIR/$source_dir/$name" dest="$dest_root/$name"
+  if [[ "$action" == "install" ]]; then
+    install_dir "$src" "$dest"
+  elif [[ "$action" == "reinstall" ]]; then
+    reinstall_dir "$src" "$dest"
+  else
+    uninstall_path "$dest"
+  fi
+}
+
+setup_skills() {
+  local action="$1" scope="$2" name="$3"
 
   if [[ "$scope" == "--global" ]]; then
-    ensure_dir "$GLOBAL_SKILLS_DIR"
+    [[ "$action" == "uninstall" ]] || ensure_dir "$GLOBAL_SKILLS_DIR"
     if [[ -n "$name" ]]; then
       require_known_item "global skill" "$name" "${GLOBAL_SKILLS[@]}"
-      install_dir "$SCRIPT_DIR/global-skills/$name" "$GLOBAL_SKILLS_DIR/$name"
+      install_one_skill "$action" "global-skills" "$GLOBAL_SKILLS_DIR" "$name"
     else
       for s in "${GLOBAL_SKILLS[@]}"; do
-        install_dir "$SCRIPT_DIR/global-skills/$s" "$GLOBAL_SKILLS_DIR/$s"
+        install_one_skill "$action" "global-skills" "$GLOBAL_SKILLS_DIR" "$s"
       done
     fi
   elif [[ "$scope" == "--project" ]]; then
-    ensure_dir "$PROJECT_SKILLS_DIR"
+    [[ "$action" == "uninstall" ]] || ensure_dir "$PROJECT_SKILLS_DIR"
     if [[ -n "$name" ]]; then
       require_known_item "project skill" "$name" "${PROJECT_SKILLS[@]}"
-      install_dir "$SCRIPT_DIR/project-skills/$name" "$PROJECT_SKILLS_DIR/$name"
+      install_one_skill "$action" "project-skills" "$PROJECT_SKILLS_DIR" "$name"
     else
       for s in "${PROJECT_SKILLS[@]}"; do
-        install_dir "$SCRIPT_DIR/project-skills/$s" "$PROJECT_SKILLS_DIR/$s"
+        install_one_skill "$action" "project-skills" "$PROJECT_SKILLS_DIR" "$s"
       done
     fi
   else
@@ -161,27 +199,39 @@ COMMANDS=(
   update-codemaps
 )
 
-install_commands() {
-  local scope="$1" name="$2"
+setup_one_command() {
+  local action="$1" dest_root="$2" name="$3"
+  local src="$SCRIPT_DIR/commands/$name.md" dest="$dest_root/$name.md"
+  if [[ "$action" == "install" ]]; then
+    install_file "$src" "$dest"
+  elif [[ "$action" == "reinstall" ]]; then
+    reinstall_file "$src" "$dest"
+  else
+    uninstall_path "$dest"
+  fi
+}
+
+setup_commands() {
+  local action="$1" scope="$2" name="$3"
 
   if [[ "$scope" == "--global" ]]; then
-    ensure_dir "$GLOBAL_COMMANDS_DIR"
+    [[ "$action" == "uninstall" ]] || ensure_dir "$GLOBAL_COMMANDS_DIR"
     if [[ -n "$name" ]]; then
       require_known_item "command" "$name" "${COMMANDS[@]}"
-      install_file "$SCRIPT_DIR/commands/$name.md" "$GLOBAL_COMMANDS_DIR/$name.md"
+      setup_one_command "$action" "$GLOBAL_COMMANDS_DIR" "$name"
     else
       for c in "${COMMANDS[@]}"; do
-        install_file "$SCRIPT_DIR/commands/$c.md" "$GLOBAL_COMMANDS_DIR/$c.md"
+        setup_one_command "$action" "$GLOBAL_COMMANDS_DIR" "$c"
       done
     fi
   elif [[ "$scope" == "--project" ]]; then
-    ensure_dir "$PROJECT_COMMANDS_DIR"
+    [[ "$action" == "uninstall" ]] || ensure_dir "$PROJECT_COMMANDS_DIR"
     if [[ -n "$name" ]]; then
       require_known_item "command" "$name" "${COMMANDS[@]}"
-      install_file "$SCRIPT_DIR/commands/$name.md" "$PROJECT_COMMANDS_DIR/$name.md"
+      setup_one_command "$action" "$PROJECT_COMMANDS_DIR" "$name"
     else
       for c in "${COMMANDS[@]}"; do
-        install_file "$SCRIPT_DIR/commands/$c.md" "$PROJECT_COMMANDS_DIR/$c.md"
+        setup_one_command "$action" "$PROJECT_COMMANDS_DIR" "$c"
       done
     fi
   else
@@ -192,7 +242,7 @@ install_commands() {
 # ── interactive menu ─────────────────────────────────────────────────────────
 
 menu() {
-  echo "agentic-coding installer ($PROVIDER)"
+  echo "agentic-coding setup ($PROVIDER)"
   echo ""
   echo "  Skills (global):"
   for s in "${GLOBAL_SKILLS[@]}"; do echo "    $s"; done
@@ -203,21 +253,30 @@ menu() {
   echo "  Commands:"
   for c in "${COMMANDS[@]}"; do echo "    $c"; done
   echo ""
-  echo "Run with arguments to install directly, e.g.:"
-  echo "  ./install.sh $PROVIDER skills --global"
-  echo "  ./install.sh $PROVIDER skills --project frontend-patterns"
-  echo "  ./install.sh $PROVIDER commands --global mock-or-not"
-  echo "  ./install.sh $PROVIDER all --global"
+  echo "Run with arguments, e.g.:"
+  echo "  ./setup.sh $PROVIDER install skills --global"
+  echo "  ./setup.sh $PROVIDER reinstall skills --project frontend-patterns"
+  echo "  ./setup.sh $PROVIDER uninstall commands --global mock-or-not"
+  echo "  ./setup.sh $PROVIDER reinstall all --global"
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
 
-case "${1:-menu}" in
-  skills)      install_skills "${2:-}" "${3:-}" ;;
-  commands)    install_commands "${2:-}" "${3:-}" ;;
-  all)
-    install_skills "${2:-}" ""
-    install_commands "${2:-}" ""
+case "${ACTION}" in
+  menu)        menu ;;
+  install | reinstall | uninstall)
+    kind="${1:-}"
+    scope="${2:-}"
+    name="${3:-}"
+    case "$kind" in
+      skills)    setup_skills "$ACTION" "$scope" "$name" ;;
+      commands)  setup_commands "$ACTION" "$scope" "$name" ;;
+      all)
+        setup_skills "$ACTION" "$scope" ""
+        setup_commands "$ACTION" "$scope" ""
+        ;;
+      *) die "$ACTION requires skills, commands, or all" ;;
+    esac
     ;;
   *)           menu ;;
 esac
