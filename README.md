@@ -130,7 +130,6 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
 
 ### Commands
-- https://github.com/gsd-build/get-shit-done
 - https://x.com/alvinsng/status/2033969062834045089
 - https://x.com/trq212/status/2033949937936085378
 
