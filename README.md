@@ -163,7 +163,22 @@ cd path/to/project
 - https://github.com/github/github-mcp-server
 - https://docs.devin.ai/work-with-devin/deepwiki-mcp
 - https://github.com/ChromeDevTools/chrome-devtools-mcp
+- https://github.com/colbymchenry/codegraph
+```bash
+cd path/to/project
 
+codegraph init -i
+# opencode.json[c]
+{
+ "mcp": {
+    "codegraph": {
+      "type": "local",
+      "command": ["codegraph", "serve", "--mcp"],
+      "enabled": true
+    }
+  }
+}
+```
 ### Others
 - https://x.com/hylarucoder/status/2043202352447189368?s=20
 - https://addyosmani.com/blog/agent-skills/
