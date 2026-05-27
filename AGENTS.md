@@ -12,62 +12,44 @@ Discussions, decisions, assumptions, external docs, and operational knowledge th
 
 This file is a map, not an encyclopedia:
 
-- Keep this file around 100 lines.
 - Point to deeper content in `docs/`.
 - Each level should show only its own information and the next step.
 
-## 2. Think Before Coding
+## 2. Clarify Ambiguity Before Coding
 
-**Do not assume. Do not hide confusion. Surface tradeoffs.**
-
-Before coding:
+**Do not assume. Do not hide confusion.**
 
 - State assumptions that affect implementation.
 - If the task has materially different interpretations, present options before choosing.
 - Ask only when missing information affects correctness, data safety, public APIs, migrations, or user-visible behavior.
 - Otherwise, make the smallest reversible assumption and state it.
-- Push back when a simpler approach exists.
 - Stop when confused and name what is unclear.
 
-## 3. Keep the Solution Small
+## 3. Keep Changes Small and Local
 
-**Minimum code that solves the problem. Nothing speculative.**
+Minimum code that solves the problem. Touch only what the task requires. Nothing speculative.
 
 - No features beyond what was asked.
 - No abstractions for single-use code.
 - No unnecessary configurability.
 - No defensive branches for scenarios that cannot occur under the current type, schema, or runtime contract.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: **"Would a senior engineer say this is overcomplicated?"**  
-If yes, simplify.
-
-## 4. Keep the Diff Local and Conventional
-
-**Touch only what the task requires. Match what surrounds it.**
-
-**Before editing**, inspect:
-- The file's exports and public surface.
-- Immediate callers or call sites.
-- Related utilities, helpers, hooks, services, or types.
-- Existing tests or fixtures covering the same behavior.
-
-**When editing:**
-- Match local conventions: naming, file organization, error handling,
-  component style, state management, testing, logging, and observability.
 - Do not refactor, reformat, or improve anything outside the requested change.
 - Remove only imports, variables, functions, or files made unused by your own change.
+- Match local conventions: naming, file organization, error handling, component style, state management, testing, logging, and observability.
 - If you notice unrelated dead code or harmful conventions, mention them — do not change them.
+- Push back when a simpler approach exists.
+
+Ask yourself: **"Would a senior engineer say this is overcomplicated?"** If yes, simplify.
 
 The test: **every changed line should trace directly to the user's request.**
 
-## 5. Verify Intent and Report Honestly
+## 4. Verify Intent and Report Honestly
 
-**Define success. Verify it. Do not claim checks you did not run.**
+**State the success condition before coding. Verify it. Never claim checks you did not run. Never invent results.**
 
 For every non-trivial task:
 
-1. Define the intended behavior before writing code.
+1. State the success condition explicitly before writing code.
 2. Identify the verification method.
 3. Implement the smallest change.
 4. Run the check. Report the result.
@@ -88,9 +70,11 @@ When finished, report:
 - What was not verified, and why.
 - Any assumptions, skipped checks, partial failures, or unrelated issues noticed.
 
+Do not invent: files, APIs, commands, test results, logs, dependency behavior, migration outcomes, or runtime behavior you did not inspect. If something was not inspected or executed, describe it as an assumption.
+
 **"Completed" is wrong if anything important was skipped silently.**
 
-## 6. Surface Conflicts Explicitly
+## 5. Surface Conflicts Explicitly
 
 **Do not average contradictory patterns.**
 
@@ -103,36 +87,19 @@ When the codebase contains conflicting patterns:
 
 "Average" code that partially satisfies multiple incompatible conventions is worse than choosing one clear convention.
 
-## 7. Use Models Only for Judgment Calls
+## 6. Do Not Replace Deterministic Logic With LLM Calls
 
-**Do not use LLMs for deterministic work.**
+When writing application code, do not use LLM calls for behavior that can be determined by explicit rules, structured data, or normal code.
 
-Use models for:
+Use models only when ambiguity, language understanding, classification, summarization, extraction, or judgment is part of the product requirement.
 
-- Classification.
-- Drafting.
-- Summarization.
-- Extraction from unstructured text.
-- Ambiguous judgment calls where plain code cannot decide.
+When acting as an agent, inspect the repo, logs, tests, and command output instead of guessing deterministic facts.
 
-Do not use models for:
+## 7. Respect Context Budgets
 
-- Routing.
-- Retries.
-- Status-code handling.
-- Deterministic transforms.
-- Decisions already answered by structured data or explicit rules.
+**Context budgets are limits, not suggestions.**
 
-If code can answer, code answers.
-
-## 8. Respect Token and Context Budgets
-
-**Token budgets are limits, not suggestions.**
-
-Default budgets, unless the project specifies otherwise:
-
-- Per task: 4,000 tokens.
-- Per session: 30,000 tokens.
+Set per-project token budgets in `docs/`. If no project budget is defined, treat any significant degradation in output quality or coherence as the signal to stop.
 
 If approaching budget:
 
@@ -142,53 +109,25 @@ If approaching budget:
 
 Budget limits are checkpoint triggers, not permission to hide incomplete work.
 
-## 9. Protect Destructive Operations
+## 8. Protect Destructive Operations
 
 **Destructive or irreversible operations require explicit approval.**
 
 This includes:
 
 - Deleting files.
-- Batch cleanup.
-- Glob-based deletion.
-- Recursive deletion.
-- Data deletion.
-- Migrations that drop or rewrite data.
+- Batch cleanup or glob-based deletion.
+- Data deletion or migrations that drop or rewrite data.
 - Force pushes.
 - Credential or secret changes.
 - Production configuration changes.
 - Broad dependency upgrades.
 
-File removal rules:
+Before any destructive operation:
 
-- Do not delete multiple files in a single command or operation.
-- Remove files one at a time.
-- Any batch removal requires explicit user approval after showing the exact target list.
-- Approval must happen in the current conversation.
+- Show the exact target list.
+- Wait for explicit approval in the current conversation.
 - Past approval, general cleanup requests, or inferred intent do not count.
-
-## 10. Do Not Invent Results
-
-**Do not make failure look like success.**
-
-Do not invent:
-
-- Files.
-- APIs.
-- Commands.
-- Test results.
-- Logs.
-- Dependency behavior.
-- Migration outcomes.
-- Runtime behavior you did not inspect.
-
-If something was not inspected or executed, describe it as an assumption.
-
-When stuck, fix context or tooling instead of trying harder:
-
-> What context, tools, or constraints are missing?
-
-Then add the missing information to the repo when appropriate.
 
 ---
 
