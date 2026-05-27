@@ -7,7 +7,9 @@
 #   ./setup.sh codex                                # menu
 #   ./setup.sh opencode install skills --global     # install all global skills
 #   ./setup.sh codex reinstall all --global         # reinstall all global skills + commands
-#   ./setup.sh opencode uninstall commands --project mock-or-not
+#   ./setup.sh opencode install all --project --target /path/to/project
+#   ./setup.sh codex reinstall skills --project frontend-patterns --dry-run
+#   ./setup.sh opencode uninstall commands --project mock-or-not --target /path/to/project
 #
 # OpenCode global installs -> ~/.config/opencode/
 # OpenCode project installs -> .opencode/ (current working directory)
@@ -18,11 +20,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROVIDER="${1:-}"
+DRY_RUN=false
+PROJECT_TARGET=""
+PROJECT_ROOT=""
 
 if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" ]]; then
   echo "error: provider is required: opencode or codex" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name]" >&2
+  echo "Usage: ./setup.sh <opencode|codex> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
@@ -38,20 +43,36 @@ fi
 if [[ "$PROVIDER" == "opencode" ]]; then
   GLOBAL_SKILLS_DIR="$HOME/.config/opencode/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.config/opencode/commands"
-  PROJECT_SKILLS_DIR=".opencode/skills"
-  PROJECT_COMMANDS_DIR=".opencode/commands"
+  PROJECT_SKILLS_REL=".opencode/skills"
+  PROJECT_COMMANDS_REL=".opencode/commands"
 else
   GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
-  PROJECT_SKILLS_DIR=".codex/skills"
-  PROJECT_COMMANDS_DIR=".codex/prompts"
+  PROJECT_SKILLS_REL=".codex/skills"
+  PROJECT_COMMANDS_REL=".codex/prompts"
 fi
+PROJECT_SKILLS_DIR="$PROJECT_SKILLS_REL"
+PROJECT_COMMANDS_DIR="$PROJECT_COMMANDS_REL"
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
 die() { echo "error: $*" >&2; exit 1; }
 
-ensure_dir() { mkdir -p "$1"; }
+ensure_dir() {
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run mkdir -p $1"
+  else
+    mkdir -p "$1"
+  fi
+}
+
+configure_project_target() {
+  local target="${PROJECT_TARGET:-$(pwd)}"
+  [[ -d "$target" ]] || die "--target must be an existing directory: $target"
+  PROJECT_ROOT="$(cd "$target" && pwd)"
+  PROJECT_SKILLS_DIR="$PROJECT_ROOT/$PROJECT_SKILLS_REL"
+  PROJECT_COMMANDS_DIR="$PROJECT_ROOT/$PROJECT_COMMANDS_REL"
+}
 
 contains_item() {
   local needle="$1"
@@ -73,22 +94,34 @@ require_known_item() {
 install_dir() {
   local src="$1" dest="$2"
   [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
-  echo "  install $src → $dest"
-  cp -R "$src" "$dest"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run install $src → $dest"
+  else
+    echo "  install $src → $dest"
+    cp -R "$src" "$dest"
+  fi
 }
 
 reinstall_dir() {
   local src="$1" dest="$2"
-  echo "  reinstall $src → $dest"
-  rm -rf "$dest"
-  cp -R "$src" "$dest"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run reinstall $src → $dest"
+  else
+    echo "  reinstall $src → $dest"
+    rm -rf "$dest"
+    cp -R "$src" "$dest"
+  fi
 }
 
 uninstall_path() {
   local dest="$1"
   if [[ -e "$dest" ]]; then
-    echo "  uninstall $dest"
-    rm -rf "$dest"
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  dry-run uninstall $dest"
+    else
+      echo "  uninstall $dest"
+      rm -rf "$dest"
+    fi
   else
     echo "  skip missing $dest"
   fi
@@ -97,15 +130,23 @@ uninstall_path() {
 install_file() {
   local src="$1" dest="$2"
   [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
-  echo "  install $src → $dest"
-  cp -f "$src" "$dest"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run install $src → $dest"
+  else
+    echo "  install $src → $dest"
+    cp -f "$src" "$dest"
+  fi
 }
 
 reinstall_file() {
   local src="$1" dest="$2"
-  echo "  reinstall $src → $dest"
-  rm -f "$dest"
-  cp -f "$src" "$dest"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run reinstall $src → $dest"
+  else
+    echo "  reinstall $src → $dest"
+    rm -f "$dest"
+    cp -f "$src" "$dest"
+  fi
 }
 
 # ── skills ───────────────────────────────────────────────────────────────────
@@ -254,8 +295,12 @@ menu() {
   echo "Run with arguments, e.g.:"
   echo "  ./setup.sh $PROVIDER install skills --global"
   echo "  ./setup.sh $PROVIDER reinstall skills --project frontend-patterns"
+  echo "  ./setup.sh $PROVIDER install all --project --target /path/to/project"
+  echo "  ./setup.sh $PROVIDER reinstall all --project --target /path/to/project --dry-run"
   echo "  ./setup.sh $PROVIDER uninstall commands --global mock-or-not"
   echo "  ./setup.sh $PROVIDER reinstall all --global"
+  echo ""
+  echo "Project target defaults to the current working directory."
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -264,8 +309,51 @@ case "${ACTION}" in
   menu)        menu ;;
   install | reinstall | uninstall)
     kind="${1:-}"
-    scope="${2:-}"
-    name="${3:-}"
+    [[ -n "$kind" ]] || die "$ACTION requires skills, commands, or all"
+    shift
+
+    scope=""
+    name=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --global | --project)
+          [[ -z "$scope" ]] || die "scope already set: $scope"
+          scope="$1"
+          shift
+          ;;
+        --target)
+          shift
+          [[ $# -gt 0 ]] || die "--target requires a path"
+          PROJECT_TARGET="$1"
+          shift
+          ;;
+        --dry-run)
+          DRY_RUN=true
+          shift
+          ;;
+        --*)
+          die "unknown option: $1"
+          ;;
+        *)
+          [[ -z "$name" ]] || die "unexpected argument: $1"
+          name="$1"
+          shift
+          ;;
+      esac
+    done
+
+    [[ -n "$scope" ]] || die "$kind requires --global or --project"
+    [[ -z "$PROJECT_TARGET" || "$scope" == "--project" ]] || die "--target can only be used with --project"
+    [[ "$kind" != "all" || -z "$name" ]] || die "all does not accept an item name"
+
+    if [[ "$scope" == "--project" ]]; then
+      configure_project_target
+      echo "Project target: $PROJECT_ROOT"
+    else
+      echo "Global target: ${GLOBAL_SKILLS_DIR%/skills}"
+    fi
+    [[ "$DRY_RUN" == true ]] && echo "Dry run: no files will be changed"
+
     case "$kind" in
       skills)    setup_skills "$ACTION" "$scope" "$name" ;;
       commands)  setup_commands "$ACTION" "$scope" "$name" ;;

@@ -15,14 +15,21 @@ cd ~/agentic-coding
 ./setup.sh opencode install all --global
 ./setup.sh codex install all --global
 
-# Install project skills + commands into current project
-./setup.sh opencode install all --project
-./setup.sh codex install all --project
+# Install project skills + commands into another project
+./setup.sh opencode install all --project --target /path/to/your/project
+./setup.sh codex install all --project --target /path/to/your/project
+
+# Or run from inside the target project
+# cd /path/to/your/project
+# ~/agentic-coding/setup.sh codex install all --project
 
 # Or pick individual items
 ./setup.sh opencode install skills --global api-design
-./setup.sh codex reinstall skills --project frontend-patterns
+./setup.sh codex reinstall skills --project frontend-patterns --target /path/to/your/project
 ./setup.sh opencode uninstall commands --global mock-or-not
+
+# Preview changes without writing files
+./setup.sh codex reinstall all --project --target /path/to/your/project --dry-run
 ```
 
 ## Structure
