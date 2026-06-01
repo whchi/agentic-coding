@@ -108,6 +108,7 @@ Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/
 ### AGENTS.md
 - https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
+- https://github.com/JuliusBrussee/caveman
 - https://github.com/anthropics/skills
 - https://github.com/coreyhaines31/marketingskills 行銷技能
 ```bash
