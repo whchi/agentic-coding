@@ -1,3 +1,8 @@
+---
+name: serenity-seek-alpha
+description: Use when turning news, product adoption, technology breakthroughs, supply-demand shifts, or industry events into a testable investment research path. Do not use for buy/sell recommendations, price targets, or emotional trading.
+---
+
 # News to Alpha Skill
 
 ## Core Idea
@@ -15,6 +20,16 @@ The goal of this skill is to turn news into an investment research path:
 **News → Demand → Financial impact → Small-cap elasticity → Verification path**
 
 This skill is not for making emotional trades. It is for finding real, testable alpha.
+
+---
+
+## When to Use
+
+Use this skill when the user gives news, a company event, a product adoption signal, a technology breakthrough, a supply-demand change, or an industry trend and wants to know whether it can become an investment research path.
+
+Do not use it to give personalized financial advice, price targets, guaranteed outcomes, or direct buy/sell instructions.
+
+If the user asks about current companies, prices, financial results, or recent events, verify the facts with current sources before judging the thesis. Separate verified facts from hypotheses.
 
 ---
 
@@ -244,6 +259,8 @@ Use these questions:
 
 ## 7. Position Rule: Use Small Positions for Testable Non-Consensus Ideas
 
+Treat position language as research status, not personalized financial advice.
+
 Do not go all-in at the beginning.
 
 A better method is:
@@ -262,11 +279,13 @@ Position size should match certainty.
 
 | Situation | Position attitude |
 |---|---|
-| The event is real, but financial transmission is unclear | Watch or use a very small position |
-| The event is real, and transmission is clear, but there is no financial proof yet | Use a small test position |
-| Financial reports start to prove the idea, but the market still underestimates it | Add position |
+| The event is real, but financial transmission is unclear | Watch or mark as very early |
+| The event is real, and transmission is clear, but there is no financial proof yet | Track as a testable thesis |
+| Financial reports start to prove the idea, but the market still underestimates it | Thesis improving |
 | The market fully agrees, and valuation is high | Lower expectations or treat it as a trade |
-| The logic is proved wrong | Exit |
+| The logic is proved wrong | Thesis disproved |
+
+Do not tell the user to buy, sell, add, exit, or size a position. If the user needs a position view, frame it as research status and evidence quality.
 
 ---
 
@@ -374,15 +393,17 @@ Explain where the logic can be wrong.
 
 ### I. Position View
 
-Use one of these:
+Use one of these as research status:
 
 - Watch
-- Very small position
-- Small test position
-- Add after evidence
+- Very early
+- Testable thesis
+- Thesis improving
 - Trade only
 - Avoid
-- Exit if disproved
+- Thesis disproved
+
+Do not present this as a personalized trading instruction.
 
 ---
 
