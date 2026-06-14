@@ -159,14 +159,6 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 
 ### MCPs
 - https://github.com/mksglu/context-mode
-```bash
-cd path/to/project
-# opencode.json[c]
-{
-    "plugin": ["context-mode"]
-}
-```
-
 - https://github.com/upstash/context7
 - https://github.com/github/github-mcp-server
 - https://docs.devin.ai/work-with-devin/deepwiki-mcp
