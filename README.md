@@ -108,6 +108,7 @@ Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/
 ### AGENTS.md
 - https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
+- https://github.com/mksglu/context-mode
 - https://github.com/JuliusBrussee/caveman
 - https://github.com/anthropics/skills
 - https://github.com/coreyhaines31/marketingskills 行銷技能
@@ -158,7 +159,6 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://x.com/trq212/status/2033949937936085378
 
 ### MCPs
-- https://github.com/mksglu/context-mode
 - https://github.com/upstash/context7
 - https://github.com/github/github-mcp-server
 - https://docs.devin.ai/work-with-devin/deepwiki-mcp
