@@ -183,3 +183,4 @@ codegraph init -i
 - https://x.com/hylarucoder/status/2043202352447189368?s=20
 - https://addyosmani.com/blog/agent-skills/
 - https://x.com/Mnilax/status/2053116311132155938
+- https://github.com/DietrichGebert/ponytail
