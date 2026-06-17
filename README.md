@@ -184,3 +184,8 @@ codegraph init -i
 - https://addyosmani.com/blog/agent-skills/
 - https://x.com/Mnilax/status/2053116311132155938
 - https://github.com/DietrichGebert/ponytail
+```json
+{
+  "plugin": ["/path/to/pontyail/.opencode/plugins/ponytail.mjs"]
+}
+```
