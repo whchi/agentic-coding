@@ -15,6 +15,8 @@
 # OpenCode project installs -> .opencode/ (current working directory)
 # Codex global installs -> ~/.codex/
 # Codex project installs -> .codex/ (current working directory)
+# Claude global installs -> ~/.claude/
+# Claude project installs -> .claude/ (current working directory)
 
 set -euo pipefail
 
@@ -24,10 +26,10 @@ DRY_RUN=false
 PROJECT_TARGET=""
 PROJECT_ROOT=""
 
-if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" ]]; then
-  echo "error: provider is required: opencode or codex" >&2
+if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" ]]; then
+  echo "error: provider is required: opencode, codex, or claude" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
+  echo "Usage: ./setup.sh <opencode|codex|claude> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
@@ -45,6 +47,11 @@ if [[ "$PROVIDER" == "opencode" ]]; then
   GLOBAL_COMMANDS_DIR="$HOME/.config/opencode/commands"
   PROJECT_SKILLS_REL=".opencode/skills"
   PROJECT_COMMANDS_REL=".opencode/commands"
+elif [[ "$PROVIDER" == "claude" ]]; then
+  GLOBAL_SKILLS_DIR="$HOME/.claude/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.claude/commands"
+  PROJECT_SKILLS_REL=".claude/skills"
+  PROJECT_COMMANDS_REL=".claude/commands"
 else
   GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
