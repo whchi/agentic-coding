@@ -17,6 +17,9 @@
 # Codex project installs -> .codex/ (current working directory)
 # Claude global installs -> ~/.claude/
 # Claude project installs -> .claude/ (current working directory)
+# Gemini/AGY global installs -> ~/.gemini/antigravity-cli/
+# Gemini/AGY project installs -> .agents/ (current working directory)
+# Note: AGY skills become slash commands automatically; no separate commands directory.
 
 set -euo pipefail
 
@@ -26,10 +29,10 @@ DRY_RUN=false
 PROJECT_TARGET=""
 PROJECT_ROOT=""
 
-if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" ]]; then
-  echo "error: provider is required: opencode, codex, or claude" >&2
+if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" ]]; then
+  echo "error: provider is required: opencode, codex, claude, or gemini" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex|claude> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
+  echo "Usage: ./setup.sh <opencode|codex|claude|gemini> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
@@ -52,6 +55,11 @@ elif [[ "$PROVIDER" == "claude" ]]; then
   GLOBAL_COMMANDS_DIR="$HOME/.claude/commands"
   PROJECT_SKILLS_REL=".claude/skills"
   PROJECT_COMMANDS_REL=".claude/commands"
+elif [[ "$PROVIDER" == "gemini" ]]; then
+  GLOBAL_SKILLS_DIR="$HOME/.gemini/antigravity-cli/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.gemini/antigravity-cli/skills"
+  PROJECT_SKILLS_REL=".agents/skills"
+  PROJECT_COMMANDS_REL=".agents/skills"
 else
   GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
@@ -259,6 +267,10 @@ setup_one_command() {
 
 setup_commands() {
   local action="$1" scope="$2" name="$3"
+
+  if [[ "$PROVIDER" == "gemini" ]]; then
+    die "agy (Antigravity CLI) has no separate commands directory — skills become slash commands automatically (use: install skills)"
+  fi
 
   if [[ "$scope" == "--global" ]]; then
     [[ "$action" == "uninstall" ]] || ensure_dir "$GLOBAL_COMMANDS_DIR"
