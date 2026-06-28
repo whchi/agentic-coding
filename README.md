@@ -43,6 +43,16 @@ cd ~/agentic-coding
 
 Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.
 
+### Provider compatibility
+
+Skills are organized by scope (global vs project), which is orthogonal to which CLI they run on. Provider-specificity is declared in each skill's `SKILL.md` frontmatter:
+
+```yaml
+compatibility: opencode        # or a list: [opencode, claude]
+```
+
+A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install opencode-only skills like `planning-with-files`.
+
 ### Global Skills
 
 | Skill | Description |
@@ -59,7 +69,7 @@ Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/
 | `handoff` | Compact current work into a durable handoff for another session or agent |
 | `iterative-retrieval` | Progressive context retrieval for large or unfamiliar codebases |
 | `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
-| `planning-with-files` | File-based planning artifacts for complex work |
+| `planning-with-files` | File-based planning artifacts for complex work _(opencode only)_ |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
@@ -189,3 +199,4 @@ codegraph init -i
   "plugin": ["/path/to/pontyail/.opencode/plugins/ponytail.mjs"]
 }
 ```
+- https://github.com/alchaincyf/nuwa-skill

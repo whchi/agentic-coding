@@ -20,6 +20,8 @@
 # Gemini/AGY global installs -> ~/.gemini/antigravity-cli/
 # Gemini/AGY project installs -> .agents/ (current working directory)
 # Note: AGY skills become slash commands automatically; no separate commands directory.
+# Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
+#       listed providers; skills without the field install for every provider.
 
 set -euo pipefail
 
@@ -199,9 +201,33 @@ PROJECT_SKILLS=(
   pure-function-pattern
 )
 
+# Reads the `compatibility:` frontmatter field of a skill's SKILL.md.
+# No field  -> compatible with every provider (the default).
+# Field set -> compatible only with the listed providers. Accepts a bare value
+#              (compatibility: opencode) or a list (compatibility: [opencode, claude]).
+skill_compatible() {
+  local source_dir="$1" name="$2"
+  local skill_md="$SCRIPT_DIR/$source_dir/$name/SKILL.md"
+  [[ -f "$skill_md" ]] || return 0
+  local line
+  line="$(grep -m1 '^compatibility:' "$skill_md" || true)"
+  [[ -n "$line" ]] || return 0
+  local raw="${line#compatibility:}"
+  raw="${raw//[/ }"; raw="${raw//]/ }"; raw="${raw//,/ }"; raw="${raw//\"/ }"
+  local p
+  for p in $raw; do
+    [[ "$p" == "$PROVIDER" ]] && return 0
+  done
+  return 1
+}
+
 install_one_skill() {
   local action="$1" source_dir="$2" dest_root="$3" name="$4"
   local src="$SCRIPT_DIR/$source_dir/$name" dest="$dest_root/$name"
+  if [[ "$action" != "uninstall" ]] && ! skill_compatible "$source_dir" "$name"; then
+    echo "  skip $name (not compatible with $PROVIDER)"
+    return 0
+  fi
   if [[ "$action" == "install" ]]; then
     install_dir "$src" "$dest"
   elif [[ "$action" == "reinstall" ]]; then
