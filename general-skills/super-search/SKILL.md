@@ -19,23 +19,16 @@ Turn a vague search need into a source-first research workflow. Choose where to 
 
 ## Procedure
 
-1. Classify the search intent.
+1. Classify the search intent using one table lookup:
 
-   Use these categories:
+   | Category | Purpose | Typical source |
+   |---|---|---|
+   | Information (news, facts, stats, current events, product params) | Know something | Official/regulator page, primary news source |
+   | Knowledge (concepts, tutorials, courses, papers, industry reports) | Learn something | Tutorials, papers, structured courses |
+   | Materials (images, video, audio, icons, templates, datasets, files) | Create something | Licensed asset libraries |
+   | Tools (online utilities, software, plugins, extensions, alternatives) | Do something | Online tool → software → plugin, in that order |
 
-   - Information: news, facts, statistics, current events, product parameters
-   - Knowledge: concepts, tutorials, courses, papers, industry reports
-   - Materials: images, video, audio, icons, templates, datasets, files
-   - Tools: online utilities, software, plugins, extensions, alternatives
-
-   Also classify the purpose:
-
-   - Know something
-   - Learn something
-   - Create something
-   - Do something
-
-   If the request spans categories, split it into sub-searches.
+   If the request spans categories, split it into sub-searches, one row each.
 
 2. Prefer source-first search.
 
@@ -69,46 +62,11 @@ Turn a vague search need into a source-first research workflow. Choose where to 
 
 4. Choose the search surface by task.
 
-   For information verification:
-
-   - Search official sources first.
-   - Cross-check with reputable secondary sources.
-   - Prefer dated pages when freshness matters.
-   - Report uncertainty when official data is absent or stale.
-
-   For learning a subject:
-
-   - Look for structured tutorials, books, courses, papers, and reports.
-   - Prefer materials with clear authorship, depth, examples, and maintenance.
-   - For industry onboarding, search for reports using query patterns like:
-     - `<industry> report filetype:pdf`
-     - `<topic> white paper filetype:pdf`
-     - `<topic> site:<trusted-domain>`
-
-   For academic papers:
-
-   - Search by exact title, DOI, author, or key phrase.
-   - Prefer Google Scholar, publisher pages, institutional repositories, preprints, and official PDFs.
-   - Do not recommend illegal access paths.
-
-   For materials and creative assets:
-
-   - Determine required media type, resolution, license, style, and commercial-use needs.
-   - Prefer reputable asset libraries with explicit licenses.
-   - For icons, search by object + icon + desired format.
-   - For templates, prefer editable sources over screenshots or flattened files.
-   - Always surface licensing constraints.
-
-   For tools and software:
-
-   - Prefer online tools for one-off tasks.
-   - Prefer installed software when repeated work, privacy, batch processing, or advanced control matters.
-   - Prefer plugins/extensions only when the user already uses the host app or browser.
-   - For alternatives, search with patterns like:
-     - `alternative to <software>`
-     - `best <task> online tool`
-     - `best <software> plugin`
-     - `best chrome extensions <workflow>`
+   Load `references/task-playbooks.md` and jump to the section matching
+   the category classified in step 1 (information verification, learning
+   a subject, academic papers, materials/assets, or tools/software) — it
+   has the source priorities and query patterns for that task type. Don't
+   read the other sections.
 
 5. Use AI as a research accelerator, not the only source.
 
@@ -169,6 +127,7 @@ Keep the answer practical. Do not explain every search operator unless the user 
 - Do not overfit to one platform. Choose the source based on the task, region, language, and artifact type.
 - Do not state single-source claims as certain when the evidence is weak, stale, or unverifiable.
 - Do not ignore licensing for images, video, audio, icons, templates, or datasets.
+- Do not run the full workflow for a trivial single-fact lookup a direct answer already covers — reserve it for genuine search, verification, or sourcing tasks.
 
 ## Definition of Done
 
