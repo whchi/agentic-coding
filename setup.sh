@@ -190,6 +190,7 @@ GLOBAL_SKILLS=(
   write-a-skill
   write-a-prd
   zoom-out
+  super-google-search
 )
 
 PROJECT_SKILLS=(

@@ -1,9 +1,9 @@
 ---
-name: super-search-research
+name: super-google-search
 description: Use when the user asks to search, find, verify, research, collect sources, find reports, find tutorials, find tools, find software alternatives, find assets, or improve search queries. Trigger on phrases like "搜一下", "幫我找資料", "查證", "找源頭", "找報告", "找 PDF", "找教程", "找素材", "找工具", "有沒有替代軟體", "怎麼搜", "research this", "find sources", "verify this claim". Do NOT use for summarizing a provided document, answering purely from a local codebase, private doxxing/background investigation, bypassing paywalls, or finding copyrighted material for unauthorized use.
 ---
 
-# Super Search Research
+# Super Google Search
 
 ## Purpose
 
