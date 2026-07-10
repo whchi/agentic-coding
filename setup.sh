@@ -10,6 +10,7 @@
 #   ./setup.sh opencode install all --project --target /path/to/project
 #   ./setup.sh codex reinstall skills --project frontend-patterns --dry-run
 #   ./setup.sh opencode uninstall commands --project mock-or-not --target /path/to/project
+#   ./setup.sh all install all --global             # install everything for every provider
 #
 # OpenCode global installs -> ~/.config/opencode/
 # OpenCode project installs -> .opencode/ (current working directory)
@@ -26,20 +27,31 @@
 
 set -euo pipefail
 
+ALL_PROVIDERS=(opencode codex claude gemini)
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROVIDER="${1:-}"
 DRY_RUN=false
 PROJECT_TARGET=""
 PROJECT_ROOT=""
 
-if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" ]]; then
-  echo "error: provider is required: opencode, codex, claude, or gemini" >&2
+if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" && "$PROVIDER" != "all" ]]; then
+  echo "error: provider is required: opencode, codex, claude, gemini, or all" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex|claude|gemini> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
+  echo "Usage: ./setup.sh <opencode|codex|claude|gemini|all> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
 shift
+
+if [[ "$PROVIDER" == "all" ]]; then
+  for p in "${ALL_PROVIDERS[@]}"; do
+    echo "=== $p ==="
+    "$0" "$p" "$@"
+    echo ""
+  done
+  exit 0
+fi
 ACTION="${1:-menu}"
 if [[ "$ACTION" == "install" || "$ACTION" == "reinstall" || "$ACTION" == "uninstall" ]]; then
   shift
@@ -343,6 +355,7 @@ menu() {
   echo "  ./setup.sh $PROVIDER reinstall all --project --target /path/to/project --dry-run"
   echo "  ./setup.sh $PROVIDER uninstall commands --global mock-or-not"
   echo "  ./setup.sh $PROVIDER reinstall all --global"
+  echo "  ./setup.sh all install all --global   # install for every agent at once"
   echo ""
   echo "Project target defaults to the current working directory."
 }
