@@ -278,6 +278,7 @@ COMMANDS=(
   learn
   mock-or-not
   update-codemaps
+  content-to-skill
 )
 
 setup_one_command() {
