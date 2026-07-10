@@ -200,3 +200,4 @@ codegraph init -i
 }
 ```
 - https://github.com/alchaincyf/nuwa-skill
+- https://youtu.be/tiN6T1LewmQ?si=QKDpz3RYGOYol90i
