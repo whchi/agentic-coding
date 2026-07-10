@@ -2,7 +2,7 @@
 description: "Distill an article, blog post, video transcript, talk, or tutorial into a reusable skill. Use whenever the user pastes long-form content — even without saying the word 'skill' — and asks to 'turn this into a skill/command', 'save this method for later', 'make this reusable', 'extract the technique from this', or similar. Also use when the user shares a transcript and asks what repeatable method it contains."
 ---
 
-# /anthropic-skill-distill
+# /content-to-skill
 
 Distill source content (articles, video transcripts, talks, tutorials) into a reusable skill.
 
