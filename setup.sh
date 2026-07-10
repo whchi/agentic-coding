@@ -19,7 +19,8 @@
 # Claude project installs -> .claude/ (current working directory)
 # Gemini/AGY global installs -> ~/.gemini/antigravity-cli/
 # Gemini/AGY project installs -> .agents/ (current working directory)
-# Note: AGY skills become slash commands automatically; no separate commands directory.
+# Note: AGY skills and commands both install into the skills/ dir; AGY exposes
+#       everything there as slash commands automatically.
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
@@ -293,10 +294,6 @@ setup_one_command() {
 
 setup_commands() {
   local action="$1" scope="$2" name="$3"
-
-  if [[ "$PROVIDER" == "gemini" ]]; then
-    die "agy (Antigravity CLI) has no separate commands directory — skills become slash commands automatically (use: install skills)"
-  fi
 
   if [[ "$scope" == "--global" ]]; then
     [[ "$action" == "uninstall" ]] || ensure_dir "$GLOBAL_COMMANDS_DIR"
