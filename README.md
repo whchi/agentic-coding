@@ -189,6 +189,7 @@ codegraph init -i
   }
 }
 ```
+- https://exa.ai/mcp
 ### Others
 - https://x.com/hylarucoder/status/2043202352447189368?s=20
 - https://addyosmani.com/blog/agent-skills/
