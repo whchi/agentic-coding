@@ -26,6 +26,11 @@ assert_contains() {
   [[ "$haystack" == *"$needle"* ]] || fail "expected output to contain: $needle"
 }
 
+assert_not_contains() {
+  local haystack="$1" needle="$2"
+  [[ "$haystack" != *"$needle"* ]] || fail "expected output not to contain: $needle"
+}
+
 assert_file() {
   [[ -f "$1" ]] || fail "expected file: $1"
 }
@@ -52,6 +57,52 @@ assert_not_exists "$RUN_CWD/.codex"
 
 assert_file "$TARGET/.codex/skills/frontend-patterns/SKILL.md"
 assert_not_exists "$RUN_CWD/.codex"
+
+GEMINI_HOME="$TMP_ROOT/gemini-home"
+output="$(
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini install all --global --dry-run
+)"
+
+assert_contains "$output" "dry-run mkdir -p $GEMINI_HOME/.gemini/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $GEMINI_HOME/.gemini/commands/debug-triage.toml"
+assert_not_contains "$output" "$GEMINI_HOME/.gemini/antigravity-cli"
+
+(
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini install commands --global debug-triage
+)
+
+assert_file "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
+rg -Fq "prompt = '''" "$GEMINI_HOME/.gemini/commands/debug-triage.toml" || fail "Gemini command missing TOML prompt"
+assert_not_contains "$(cat "$GEMINI_HOME/.gemini/commands/debug-triage.toml")" "---"
+python3 - "$GEMINI_HOME/.gemini/commands/debug-triage.toml" <<'PY'
+import sys
+import tomllib
+
+with open(sys.argv[1], "rb") as command_file:
+    command = tomllib.load(command_file)
+assert command["prompt"].lstrip().startswith("# /debug-triage")
+assert command["description"].startswith("Triage a bug")
+PY
+
+(
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini reinstall commands --global debug-triage
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini uninstall commands --global debug-triage
+)
+
+assert_not_exists "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
+
+output="$(
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini install all --project --target "$TARGET" --dry-run
+)"
+
+assert_contains "$output" "dry-run mkdir -p $TARGET/.gemini/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $TARGET/.gemini/commands/debug-triage.toml"
+assert_not_contains "$output" "$TARGET/.agents/skills"
 
 output="$(
   cd "$RUN_CWD"

@@ -14,10 +14,12 @@ cd ~/agentic-coding
 # Install all global skills + commands
 ./setup.sh opencode install all --global
 ./setup.sh codex install all --global
+./setup.sh gemini install all --global
 
 # Install project skills + commands into another project
 ./setup.sh opencode install all --project --target /path/to/your/project
 ./setup.sh codex install all --project --target /path/to/your/project
+./setup.sh gemini install all --project --target /path/to/your/project
 
 # Or run from inside the target project
 # cd /path/to/your/project
@@ -36,9 +38,9 @@ cd ~/agentic-coding
 
 | Directory | Target | Description |
 |---|---|---|
-| `global-skills/` | `~/.config/opencode/skills/` or `~/.codex/skills/` | Cross-project engineering skills |
-| `project-skills/` | `.opencode/skills/` or `.codex/skills/` | Stack-specific or project-local engineering skills |
-| `commands/` | OpenCode `commands/` or Codex `prompts/` | Reusable command templates |
+| `global-skills/` | `~/.config/opencode/skills/`, `~/.codex/skills/`, or `~/.gemini/skills/` | Cross-project engineering skills |
+| `project-skills/` | `.opencode/skills/`, `.codex/skills/`, or `.gemini/skills/` | Stack-specific or project-local engineering skills |
+| `commands/` | OpenCode `commands/`, Codex `prompts/`, or Gemini `.gemini/commands/*.toml` | Reusable command templates |
 | `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
 Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.
@@ -52,6 +54,8 @@ compatibility: opencode        # or a list: [opencode, claude]
 ```
 
 A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install opencode-only skills like `planning-with-files`.
+
+Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. Gemini also supports `.agents/skills/` as an interoperable alias; this setup uses the canonical `.gemini/` paths.
 
 ### Global Skills
 

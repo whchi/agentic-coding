@@ -40,6 +40,11 @@ assert_not_contains "$ROOT/README.md" "\`learn\`"
 assert_not_contains "$ROOT/setup.sh" "  learn"
 assert_not_contains "$ROOT/README.md" "\`build-fix\`"
 assert_not_contains "$ROOT/setup.sh" "  build-fix"
+assert_contains "$ROOT/setup.sh" 'GLOBAL_SKILLS_DIR="$HOME/.gemini/skills"'
+assert_contains "$ROOT/setup.sh" 'GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"'
+assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".gemini/skills"'
+assert_contains "$ROOT/setup.sh" 'PROJECT_COMMANDS_REL=".gemini/commands"'
+assert_not_contains "$ROOT/setup.sh" "antigravity-cli"
 
 assert_contains "$ROOT/commands/debug-triage.md" "diagnosis only"
 assert_not_contains "$ROOT/commands/debug-triage.md" "Fix the smallest confirmed cause"

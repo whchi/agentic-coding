@@ -18,10 +18,10 @@
 # Codex project installs -> .codex/ (current working directory)
 # Claude global installs -> ~/.claude/
 # Claude project installs -> .claude/ (current working directory)
-# Gemini/AGY global installs -> ~/.gemini/antigravity-cli/
-# Gemini/AGY project installs -> .agents/ (current working directory)
-# Note: AGY skills and commands both install into the skills/ dir; AGY exposes
-#       everything there as slash commands automatically.
+# Gemini global skills -> ~/.gemini/skills/
+# Gemini global commands -> ~/.gemini/commands/
+# Gemini project skills -> .gemini/skills/ (current working directory)
+# Gemini project commands -> .gemini/commands/ (current working directory)
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
@@ -71,10 +71,10 @@ elif [[ "$PROVIDER" == "claude" ]]; then
   PROJECT_SKILLS_REL=".claude/skills"
   PROJECT_COMMANDS_REL=".claude/commands"
 elif [[ "$PROVIDER" == "gemini" ]]; then
-  GLOBAL_SKILLS_DIR="$HOME/.gemini/antigravity-cli/skills"
-  GLOBAL_COMMANDS_DIR="$HOME/.gemini/antigravity-cli/skills"
-  PROJECT_SKILLS_REL=".agents/skills"
-  PROJECT_COMMANDS_REL=".agents/skills"
+  GLOBAL_SKILLS_DIR="$HOME/.gemini/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"
+  PROJECT_SKILLS_REL=".gemini/skills"
+  PROJECT_COMMANDS_REL=".gemini/commands"
 else
   GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
@@ -165,6 +165,31 @@ install_file() {
   else
     echo "  install $src → $dest"
     cp -f "$src" "$dest"
+  fi
+}
+
+install_gemini_command() {
+  local action="$1" src="$2" dest="$3"
+  local description
+  description="$(sed -n '2s/^description:[[:space:]]*//p' "$src")"
+  description="${description#\"}"
+  description="${description%\"}"
+  description="${description//\\/\\\\}"
+  description="${description//\"/\\\"}"
+
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run $action $src → $dest"
+  else
+    echo "  $action $src → $dest"
+    {
+      printf "description = \"%s\"\n\nprompt = '''\n" "$description"
+      awk '
+        NR == 1 && $0 == "---" { frontmatter = 1; next }
+        frontmatter && $0 == "---" { frontmatter = 0; body = 1; next }
+        body { print }
+      ' "$src"
+      printf "\n'''\n"
+    } > "$dest"
   fi
 }
 
@@ -293,6 +318,21 @@ COMMANDS=(
 setup_one_command() {
   local action="$1" dest_root="$2" name="$3"
   local src="$SCRIPT_DIR/commands/$name.md" dest="$dest_root/$name.md"
+  if [[ "$PROVIDER" == "gemini" ]]; then
+    dest="$dest_root/$name.toml"
+    if [[ "$action" == "install" ]]; then
+      [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
+      install_gemini_command install "$src" "$dest"
+    elif [[ "$action" == "reinstall" ]]; then
+      if [[ "$DRY_RUN" != true ]]; then
+        rm -f "$dest"
+      fi
+      install_gemini_command reinstall "$src" "$dest"
+    else
+      uninstall_path "$dest"
+    fi
+    return 0
+  fi
   if [[ "$action" == "install" ]]; then
     install_file "$src" "$dest"
   elif [[ "$action" == "reinstall" ]]; then
