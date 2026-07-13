@@ -1,29 +1,30 @@
+---
+description: Triage a bug or confusing failure by gathering evidence and identifying the confirmed cause; diagnosis only unless the user explicitly asks for a fix.
+---
+
 # /debug-triage
 
-Use this command when debugging a bug, flaky behavior, production issue, or confusing local failure.
+Use this command for diagnosis only when debugging a bug, flaky behavior, production issue, or confusing local failure. For the full investigation workflow, follow `debugging-playbook`.
 
 ## Workflow
 
-1. State the observed symptom and the expected behavior.
-2. Classify likely causes into three buckets:
-   - Environment: runtime, network, dependency versions, deployment, container, config, permissions, time zone, cache, external services.
-   - Data: missing rows, malformed payloads, stale state, unexpected nulls, duplicate records, migration drift, edge-case fixtures.
-   - Logic: wrong branching, incorrect assumptions, off-by-one errors, state transitions, async ordering, invalid transformations.
-3. Start with the cheapest evidence that separates the buckets.
-4. Build a feedback loop before guessing: reproduce the symptom, capture the exact failure, and make it rerunnable.
-5. Minimize the reproduction until one likely cause remains.
-6. Form 3 to 5 falsifiable hypotheses and test the cheapest one first.
-7. Instrument only at boundaries that distinguish hypotheses. Remove temporary instrumentation before finishing.
-8. Fix the smallest confirmed cause and add regression coverage when behavior changed.
+1. State the observed symptom and expected behavior.
+2. Classify likely causes into environment, data, or logic.
+3. Start with the cheapest evidence that separates those buckets.
+4. Reproduce the symptom with a rerunnable test, command, or request when practical.
+5. Form 3 to 5 falsifiable hypotheses and test the cheapest one first.
+6. Record the evidence that confirms or rules out each hypothesis.
+
+Do not modify application code in triage mode. If the user explicitly asks for a fix after the cause is confirmed, switch to the relevant implementation skill and report its verification separately.
 
 ## Output
 
 Return:
 
-- Symptom
+- Symptom and expected behavior
+- Reproduction status and path
 - Most likely bucket
-- Evidence gathered
-- Reproduction path
-- Hypotheses tested
-- Next checks
-- Proposed fix or reproduction path
+- Hypotheses tested and evidence
+- Confirmed cause, or the exact missing evidence
+- Next check
+- Proposed fix (not applied in triage mode)

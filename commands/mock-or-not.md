@@ -1,25 +1,20 @@
+---
+description: Decide whether a test dependency should be real, a fake, or a mock; use testing-strategy for the complete test-boundary decision.
+---
+
 # /mock-or-not
 
-Use this command before adding mocks to tests.
+Use this command as a short entry point before adding a test double. Follow `testing-strategy` for the complete decision, using the behavior under test, target test level, and dependency boundary as input.
 
-## Decision Rules
+Use these terms consistently:
 
-Mock only when the dependency is:
-
-1. Uncontrollable, such as third-party APIs, payment providers, email delivery, time, randomness, or external queues.
-2. Too expensive or slow to exercise in the target test.
-3. Too broad for the behavior under test, such as a service with many unrelated dependencies.
-4. A core library boundary where behavior must be verified without real DB, Redis, file system, or network IO.
-
-Prefer real collaborators when they are cheap, deterministic, and clarify behavior.
-
-Avoid asserting call counts on native functions or library internals unless the call itself is the public contract. Libraries may use native functions internally in ways the test should not care about.
-
-## Output
+- **Real**: the actual collaborator, used when it is cheap, deterministic, and part of the behavior being verified.
+- **Fake**: a lightweight working implementation used when the real collaborator is too slow or infrastructure-heavy but behavior still matters.
+- **Mock**: a test-controlled boundary used when interaction with an uncontrollable external dependency is the contract.
 
 Return:
 
-- What should be real
-- What should be mocked/faked
-- What should be asserted
+- Dependency boundary and target test level
+- Real/fake/mock choice with reason
+- What behavior should be asserted
 - What would make the test brittle

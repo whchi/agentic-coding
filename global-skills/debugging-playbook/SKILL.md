@@ -1,12 +1,12 @@
 ---
 name: debugging-playbook
-description: Use when investigating bugs, flaky tests, production incidents, environment-specific failures, data issues, or logic that is taking too long to diagnose by inspection. Do NOT use when the cause and minimal fix are already known.
+description: Use when investigating bugs, flaky tests, production incidents, environment-specific failures, data issues, or logic that is taking too long to diagnose by inspection. Do NOT use when the cause and minimal fix are already known; switch to an implementation skill when the user asks for the fix.
 origin: Notion 工程習慣
 ---
 
 # Debugging Playbook
 
-Use this skill to debug methodically without getting trapped in code inspection.
+Use this skill to diagnose methodically without getting trapped in code inspection. It is diagnosis-first; it does not authorize an implementation change by itself.
 
 ## Boundaries
 
@@ -39,7 +39,7 @@ If logic inspection has gone on for about 30 minutes without a strong lead, deli
    - Logic: branching, transformations, async order, state transitions, boundary values.
 9. Instrument only where it distinguishes hypotheses. Tag temporary logs so they can be removed.
 10. Once the likely cause is known, write a failing test or reproducible command if practical.
-11. Fix the confirmed cause, then re-run the original loop and the smallest relevant verification.
+11. If the user has explicitly asked for a fix, switch to the relevant implementation skill, then re-run the original loop and the smallest relevant verification. Otherwise, report the confirmed cause and proposed fix without changing application code.
 
 ## Guardrails
 

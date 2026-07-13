@@ -1,9 +1,13 @@
 ---
 name: pure-function-pattern
-description: Use when implementing or refactoring business logic that should have no side effects — validation rules, calculations, data transformations, or any logic that can be expressed as input-in, output-out. Invoke this skill whenever someone asks to write testable business logic, extract logic from services, or eliminate mocks from unit tests.
+description: Use when implementing or refactoring non-trivial TypeScript domain rules that should have no side effects, such as validation, calculations, or data transformations. Use `better-test-driven-development` for test-first sequencing and `testing-strategy` for test level, mocking, and fixture choices.
 ---
 
 # Pure Function Pattern
+
+## Boundaries
+
+This skill owns purity, explicit dependencies, return shapes, and domain-rule boundaries. Use `better-test-driven-development` for test-first sequencing and `testing-strategy` for test level, mocking, and fixture choices.
 
 ## Skip When
 
@@ -15,8 +19,8 @@ description: Use when implementing or refactoring business logic that should hav
 1. **Type definitions** — input payload types, response types, and error code unions. When referencing ORM-generated types, use `Pick`/`Omit` to avoid importing runtime behavior.
 2. **Helper functions** — one function per independent rule, returning the consistent discriminated union: `{ ok: true } | { ok: false; error: SomeError }`.
 3. **Main pure function** — orchestrates helpers in logical order with TypeScript narrowing. All runtime-variable values (current time, random values, feature flags, lookup tables) must be passed as explicit arguments — never read from the environment or module scope.
-4. **Unit tests** — colocated `.test.ts` file using factory helpers (e.g., `createMockOrder`) with sensible defaults. Cover every branch: missing data, each error code, boundary conditions, order-of-checks, and success paths. No `vi.mock()` — every scenario is exercised through input variations only.
-5. **Exports** — export every helper and type; they are independently testable and callers may compose them.
+4. **Test contract** — identify the branches, boundaries, and success paths that need coverage. Follow the project's test strategy and test-first workflow instead of imposing a framework or mock policy here.
+5. **Public interface** — keep the main function and only the helpers that callers or tests genuinely need public; do not export internals solely to make them testable.
 
 ## Quality Criteria
 
@@ -24,7 +28,7 @@ description: Use when implementing or refactoring business logic that should hav
 - **No exceptions as control flow**: Express all error paths through return types — never `throw`.
 - **Time/randomness as data**: Pass `currentTime`, `randomSeed`, precomputed lookups, and feature flags as explicit parameters.
 - Runtime validation (schemas, parsing) belongs at the I/O boundary, not inside pure modules.
-- Tests assert exact error codes and message strings.
+- Tests should assert stable error codes or other public behavior; do not require incidental message text unless it is part of the contract.
 - File naming: `<feature>.ts` and `<feature>.test.ts` in the same directory.
 
 ## Examples
@@ -40,8 +44,8 @@ Read the relevant example when you need to see the full file structure or test p
 ## Implementation Steps
 
 1. Read the description or code sample. Identify all independent checks, the input shape, and any values that change at runtime (time, random, flags, lookups). Every such value becomes an explicit parameter.
-2. Produce the TypeScript file. All helpers must be pure, non-mutating, non-throwing, returning the consistent `{ ok: true } | { ok: false; error: ... }` union.
-3. Create the colocated Vitest test file with comprehensive input/output coverage and zero mocks.
+2. Define the public behavior and let `better-test-driven-development` establish the failing test before implementation.
+3. Produce the TypeScript file. All helpers must be pure, non-mutating, non-throwing, returning the consistent `{ ok: true } | { ok: false; error: ... }` union. Use the repository's configured test framework and `testing-strategy` guidance for coverage and test doubles.
 4. If refactoring existing code, explicitly call out any purity violations found: hidden dependencies, mutations, throws used as control flow, inconsistent return shapes.
 
 ## Gotchas
@@ -49,5 +53,5 @@ Read the relevant example when you need to see the full file structure or test p
 - **Inconsistent return shapes**: mixing `{ ok: false; error }` with `ValidationError | null` across helpers makes the main function impossible to type-narrow cleanly. Pick one shape and apply it everywhere.
 - **`Date.now()` inside the function**: even one call makes the function non-deterministic. Always inject the current time as a parameter.
 - **Throw-on-invalid is not purity**: if a helper throws for an expected error case (e.g., "coupon not found"), callers need try/catch instead of type narrowing — encode it in the return type.
-- **Partial refactors leave mocks behind**: after extracting logic from a larger service, verify the test file has zero `vi.mock()` calls.
+- **Partial refactors leave hidden dependencies behind**: after extracting logic from a larger service, verify runtime values and side effects are explicit at the boundary.
 - **ORM type imports**: importing a Prisma/Drizzle model type directly can pull in runtime behavior. Use `Pick`/`Omit` to extract only the plain-data shape you need.

@@ -58,12 +58,11 @@ A skill **with** this field installs only for the listed providers; a skill **wi
 | Skill | Description |
 |---|---|
 | `api-design` | REST API design and review guidance |
-| `better-test-driven-development` | Strict TDD workflow with 80%+ coverage |
+| `better-test-driven-development` | Strict test-first workflow with meaningful behavior coverage |
 | `content-engine` | Multi-platform content creation and repurposing |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
-| `frontend-slides` | HTML slide deck / PPTX conversion workflow |
 | `grill-me` | Plan/design stress-testing via questioning |
 | `grill-with-docs` | Stress-test plans against project docs, domain language, code evidence, and ADRs |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
@@ -73,8 +72,8 @@ A skill **with** this field installs only for the listed providers; a skill **wi
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
+| `super-google-search` | Search, source verification, and research collection workflow |
 | `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
-| `write-a-skill` | Create or refine concise, composable agent skills |
 | `write-a-prd` | PRD / spec writing workflow |
 | `zoom-out` | Higher-level module map before editing unfamiliar code |
 
@@ -94,13 +93,12 @@ A skill **with** this field installs only for the listed providers; a skill **wi
 
 | Command | Description |
 |---|---|
-| `anthropic-skill-review` | Anthropic-style skill review |
-| `build-fix` | Build failure diagnosis and fix |
+| `anthropic-skill-review` | Existing skill/command draft review |
 | `code-review` | Code review workflow |
+| `content-to-skill` | Distill explicit source material into a reusable skill draft |
 | `design-pattern-fit` | Design pattern fit and overengineering check |
 | `ddd-fit-check` | DDD adoption fit check |
 | `debug-triage` | Environment/data/logic debugging triage |
-| `learn` | Learning / exploration workflow |
 | `mock-or-not` | Test dependency mock/fake/real decision checklist |
 | `update-codemaps` | Code map update workflow |
 
@@ -112,7 +110,7 @@ A skill **with** this field installs only for the listed providers; a skill **wi
 | Context | `iterative-retrieval`, `zoom-out`, `update-codemaps` |
 | Delivery | `better-test-driven-development`, `debugging-playbook`, `planning-with-files` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |
-| Handoff | `handoff`, `write-a-skill` |
+| Handoff | `handoff` |
 
 ## References
 ### AGENTS.md

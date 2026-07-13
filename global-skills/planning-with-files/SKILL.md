@@ -1,6 +1,6 @@
 ---
 name: planning-with-files
-description: Implements Manus-style file-based planning to organize and track progress on complex tasks. Creates task_plan.md, findings.md, and progress.md. Use when asked to plan out, break down, or organize a multi-step project, research task, or any work requiring 5+ tool calls. Supports automatic session recovery after /clear.
+description: Implements optional Manus-style file-based planning for long-running, multi-session work that needs durable execution state. Creates task_plan.md, findings.md, and progress.md. After the optional OpenCode plugin is installed, it can help restore that state after a session reset.
 compatibility: opencode
 metadata:
   version: "2.34.1"
@@ -21,7 +21,7 @@ Filesystem = Disk (persistent, unlimited)
 
 ## Quick Start
 
-Before ANY complex task:
+When this skill is explicitly selected for long-running work:
 
 1. **Create `task_plan.md`** — Use [templates/task_plan.md](templates/task_plan.md) as reference
 2. **Create `findings.md`** — Use [templates/findings.md](templates/findings.md) as reference
@@ -111,9 +111,9 @@ AFTER 3 FAILURES: Escalate to User
 
 ## When to Use This Pattern
 
-**Use for:** Multi-step tasks (3+ steps), research tasks, building/creating projects, tasks spanning many tool calls, anything requiring organization.
+**Use for:** Long-running or multi-session execution work where durable progress, findings, and recovery state are needed.
 
-**Skip for:** Simple questions, single-file edits, quick lookups.
+**Skip for:** Simple questions, single-file edits, quick lookups, one-session plans, PRD authoring, or handoff documents.
 
 ## Anti-Patterns
 
@@ -139,7 +139,7 @@ AFTER 3 FAILURES: Escalate to User
 - `scripts/check-complete.sh` — Verify all phases complete
 - `scripts/session-catchup.js` — Recover context from previous session
 
-## OpenCode Plugin (Hooks Replacement)
+## Optional OpenCode Plugin (Hooks Replacement)
 
 Install `scripts/planning-plugin.js` in `.opencode/plugins/` or reference in `opencode.json`:
 

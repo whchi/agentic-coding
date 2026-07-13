@@ -1,3 +1,7 @@
+---
+description: Review a change set for correctness, security, maintainability, testing, and merge readiness.
+---
+
 # /code-review
 
 Review the current change set directly, then integrate with the superpowers review model by dispatching the `superpowers:code-reviewer` agent when practical.

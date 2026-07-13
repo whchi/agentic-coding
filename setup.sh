@@ -188,7 +188,6 @@ GLOBAL_SKILLS=(
   debugging-playbook
   domain-driven-design-advisor
   edit-article
-  frontend-slides
   grill-me
   grill-with-docs
   handoff
@@ -199,7 +198,6 @@ GLOBAL_SKILLS=(
   project-structure-advisor
   repository-boundary-review
   testing-strategy
-  write-a-skill
   write-a-prd
   zoom-out
   super-google-search
@@ -283,12 +281,10 @@ setup_skills() {
 
 COMMANDS=(
   anthropic-skill-review
-  build-fix
   code-review
   design-pattern-fit
   ddd-fit-check
   debug-triage
-  learn
   mock-or-not
   update-codemaps
   content-to-skill

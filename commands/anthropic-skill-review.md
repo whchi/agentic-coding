@@ -1,14 +1,14 @@
 ---
-description: "Review or refine a reusable skill/command. Use when the user provides a draft SKILL.md, command, source notes, or an article and wants actionable improvements to trigger quality, structure, gotchas, progressive disclosure, or maintainability."
+description: "Review an existing SKILL.md or command draft for trigger quality, structure, gotchas, progressive disclosure, or maintainability. Use only after a draft exists."
 ---
 
 # /anthropic-skill-review
 
-Review a draft skill or command using practical skill-writing heuristics. Do not summarize the source material; turn it into actionable review feedback and targeted rewrites.
+Review an existing draft skill or command using practical skill-writing heuristics. Do not summarize raw source material or design a skill from scratch; turn the draft into actionable review feedback and targeted rewrites.
 
 ## Inputs
 
-Accept pasted content, a file path if repository access is available, or source notes that should become a reusable skill.
+Accept an existing `SKILL.md` or command draft pasted into the request, or a file path when repository access is available.
 
 If the target is ambiguous, identify the most likely target from context, state the assumption briefly, then continue.
 

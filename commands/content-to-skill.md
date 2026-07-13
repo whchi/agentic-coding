@@ -1,5 +1,5 @@
 ---
-description: "Distill an article, blog post, video transcript, talk, or tutorial into a reusable skill. Use whenever the user pastes long-form content — even without saying the word 'skill' — and asks to 'turn this into a skill/command', 'save this method for later', 'make this reusable', 'extract the technique from this', or similar. Also use when the user shares a transcript and asks what repeatable method it contains."
+description: "Distill an article, blog post, video transcript, talk, or tutorial into a reusable skill when the user explicitly asks to turn it into a skill/command, save the method, or make it reusable. Do not trigger for method analysis alone."
 ---
 
 # /content-to-skill
@@ -10,7 +10,7 @@ Do not summarize the content. Extract the repeatable method inside it, strip the
 
 ## Inputs
 
-Pasted articles, blog posts, video/podcast transcripts, talk notes, or tutorials. A file path when repository access is available.
+Pasted articles, blog posts, video/podcast transcripts, talk notes, or tutorials. A file path when repository access is available. If the input is a URL, fetch it only when the user asked for URL reading and the fetch succeeds; otherwise ask for the content or stop with the fetch error.
 
 Expect noisy input: intros, sponsor reads, anecdotes, audience banter, filler speech, and repetition are normal in transcripts. Treat them as raw ore, not as structure to preserve.
 
@@ -132,6 +132,11 @@ Check that:
 ### Skill design
 
 * The repeatable problem, the intended trigger, the expected output, and any core/supporting split. 3–5 lines. Do not summarize the article.
+
+Choose one output mode before writing:
+
+* **Draft mode** — provide the design and focused outlines when placement or scope still needs a decision.
+* **Save-ready mode** — provide complete contents for every file needed to install the skill; do not provide outlines as if they were ready to save.
 
 ### SKILL.md
 

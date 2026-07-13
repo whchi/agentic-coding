@@ -1,3 +1,7 @@
+---
+description: Judge whether a classic design pattern fits a concrete code pressure without overengineering; allow a no-pattern result.
+---
+
 # /design-pattern-fit
 
 Use this command to judge whether a section of code should use a classic object-oriented design pattern, which pattern fits best, and whether a mixed pattern is justified.
@@ -341,6 +345,11 @@ Recommend mixed patterns only when each pattern handles a separate pressure:
 If one simpler construct can express the whole design, do not recommend a mix.
 
 ## Required Output Format
+
+First choose one result mode:
+
+- **Pattern mode**: use the full format below only when evidence shows a stable variation point or boundary that benefits from a pattern.
+- **No-pattern mode**: say `No GoF design pattern is justified here`, explain the evidence, give the smallest direct refactor, and omit Candidate Patterns, Rejected Patterns, Proposed Design, and Minimal Migration Steps unless they contain useful non-pattern guidance.
 
 ```md
 ## Summary
