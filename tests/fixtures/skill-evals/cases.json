@@ -1,0 +1,22 @@
+{
+  "$schema": "skill-eval/v1",
+  "suite": "runner-smoke",
+  "cases": [
+    {
+      "id": "search-request",
+      "prompt": "Find sources that verify this claim.",
+      "expect": {
+        "activate": ["super-google-search"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "provided-text-summary",
+      "prompt": "Summarize the provided text without searching the web.",
+      "expect": {
+        "activate": [],
+        "not_activate": ["super-google-search"]
+      }
+    }
+  ]
+}

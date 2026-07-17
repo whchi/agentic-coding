@@ -41,6 +41,7 @@ cd ~/agentic-coding
 | `global-skills/` | `~/.config/opencode/skills/`, `~/.codex/skills/`, or `~/.gemini/skills/` | Cross-project engineering skills |
 | `project-skills/` | `.opencode/skills/`, `.codex/skills/`, or `.gemini/skills/` | Stack-specific or project-local engineering skills |
 | `commands/` | OpenCode `commands/`, Codex `prompts/`, or Gemini `.gemini/commands/*.toml` | Reusable command templates |
+| `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see `evals/README.md` |
 | `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
 Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.

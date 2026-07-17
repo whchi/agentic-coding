@@ -1,0 +1,150 @@
+{
+  "$schema": "skill-eval/v1",
+  "suite": "skill-routing-boundaries",
+  "cases": [
+    {
+      "id": "debug-unknown-cause",
+      "prompt": "API 偶發 500，log 看不出規律。請先找出 root cause 並說明證據，不要修改程式。",
+      "expect": {
+        "activate": ["debugging-playbook"],
+        "not_activate": ["better-test-driven-development"]
+      }
+    },
+    {
+      "id": "implement-known-fix",
+      "prompt": "已確認錯誤是 user 為 null 時少了 guard。請加 regression test 並完成最小修正。",
+      "expect": {
+        "activate": ["better-test-driven-development"],
+        "not_activate": ["debugging-playbook"]
+      }
+    },
+    {
+      "id": "choose-test-level",
+      "prompt": "這個付款流程應該寫 unit、integration 還是 e2e test？資料庫要 mock、fake 還是用真的？",
+      "expect": {
+        "activate": ["testing-strategy"],
+        "not_activate": ["better-test-driven-development"]
+      }
+    },
+    {
+      "id": "general-plan-grill",
+      "prompt": "用尖銳問題 challenge 我的 SaaS 上線計畫，逼我釐清假設、風險和取捨。",
+      "expect": {
+        "activate": ["grill-me"],
+        "not_activate": ["grill-with-docs"]
+      }
+    },
+    {
+      "id": "docs-grounded-grill",
+      "prompt": "請對照 repository 的 CONTEXT.md、ADR 和現有 code，challenge 這份 checkout refactor 計畫。",
+      "expect": {
+        "activate": ["grill-with-docs"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "project-folder-structure",
+      "prompt": "幫我評估這個專案應該採用 feature-based 還是 layer-based folders，並調整高階 module boundaries。",
+      "expect": {
+        "activate": ["project-structure-advisor"],
+        "not_activate": ["domain-driven-design-advisor", "repository-boundary-review"]
+      }
+    },
+    {
+      "id": "repository-method-placement",
+      "prompt": "OrderRepository 的 cancel() 應該只存資料，還是可以包含退款規則？請判斷這段 behavior 屬於 repository、use case 或 domain。",
+      "expect": {
+        "activate": ["repository-boundary-review"],
+        "not_activate": ["domain-driven-design-advisor", "project-structure-advisor"]
+      }
+    },
+    {
+      "id": "ddd-adoption",
+      "prompt": "我們的訂票系統規則很多、跨團隊語言不一致。請判斷是否值得導入 DDD，並建議 bounded contexts 和 aggregates。",
+      "expect": {
+        "activate": ["domain-driven-design-advisor"],
+        "not_activate": ["project-structure-advisor", "repository-boundary-review"]
+      }
+    },
+    {
+      "id": "useeffect-specific-rewrite",
+      "prompt": "這個 React component 用 useEffect 把 props 複製到 state，還造成 render loop。請重構掉這個 effect。",
+      "expect": {
+        "activate": ["better-useeffect"],
+        "not_activate": ["frontend-patterns"]
+      }
+    },
+    {
+      "id": "frontend-api-adapter",
+      "prompt": "後端 payload 偶爾缺少 profile.avatar，UI 就 crash。請設計 adapter、defaults 和 render-safe view model。",
+      "expect": {
+        "activate": ["frontend-robust-data-handling"],
+        "not_activate": ["api-design", "frontend-patterns"]
+      }
+    },
+    {
+      "id": "rest-contract",
+      "prompt": "設計 REST API 的 orders list endpoint，包含 resource URL、pagination、filter、status codes 和 error response。",
+      "expect": {
+        "activate": ["api-design"],
+        "not_activate": ["frontend-robust-data-handling"]
+      }
+    },
+    {
+      "id": "js-ts-language-standards",
+      "prompt": "Review 這段 TypeScript 的命名、type safety、immutability、async flow 和 error handling。",
+      "expect": {
+        "activate": ["js-ts-coding-standards"],
+        "not_activate": ["frontend-patterns"]
+      }
+    },
+    {
+      "id": "react-architecture",
+      "prompt": "設計 Next.js checkout page 的 component boundaries、state placement、form flow、accessibility 和 performance boundaries。",
+      "expect": {
+        "activate": ["frontend-patterns"],
+        "not_activate": ["better-useeffect"]
+      }
+    },
+    {
+      "id": "zoom-out-single-module",
+      "prompt": "在修改陌生的 payments module 前，先畫出它的目的、callers、dependencies、invariants 和系統責任。",
+      "expect": {
+        "activate": ["zoom-out"],
+        "not_activate": ["iterative-retrieval"]
+      }
+    },
+    {
+      "id": "iterative-large-context",
+      "prompt": "我要做跨多個 packages 的 refactor，但現在無法預測相關檔案，而且一次載入 monorepo 會超過 context。請逐步找出需要的 context。",
+      "expect": {
+        "activate": ["iterative-retrieval"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "maintainability-review",
+      "prompt": "Review 這個 implementation 的 module depth、abstraction level、return contracts、可讀性和長期修改成本。",
+      "expect": {
+        "activate": ["maintainable-code-review"],
+        "not_activate": ["api-design", "project-structure-advisor", "repository-boundary-review"]
+      }
+    },
+    {
+      "id": "pure-domain-rule",
+      "prompt": "用 test-first 方式實作 TypeScript 折扣計算規則，保持 pure function、明確 dependencies，而且不能有 IO side effects。",
+      "expect": {
+        "activate": ["better-test-driven-development", "pure-function-pattern"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "mvp-build-vs-buy",
+      "prompt": "這個尚未驗證的 MVP，auth 和 search 應該買 managed service 還是自己做？請比較成本、速度與學習價值。",
+      "expect": {
+        "activate": ["product-engineering-mvp"],
+        "not_activate": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "skill-eval/v1",
+  "suite": "runner-timeout",
+  "cases": [
+    {
+      "id": "adapter-timeout",
+      "prompt": "Timeout probe",
+      "expect": {
+        "activate": ["never-returns"],
+        "not_activate": []
+      }
+    }
+  ]
+}

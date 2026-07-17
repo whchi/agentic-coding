@@ -1,3 +1,6 @@
 .planning
 .claude
+__pycache__/
 docs/audits/*
+/evals/results/*
+!/evals/results/.gitkeep
