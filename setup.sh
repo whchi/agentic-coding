@@ -225,7 +225,6 @@ GLOBAL_SKILLS=(
   testing-strategy
   write-a-prd
   zoom-out
-  super-google-search
 )
 
 PROJECT_SKILLS=(
