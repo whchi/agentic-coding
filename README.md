@@ -121,6 +121,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 ### AGENTS.md
 - https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
+- https://github.com/ayghri/i-have-adhd
 - https://github.com/mksglu/context-mode
 - https://github.com/JuliusBrussee/caveman
 - https://github.com/anthropics/skills
