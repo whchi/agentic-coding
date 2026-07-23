@@ -30,7 +30,7 @@
       "id": "general-plan-grill",
       "prompt": "用尖銳問題 challenge 我的 SaaS 上線計畫，逼我釐清假設、風險和取捨。",
       "expect": {
-        "activate": ["grill-me"],
+        "activate": ["grilling"],
         "not_activate": ["grill-with-docs"]
       }
     },

@@ -68,7 +68,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
-| `grill-me` | Plan/design stress-testing via questioning |
+| `grilling` | Plan/design stress-testing via questioning |
 | `grill-with-docs` | Stress-test plans against project docs, domain language, code evidence, and ADRs |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
 | `iterative-retrieval` | Progressive context retrieval for large or unfamiliar codebases |
@@ -111,7 +111,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `grill-me`, `grill-with-docs`, `write-a-prd` |
+| Alignment | `grilling`, `grill-with-docs`, `write-a-prd` |
 | Context | `iterative-retrieval`, `zoom-out`, `update-codemaps` |
 | Delivery | `better-test-driven-development`, `debugging-playbook`, `planning-with-files` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |

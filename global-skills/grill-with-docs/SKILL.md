@@ -7,9 +7,9 @@ description: Use when stress-testing a feature, refactor, PRD, architecture prop
 
 Use this when ordinary grilling is not enough. The point is not to ask more questions; the point is to force alignment between the user's plan, the repository's documented language, existing decisions, and the code.
 
-## Relationship To `grill-me`
+## Relationship To `grilling`
 
-Use `grill-me` for general plan stress-testing.
+Use `grilling` for general plan stress-testing.
 
 Use `grill-with-docs` when any of these matter:
 
