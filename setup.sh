@@ -213,7 +213,7 @@ GLOBAL_SKILLS=(
   debugging-playbook
   domain-driven-design-advisor
   edit-article
-  grill-me
+  grilling
   grill-with-docs
   handoff
   iterative-retrieval
