@@ -22,6 +22,11 @@ assert_contains() {
   rg -Fq -- "$needle" "$file" || fail "expected $file to contain: $needle"
 }
 
+assert_matches() {
+  local file="$1" pattern="$2"
+  rg -iq -- "$pattern" "$file" || fail "expected $file to match: $pattern"
+}
+
 assert_not_contains() {
   local file="$1" needle="$2"
   ! rg -Fq -- "$needle" "$file" || fail "expected $file not to contain: $needle"
@@ -57,6 +62,25 @@ assert_not_contains "$ROOT/commands/anthropic-skill-review.md" "content-to-skill
 assert_contains "$ROOT/commands/content-to-skill.md" "Do not trigger for method analysis alone"
 assert_contains "$ROOT/commands/content-to-skill.md" "Draft mode"
 assert_contains "$ROOT/commands/content-to-skill.md" "Save-ready mode"
+
+assert_contains "$ROOT/commands/code-review.md" "git status --short --branch -uall"
+assert_contains "$ROOT/commands/code-review.md" "git rev-parse --show-toplevel"
+assert_contains "$ROOT/commands/code-review.md" "inspection and safe verification"
+assert_contains "$ROOT/commands/code-review.md" "staged, unstaged, and untracked"
+assert_contains "$ROOT/commands/code-review.md" "git rev-parse --verify"
+assert_contains "$ROOT/commands/code-review.md" "git merge-base"
+assert_contains "$ROOT/commands/code-review.md" "AGENTS.md"
+assert_contains "$ROOT/commands/code-review.md" "Spec specialist"
+assert_contains "$ROOT/commands/code-review.md" "Standards specialist"
+assert_contains "$ROOT/commands/code-review.md" "Generated or mechanical lines and files do not count toward size thresholds"
+assert_contains "$ROOT/commands/code-review.md" "Always perform a direct review"
+assert_contains "$ROOT/commands/code-review.md" "Ready to merge:"
+assert_matches "$ROOT/commands/code-review.md" "empty (diff|scope|change set)|no changes to review"
+assert_matches "$ROOT/commands/code-review.md" "(cite|citation).*standard"
+assert_matches "$ROOT/commands/code-review.md" "(cite|citation).*(spec|requirement)"
+assert_matches "$ROOT/commands/code-review.md" "(validate|verify) every candidate finding"
+assert_matches "$ROOT/commands/code-review.md" "deduplicat.*specialist finding"
+assert_matches "$ROOT/commands/code-review.md" "do not claim.*passed unless"
 
 assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test-first sequencing"
 assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test level, mocking, and fixture choices"
