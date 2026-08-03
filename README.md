@@ -15,11 +15,13 @@ cd ~/agentic-coding
 ./setup.sh opencode install all --global
 ./setup.sh codex install all --global
 ./setup.sh gemini install all --global
+./setup.sh pi install all --global
 
 # Install project skills + commands into another project
 ./setup.sh opencode install all --project --target /path/to/your/project
 ./setup.sh codex install all --project --target /path/to/your/project
 ./setup.sh gemini install all --project --target /path/to/your/project
+./setup.sh pi install all --project --target /path/to/your/project
 
 # Or run from inside the target project
 # cd /path/to/your/project
@@ -38,9 +40,9 @@ cd ~/agentic-coding
 
 | Directory | Target | Description |
 |---|---|---|
-| `global-skills/` | `~/.config/opencode/skills/`, `~/.codex/skills/`, or `~/.gemini/skills/` | Cross-project engineering skills |
-| `project-skills/` | `.opencode/skills/`, `.codex/skills/`, or `.gemini/skills/` | Stack-specific or project-local engineering skills |
-| `commands/` | OpenCode `commands/`, Codex `prompts/`, or Gemini `.gemini/commands/*.toml` | Reusable command templates |
+| `global-skills/` | `~/.config/opencode/skills/`, `~/.codex/skills/`, `~/.gemini/skills/`, or `~/.pi/agent/skills/` | Cross-project engineering skills |
+| `project-skills/` | `.opencode/skills/`, `.codex/skills/`, `.gemini/skills/`, or `.pi/skills/` | Stack-specific or project-local engineering skills |
+| `commands/` | OpenCode `commands/`, Codex `prompts/`, Gemini `.gemini/commands/*.toml`, or Pi `~/.pi/agent/prompts/*.md` / `.pi/prompts/*.md` | Reusable command templates |
 | `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see `evals/README.md` |
 | `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
@@ -57,6 +59,8 @@ compatibility: opencode        # or a list: [opencode, claude]
 A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install opencode-only skills like `planning-with-files`.
 
 Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. Gemini also supports `.agents/skills/` as an interoperable alias; this setup uses the canonical `.gemini/` paths.
+
+[Pi](https://pi.dev/docs/latest/skills) discovers skills in `~/.pi/agent/skills/` and `.pi/skills/`. Its [prompt templates](https://pi.dev/docs/latest/prompt-templates) are Markdown files in `~/.pi/agent/prompts/` and `.pi/prompts/`, so `setup.sh pi ...` installs repository commands unchanged.
 
 ### Global Skills
 

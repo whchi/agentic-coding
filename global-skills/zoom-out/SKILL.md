@@ -1,6 +1,6 @@
 ---
 name: zoom-out
-description: Use when an unfamiliar code area needs a higher-level map before editing: module purpose, upstream/downstream callers, domain responsibility, invariants, and how it fits the broader system. Pairs well with iterative-retrieval for large codebases.
+description: Use when an unfamiliar code area needs a higher-level map before editing, including module purpose, upstream/downstream callers, domain responsibility, invariants, and how it fits the broader system. Pairs well with iterative-retrieval for large codebases.
 ---
 
 # Zoom Out

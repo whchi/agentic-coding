@@ -95,6 +95,49 @@ PY
 
 assert_not_exists "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
 
+PI_HOME="$TMP_ROOT/pi-home"
+output="$(
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi install all --global --dry-run
+)"
+
+assert_contains "$output" "dry-run mkdir -p $PI_HOME/.pi/agent/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $PI_HOME/.pi/agent/prompts/debug-triage.md"
+
+(
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi install all --global
+)
+
+assert_file "$PI_HOME/.pi/agent/skills/api-design/SKILL.md"
+assert_file "$PI_HOME/.pi/agent/prompts/debug-triage.md"
+cmp -s "$ROOT/commands/debug-triage.md" "$PI_HOME/.pi/agent/prompts/debug-triage.md" || fail "Pi command should remain Markdown"
+
+output="$(
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi install all --project --target "$TARGET" --dry-run
+)"
+
+assert_contains "$output" "dry-run mkdir -p $TARGET/.pi/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $TARGET/.pi/prompts/debug-triage.md"
+
+(
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi install all --project --target "$TARGET"
+)
+
+assert_file "$TARGET/.pi/skills/frontend-patterns/SKILL.md"
+assert_file "$TARGET/.pi/prompts/debug-triage.md"
+
+(
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi reinstall commands --global debug-triage
+  HOME="$PI_HOME" \
+    "$ROOT/setup.sh" pi uninstall commands --global debug-triage
+)
+
+assert_not_exists "$PI_HOME/.pi/agent/prompts/debug-triage.md"
+
 output="$(
   HOME="$GEMINI_HOME" \
     "$ROOT/setup.sh" gemini install all --project --target "$TARGET" --dry-run

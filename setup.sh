@@ -22,12 +22,14 @@
 # Gemini global commands -> ~/.gemini/commands/
 # Gemini project skills -> .gemini/skills/ (current working directory)
 # Gemini project commands -> .gemini/commands/ (current working directory)
+# Pi global installs -> ~/.pi/agent/
+# Pi project installs -> .pi/ (current working directory)
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
 set -euo pipefail
 
-ALL_PROVIDERS=(opencode codex claude gemini)
+ALL_PROVIDERS=(opencode codex claude gemini pi)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROVIDER="${1:-}"
@@ -35,10 +37,10 @@ DRY_RUN=false
 PROJECT_TARGET=""
 PROJECT_ROOT=""
 
-if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" && "$PROVIDER" != "all" ]]; then
-  echo "error: provider is required: opencode, codex, claude, gemini, or all" >&2
+if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" && "$PROVIDER" != "pi" && "$PROVIDER" != "all" ]]; then
+  echo "error: provider is required: opencode, codex, claude, gemini, pi, or all" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex|claude|gemini|all> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
+  echo "Usage: ./setup.sh <opencode|codex|claude|gemini|pi|all> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
@@ -75,6 +77,11 @@ elif [[ "$PROVIDER" == "gemini" ]]; then
   GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"
   PROJECT_SKILLS_REL=".gemini/skills"
   PROJECT_COMMANDS_REL=".gemini/commands"
+elif [[ "$PROVIDER" == "pi" ]]; then
+  GLOBAL_SKILLS_DIR="$HOME/.pi/agent/skills"
+  GLOBAL_COMMANDS_DIR="$HOME/.pi/agent/prompts"
+  PROJECT_SKILLS_REL=".pi/skills"
+  PROJECT_COMMANDS_REL=".pi/prompts"
 else
   GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
