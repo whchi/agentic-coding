@@ -43,6 +43,7 @@ cd ~/agentic-coding
 | `global-skills/` | `~/.config/opencode/skills/`, `~/.codex/skills/`, `~/.gemini/skills/`, or `~/.pi/agent/skills/` | Cross-project engineering skills |
 | `project-skills/` | `.opencode/skills/`, `.codex/skills/`, `.gemini/skills/`, or `.pi/skills/` | Stack-specific or project-local engineering skills |
 | `commands/` | OpenCode `commands/`, Codex `prompts/`, Gemini `.gemini/commands/*.toml`, or Pi `~/.pi/agent/prompts/*.md` / `.pi/prompts/*.md` | Reusable command templates |
+| `general-skills/` | Not installed | Non-engineering or draft skills kept for reference; `setup.sh` does not install these. Copy manually when needed. |
 | `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see `evals/README.md` |
 | `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
@@ -68,6 +69,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 |---|---|
 | `api-design` | REST API design and review guidance |
 | `better-test-driven-development` | Strict test-first workflow with meaningful behavior coverage |
+| `concurrency-review` | Shared-state race, locking, idempotency, and cache-invalidation review |
 | `content-engine` | Multi-platform content creation and repurposing |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
@@ -81,7 +83,6 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
-| `super-google-search` | Search, source verification, and research collection workflow |
 | `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
 | `write-a-prd` | PRD / spec writing workflow |
 | `zoom-out` | Higher-level module map before editing unfamiliar code |
@@ -117,7 +118,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 |---|---|
 | Alignment | `grilling`, `grill-with-docs`, `write-a-prd` |
 | Context | `iterative-retrieval`, `zoom-out`, `update-codemaps` |
-| Delivery | `better-test-driven-development`, `debugging-playbook`, `planning-with-files` |
+| Delivery | `better-test-driven-development`, `debugging-playbook`, `concurrency-review`, `planning-with-files` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |
 | Handoff | `handoff` |
 

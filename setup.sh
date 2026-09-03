@@ -216,6 +216,7 @@ reinstall_file() {
 GLOBAL_SKILLS=(
   api-design
   better-test-driven-development
+  concurrency-review
   content-engine
   debugging-playbook
   domain-driven-design-advisor

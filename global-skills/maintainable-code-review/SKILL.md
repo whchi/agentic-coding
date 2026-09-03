@@ -38,6 +38,24 @@ Simple problems should use simple solutions. Complex problems may need complex s
 11. Check whether DDD or clean architecture abstractions are paying for themselves.
 12. Keep recommendations proportional: do not request large rewrites for local issues.
 
+## Deletion Evidence
+
+The deletion test in step 5 judges whether an abstraction earns its keep. Deleting code from a running system is a separate question: prove it is unreachable before proposing removal.
+
+Before calling anything dead, confirm:
+
+- Static references are absent (`rg` across the repo, including tests, fixtures, and config).
+- No dynamic reach: reflection, string-keyed dispatch, dependency-injection registries, template or query strings, generated clients, database-stored handler names.
+- No external consumers: published APIs, SDKs, other repositories, documentation, saved dashboards or scripts.
+- Runtime evidence agrees: telemetry, logs, or a feature flag showing zero use over a stated window.
+
+Then split findings:
+
+- **Safe to remove now** — evidence complete, no active consumers. State the deletion steps and how to verify afterwards.
+- **Defer with a plan** — name the missing precondition (flag off for a stated period, telemetry threshold, consumer migration, owner sign-off), and the rollback if removal proves wrong.
+
+Absent runtime evidence, say so and default to defer. Report the exact target list and obtain explicit approval before deleting anything.
+
 ## Review Signals
 
 Good signs:
