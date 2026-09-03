@@ -239,8 +239,6 @@ GLOBAL_SKILLS=(
 
 PROJECT_SKILLS=(
   better-useeffect
-  database-migrations
-  docker-patterns
   frontend-patterns
   frontend-robust-data-handling
   js-ts-coding-standards
