@@ -97,6 +97,10 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 | `frontend-patterns` | React / Next.js component, state, performance, a11y |
 | `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
+| `loop-build` | Implement an approved feature plan, resume tasks, or fix verify findings |
+| `loop-feature` | Open (create or resume) a feature's document and workspace |
+| `loop-plan` | Plan an opened feature after user approval |
+| `loop-verify` | Verify a completed build against the feature plan and report evidence |
 | `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
 
 ### Commands

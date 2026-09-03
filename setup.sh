@@ -242,6 +242,10 @@ PROJECT_SKILLS=(
   frontend-patterns
   frontend-robust-data-handling
   js-ts-coding-standards
+  loop-build
+  loop-feature
+  loop-plan
+  loop-verify
   pure-function-pattern
 )
 
