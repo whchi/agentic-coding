@@ -14,13 +14,15 @@
 #
 # OpenCode global installs -> ~/.config/opencode/
 # OpenCode project installs -> .opencode/ (current working directory)
-# Codex global installs -> ~/.codex/
-# Codex project installs -> .codex/ (current working directory)
+# Codex global skills -> ~/.agents/skills/
+# Codex global commands -> ~/.codex/prompts/
+# Codex project skills -> .agents/skills/ (current working directory)
+# Codex project commands -> .codex/prompts/ (current working directory)
 # Claude global installs -> ~/.claude/
 # Claude project installs -> .claude/ (current working directory)
-# Gemini global skills -> ~/.gemini/skills/
+# Gemini global skills -> ~/.gemini/config/skills/
 # Gemini global commands -> ~/.gemini/commands/
-# Gemini project skills -> .gemini/skills/ (current working directory)
+# Gemini project skills -> .agents/skills/ (current working directory)
 # Gemini project commands -> .gemini/commands/ (current working directory)
 # Pi global installs -> ~/.pi/agent/
 # Pi project installs -> .pi/ (current working directory)
@@ -73,9 +75,9 @@ elif [[ "$PROVIDER" == "claude" ]]; then
   PROJECT_SKILLS_REL=".claude/skills"
   PROJECT_COMMANDS_REL=".claude/commands"
 elif [[ "$PROVIDER" == "gemini" ]]; then
-  GLOBAL_SKILLS_DIR="$HOME/.gemini/skills"
+  GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"
-  PROJECT_SKILLS_REL=".gemini/skills"
+  PROJECT_SKILLS_REL=".agents/skills"
   PROJECT_COMMANDS_REL=".gemini/commands"
 elif [[ "$PROVIDER" == "pi" ]]; then
   GLOBAL_SKILLS_DIR="$HOME/.pi/agent/skills"
@@ -83,9 +85,9 @@ elif [[ "$PROVIDER" == "pi" ]]; then
   PROJECT_SKILLS_REL=".pi/skills"
   PROJECT_COMMANDS_REL=".pi/prompts"
 else
-  GLOBAL_SKILLS_DIR="$HOME/.codex/skills"
+  GLOBAL_SKILLS_DIR="$HOME/.agents/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.codex/prompts"
-  PROJECT_SKILLS_REL=".codex/skills"
+  PROJECT_SKILLS_REL=".agents/skills"
   PROJECT_COMMANDS_REL=".codex/prompts"
 fi
 PROJECT_SKILLS_DIR="$PROJECT_SKILLS_REL"
