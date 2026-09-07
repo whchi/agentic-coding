@@ -21,8 +21,9 @@ Read the [shared workflow](../loop-feature/references/workflow.md) and [shared v
 3. **If a task's local checks still fail after 3 fix attempts, stop working on that task.** Note each failed attempt in the task entry as it happens, so a resumed session inherits the count. When stopping, record the failing checks, the approaches tried, and the remaining errors in "Open items", then report and ask the user how to proceed. The count is per task; it is unrelated to verify rounds.
 4. Update the feature document after finishing tasks; retain unfinished, failed, or blocked items. Never make a task "done" by deleting acceptance criteria or loosening tests.
 
-## Report and stop
+## Hand off to verify
 
-- When implementation tasks are done, record this build's outcome and plan cycle in "Decisions and handoffs". Set status to "Ready to verify" and the next step to `loop-verify <slug>` so verification can check this build result. This does not mean the feature is complete.
-- Report the changes, local check results, unverified items, remaining verify rounds in the current plan cycle, and the next step.
-- **This run ends here. Let the user decide whether to run verify; do not enter the next stage automatically.**
+- When implementation tasks are done, record this build's outcome and plan cycle in "Decisions and handoffs". Set status to "Ready to verify" and the next step to `loop-verify <slug>`. This does not mean the feature is complete.
+- **Continue directly into `loop-verify` in the same run.** A finished build is always verified; the user has no useful decision to make between writing the code and checking it. Report the build result first, then start verification.
+- **Do not chain when the current plan cycle has no verify round left** (`Verify count` already `2 / 2`). Stop at "Ready to verify", report that the cycle's budget is exhausted, and let the user decide whether to re-plan.
+- Report the changes, local check results, unverified items, and remaining verify rounds before verification starts, so the build result stays readable even if verification then fails.

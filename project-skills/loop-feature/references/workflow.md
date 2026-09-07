@@ -6,16 +6,28 @@ This file is the source of truth for the order, handoffs, and verify-count rules
 
 ```text
 loop-feature → report and stop
-loop-plan    → report and stop
-loop-build   → report and stop
+loop-plan    → report and stop          ← the user's approval gate for implementation
+loop-build   → chain directly into loop-verify (same run)
 loop-verify  → report and stop (at most 2 rounds per plan cycle)
+                 pass → status Done
+                 fail → status Needs fix; the user decides fix vs re-plan
 ```
+
+**Build and verify run as one unit.** A finished build is always verified in the same run: there is no
+useful decision for the user between "code written" and "code checked", and splitting them lets an
+unverified build sit around looking finished. The stops that remain are the ones where the user
+genuinely decides something — approving the plan before implementation, and choosing how to respond
+to a failed verification.
+
+**The chain does not run when the current plan cycle has no verify round left**
+(`Verify count` already `2 / 2`). In that case build stops at "Ready to verify" and reports that the
+cycle's verification budget is exhausted; only explicit re-planning opens a new cycle.
 
 Plan defines the scope and acceptance criteria. Build implements the plan and records its result. Verify checks that completed build against the plan's acceptance criteria.
 
 - Before each stage, make sure `AGENTS.md` is in context; read it if the agent has not loaded it.
 - New features always start with `loop-feature` creating the feature document and workspace record, then plan → build → verify in order. Stage skills never open unregistered features or skip earlier outputs.
-- **One loop means one run of a `loop-*` skill.** Every run ends by reporting the results, unfinished items, and a suggested next step, then waiting for the user. Never chain the next skill, create background work, or open side tasks to bypass the stop.
+- **One run ends at a decision point, not at a stage boundary.** Every run ends by reporting the results, unfinished items, and a suggested next step, then waiting for the user. The only permitted chain is `loop-build → loop-verify` under the conditions above; never chain any other stage, create background work, or open side tasks to bypass a stop.
 - When the user says "continue" after a report, it only approves the proposed next step, not all later stages. If multiple next steps were proposed and the user did not choose, confirm the goal first.
 - A feature opened by `loop-feature` can be resumed directly with the matching stage skill; re-creating the feature each time is not needed. In a new conversation, read the feature document and actual workspace instead of relying on conversation memory or restarting the count.
 - You may propose returning to an earlier stage, but report first and let the user decide.
@@ -42,9 +54,9 @@ Status describes output progress; **it never means the user has approved the nex
 | --- | --- | --- |
 | No document | loop-feature | Open the feature first |
 | Planning | loop-plan | Requirement and workspace located |
-| Ready to build | loop-build | Plan complete and user approves implementation |
+| Ready to build | loop-build（完成後自動接 loop-verify） | Plan complete and user approves implementation |
 | Building | loop-build | Resume unfinished tasks |
-| Ready to verify | loop-verify | Build complete for the current plan cycle and fewer than 2 verify rounds used |
+| Ready to verify | loop-verify | 僅在 build 因 verify 次數用盡而停下、或使用者單獨要求驗證時出現 |
 | Verifying | Consolidate the interrupted results | No silent re-runs; close the round from its results and the current cycle's count |
 | Needs fix | loop-build; loop-plan for design issues | The current cycle's round 1 failed and the user decides to fix |
 | Done | none | All required checks and acceptance criteria have passing evidence |

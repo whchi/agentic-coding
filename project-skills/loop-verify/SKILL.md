@@ -9,7 +9,7 @@ Read the [shared workflow](../loop-feature/references/workflow.md) and [shared v
 
 ## Before verification
 
-1. Read the feature document and latest build handoff, implementation diff, and local check results in the recorded workspace. Confirm the build completed against the current plan cycle and the user approved verification. If no matching build result exists, report that build must finish first and stop.
+1. Read the feature document and latest build handoff, implementation diff, and local check results in the recorded workspace. Confirm the build completed against the current plan cycle. If no matching build result exists, report that build must finish first and stop. Verification normally starts automatically at the end of `loop-build`; it does not need separate user approval, because approving the plan already approved checking its implementation.
 2. **At most 2 verify rounds per plan cycle.** Read the current cycle and its count first; if the count is already `2 / 2`, do not start a new round. Follow the shared workflow's counting rules.
 3. Before running verification checks, increment the count, set status to "Verifying", and record the plan cycle, round, time, actual HEAD, and scope of uncommitted changes. Each round observes one implementation snapshot; HEAD alone cannot represent uncommitted changes.
 4. A started verification counts as one round, even if it fails, gets blocked, or is interrupted. After an interruption, consolidate existing evidence and mark what is unfinished; running further checks requires a new round and user approval within the current cycle's limit.
