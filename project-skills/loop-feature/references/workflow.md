@@ -8,26 +8,46 @@ This file is the source of truth for the order, handoffs, and verify-count rules
 loop-feature → report and stop
 loop-plan    → report and stop          ← the user's approval gate for implementation
 loop-build   → chain directly into loop-verify (same run)
-loop-verify  → report and stop (at most 2 rounds per plan cycle)
-                 pass → status Done
-                 fail → status Needs fix; the user decides fix vs re-plan
+loop-verify  round 1 pass → status Done; report and stop
+             round 1 fail
+               ├─ implementation defect → chain back into loop-build, fix, then verify round 2
+               └─ design / requirement problem → status Needs re-plan; report and stop
+             round 2 pass → status Done; report and stop
+             round 2 fail → status Verify limit; report and stop
 ```
 
-**Build and verify run as one unit.** A finished build is always verified in the same run: there is no
-useful decision for the user between "code written" and "code checked", and splitting them lets an
-unverified build sit around looking finished. The stops that remain are the ones where the user
-genuinely decides something — approving the plan before implementation, and choosing how to respond
-to a failed verification.
+**Build and verify run as one unit, and so does fixing an implementation defect.**
+A finished build is always verified in the same run, and a verification that fails on
+*implementation* goes straight back into build and uses the cycle's second verify round —
+there is no useful decision for the user between "the check found a defect" and "fix the defect";
+the answer is always "fix it". Stopping there just parks a known-broken build and asks a question
+whose answer was never in doubt.
 
-**The chain does not run when the current plan cycle has no verify round left**
-(`Verify count` already `2 / 2`). In that case build stops at "Ready to verify" and reports that the
-cycle's verification budget is exhausted; only explicit re-planning opens a new cycle.
+**The one failure that must still stop is a design or requirement problem** — the plan itself is
+wrong, so the fix is re-planning, which changes scope or acceptance criteria. That *is* the user's
+decision, and auto-fixing it digs the hole deeper. Judge by this: if the fix keeps the plan's scope
+and acceptance criteria intact, it is an implementation defect and the chain continues; if the fix
+requires changing them, stop and report.
+
+The whole chain is bounded and cannot run away: at most 2 verify rounds per plan cycle, and build's
+own 3-attempt limit per task still applies. When the budget is spent, verify stops at
+"Verify limit" and waits.
+
+The stops that remain are the ones where the user genuinely decides something — approving the plan
+before implementation, choosing whether to re-plan, and deciding what to do once the verify budget
+is exhausted.
+
+**No chain runs when the current plan cycle has no verify round left** (`Verify count` already
+`2 / 2`) — neither build → verify nor verify → build. In that case the run stops at
+"Ready to verify" or "Verify limit" and reports that the cycle's verification budget is exhausted;
+only explicit re-planning opens a new cycle.
 
 Plan defines the scope and acceptance criteria. Build implements the plan and records its result. Verify checks that completed build against the plan's acceptance criteria.
 
 - Before each stage, make sure `AGENTS.md` is in context; read it if the agent has not loaded it.
 - New features always start with `loop-feature` creating the feature document and workspace record, then plan → build → verify in order. Stage skills never open unregistered features or skip earlier outputs.
-- **One run ends at a decision point, not at a stage boundary.** Every run ends by reporting the results, unfinished items, and a suggested next step, then waiting for the user. The only permitted chain is `loop-build → loop-verify` under the conditions above; never chain any other stage, create background work, or open side tasks to bypass a stop.
+- **One run ends at a decision point, not at a stage boundary.** Every run ends by reporting the results, unfinished items, and a suggested next step, then waiting for the user. The only permitted chains are `loop-build → loop-verify` and, on an implementation-defect failure, `loop-verify → loop-build → loop-verify`, both under the conditions above; never chain any other stage, create background work, or open side tasks to bypass a stop.
+- **A chained run still reports every stage.** Auto-continuing does not mean reporting only the final outcome: the build result, each verify round, and the fix applied between them all appear in the feature document and in the run's report. The user must be able to see what broke without asking.
 - When the user says "continue" after a report, it only approves the proposed next step, not all later stages. If multiple next steps were proposed and the user did not choose, confirm the goal first.
 - A feature opened by `loop-feature` can be resumed directly with the matching stage skill; re-creating the feature each time is not needed. In a new conversation, read the feature document and actual workspace instead of relying on conversation memory or restarting the count.
 - You may propose returning to an earlier stage, but report first and let the user decide.
@@ -58,7 +78,8 @@ Status describes output progress; **it never means the user has approved the nex
 | Building | loop-build | Resume unfinished tasks |
 | Ready to verify | loop-verify | 僅在 build 因 verify 次數用盡而停下、或使用者單獨要求驗證時出現 |
 | Verifying | Consolidate the interrupted results | No silent re-runs; close the round from its results and the current cycle's count |
-| Needs fix | loop-build; loop-plan for design issues | The current cycle's round 1 failed and the user decides to fix |
+| Needs fix | loop-build（同一輪內自動接續） | The current cycle's round 1 found implementation defects; build resumes automatically and verify round 2 follows |
+| Needs re-plan | loop-plan | Round 1 found a design or requirement problem; fixing it would change scope or acceptance criteria, so the user decides |
 | Done | none | All required checks and acceptance criteria have passing evidence |
 | Verify limit | Stop; await the user's decision, including whether to re-plan | The current cycle's round 2 failed or is incomplete |
 

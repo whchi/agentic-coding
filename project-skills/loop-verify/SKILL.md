@@ -24,6 +24,7 @@ Read the [shared workflow](../loop-feature/references/workflow.md) and [shared v
 ## Results and stop
 
 - All required checks and acceptance criteria pass: set status to "Done" and the next step to "none". Report the evidence and follow-ups, then finish; do not start new features or release flows on your own.
-- Round 1 fails or is incomplete: set status to "Needs fix", list the issues, and suggest `loop-build <slug>` (or `loop-plan <slug>` for design issues). Let the user decide whether to continue; after fixes, report again and let the user decide whether to use verify round 2.
+- Round 1 fails or is incomplete **on implementation defects**: set status to "Needs fix", list the issues, then **continue directly into `loop-build` in the same run** to fix them, and run verify round 2 afterwards. Do not stop to ask — the answer to "should the defect be fixed" is always yes. Report the round-1 result before starting the fix, so the failure stays visible even if round 2 also fails.
+- Round 1 fails **on a design or requirement problem** — the plan itself is wrong and fixing it would change scope or acceptance criteria: set status to "Needs re-plan" and the next step to `loop-plan <slug>`. **Stop and let the user decide.** Never auto-fix by quietly narrowing an acceptance criterion.
 - Round 2 fails or is incomplete: set status to "Verify limit" and the next step to "stop". Report the remaining issues and the evidence obtained and missing; do not run a third round in this plan cycle or automatically start another build run.
 - Every report states the plan cycle, this round's result, and the cycle's count (`1 / 2` or `2 / 2`), including whether the feature passed.

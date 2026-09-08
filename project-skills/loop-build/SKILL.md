@@ -11,7 +11,7 @@ Read the [shared workflow](../loop-feature/references/workflow.md) and [shared v
 
 1. Read the feature document and relevant domain skills; confirm the workspace, actual diff, task progress, plan cycle, and verify count.
 2. A document created by `loop-feature` and a complete plan must exist, and the user must approve starting or resuming build for this run. If the status is still "Planning" or the plan lacks necessary decisions, report that plan must be completed first and stop.
-3. After the current plan cycle's first verification round fails, proceed only when the user decides to fix; add confirmed issues to the task list. Follow the shared workflow's verification budget and stop rules.
+3. After the current plan cycle's first verification round fails on implementation defects, `loop-verify` hands straight back here in the same run — no separate user approval is needed, because approving the plan already approved making its implementation match. Add the confirmed issues to the task list and fix only those; do not widen the scope while fixing. If the failure is a design or requirement problem, verify stops instead and the user decides. Follow the shared workflow's verification budget and stop rules.
 4. When starting implementation, record the user's instruction for the plan/fix and set status to "Building"; never treat a previous stage's suggestion as user authorization.
 
 ## Implement
@@ -24,6 +24,6 @@ Read the [shared workflow](../loop-feature/references/workflow.md) and [shared v
 ## Hand off to verify
 
 - When implementation tasks are done, record this build's outcome and plan cycle in "Decisions and handoffs". Set status to "Ready to verify" and the next step to `loop-verify <slug>`. This does not mean the feature is complete.
-- **Continue directly into `loop-verify` in the same run.** A finished build is always verified; the user has no useful decision to make between writing the code and checking it. Report the build result first, then start verification.
+- **Continue directly into `loop-verify` in the same run.** A finished build is always verified; the user has no useful decision to make between writing the code and checking it. Report the build result first, then start verification. This applies equally to a fix run handed back from a failed round 1 — it continues into verify round 2.
 - **Do not chain when the current plan cycle has no verify round left** (`Verify count` already `2 / 2`). Stop at "Ready to verify", report that the cycle's budget is exhausted, and let the user decide whether to re-plan.
 - Report the changes, local check results, unverified items, and remaining verify rounds before verification starts, so the build result stays readable even if verification then fails.
