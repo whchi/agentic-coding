@@ -226,9 +226,7 @@ GLOBAL_SKILLS=(
   grilling
   grill-with-docs
   handoff
-  iterative-retrieval
   maintainable-code-review
-  planning-with-files
   product-engineering-mvp
   project-structure-advisor
   repository-boundary-review
