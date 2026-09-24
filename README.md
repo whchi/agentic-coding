@@ -216,3 +216,4 @@ codegraph init -i
 ```
 - https://github.com/alchaincyf/nuwa-skill
 - https://youtu.be/tiN6T1LewmQ?si=QKDpz3RYGOYol90i
+- https://x.com/sairahul1/status/2102694818485096803?s=61&t=gcYoBbs7MKWkPpEtJ0C0Dw

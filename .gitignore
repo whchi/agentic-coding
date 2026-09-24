@@ -4,3 +4,4 @@ __pycache__/
 docs/audits/*
 /evals/results/*
 !/evals/results/.gitkeep
+.DS_Store
