@@ -7,7 +7,7 @@
 - Base ref / SHA:
 - Plan cycle: 1
 - Verify count: 0 / 2
-- Next step: loop-plan
+- Next step: feature-loop plan
 - Updated:
 
 ## Background and scope

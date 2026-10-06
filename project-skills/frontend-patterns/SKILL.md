@@ -1,6 +1,6 @@
 ---
 name: frontend-patterns
-description: Use when designing React or Next.js component structure, state placement, form patterns, accessibility, UI performance boundaries, or interaction behavior. Do NOT use for useEffect-specific rewrites, JS/TS language conventions, render-safe API adapters, or HTML slide decks.
+description: Use when designing React or Next.js component structure, state placement, form patterns, accessibility, UI performance boundaries, or interaction behavior. Do NOT use for useEffect-specific rewrites (`better-useeffect`), JS/TS language conventions (`js-ts-coding-standards`), render-safe API adapters (`frontend-robust-data-handling`), building or tuning an animation (`animate`), or HTML slide decks.
 origin: ECC
 ---
 
@@ -14,17 +14,18 @@ Use this skill when the task involves:
 - component structure: composition, compound components, controlled/uncontrolled APIs
 - state decisions: local state, lifted state, Context, reducer, Zustand/Jotai/Redux, server state
 - performance boundaries: interaction latency, virtualization, code splitting, measured render cost
-- UI patterns: forms, error boundaries, animation, accessibility
+- UI patterns: forms, error boundaries, accessibility
 
 Do NOT use when:
 - the task is specifically about removing or reviewing `useEffect` usage — use `better-useeffect`
 - the task is about JS/TS naming, immutability, async, or type standards — use `js-ts-coding-standards`
 - the task is about adapting raw backend payloads into stable UI view models — use `frontend-robust-data-handling`
 - the task is about slide decks — use the provider's presentation skill
+- the task is building or tuning a specific animation (whether to animate, easing, duration, springs, interruption, exit) — use `animate`
 
 ## Approach
 
-1. Identify the problem category: component structure, state, performance, forms, accessibility, or animation.
+1. Identify the problem category: component structure, state, performance, forms, or accessibility.
 2. Check existing project conventions before introducing a library or pattern.
 3. Choose the simplest pattern that fits the requirement.
 4. Use `references/examples.md` when the example fixes project style or non-obvious API details.
@@ -95,6 +96,9 @@ Required for interactive components:
 - visible focus indicators
 - semantic HTML first; ARIA only when native semantics are insufficient
 - screen-reader labels for custom controls
+- respect `prefers-reduced-motion`: fewer and gentler animations, not zero — keep opacity/color transitions that aid comprehension, remove movement and position changes
+- gate decorative hover effects (motion, lift, color shifts) behind `@media (hover: hover) and (pointer: fine)` so taps don't leave sticky hover states; never make an action or content reachable only by hover
+- never disable zoom (`user-scalable=no`, `maximum-scale=1`); if inputs zoom the page on iOS, set input font-size to at least 16px instead
 
 Common patterns:
 - Modals: trap focus, save previous focus, restore on close.
@@ -129,4 +133,4 @@ For code examples, see `references/examples.md`:
 - state patterns: Context + reducer
 - forms and error boundaries
 - performance: memoization, code splitting, virtualization
-- animation and accessibility
+- accessibility: keyboard navigation and focus management

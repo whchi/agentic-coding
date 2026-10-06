@@ -57,7 +57,7 @@ Skills are organized by scope (global vs project), which is orthogonal to which 
 compatibility: opencode        # or a list: [opencode, claude]
 ```
 
-A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install opencode-only skills like `planning-with-files`.
+A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install skills declared `compatibility: opencode`.
 
 Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. Gemini also supports `.agents/skills/` as an interoperable alias; this setup uses the canonical `.gemini/` paths.
 
@@ -77,9 +77,7 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 | `grilling` | Plan/design stress-testing via questioning |
 | `grill-with-docs` | Stress-test plans against project docs, domain language, code evidence, and ADRs |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
-| `iterative-retrieval` | Progressive context retrieval for large or unfamiliar codebases |
 | `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
-| `planning-with-files` | File-based planning artifacts for complex work _(opencode only)_ |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
@@ -91,17 +89,15 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 
 | Skill | Description |
 |---|---|
+| `animate` | Build a single web animation with the right purpose, curve, duration, interruption, and reduced-motion handling |
 | `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
-| `database-migrations` | Production-safe schema migration guidance |
-| `docker-patterns` | Docker / Compose architecture and troubleshooting |
+| `feature-loop` | Staged feature workflow: open → plan → build → verify, with a feature document and a 2-round verify budget |
 | `frontend-patterns` | React / Next.js component, state, performance, a11y |
 | `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
-| `loop-build` | Implement an approved feature plan, resume tasks, or fix verify findings |
-| `loop-feature` | Open (create or resume) a feature's document and workspace |
-| `loop-plan` | Plan an opened feature after user approval |
-| `loop-verify` | Verify a completed build against the feature plan and report evidence |
 | `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
+
+> `feature-loop` replaces the former `loop-feature`, `loop-plan`, `loop-build`, and `loop-verify` skills; old `loop-*` names in feature documents still map to its stages. Projects that installed the old skills keep them in their provider skills directory (e.g. `.claude/skills/loop-*`, `.agents/skills/loop-*`) — `setup.sh` no longer knows those names, so remove them manually.
 
 ### Commands
 
@@ -121,8 +117,8 @@ Gemini CLI discovers skills from `.gemini/skills/` and custom commands from `.ge
 | Area | Skills / Commands |
 |---|---|
 | Alignment | `grilling`, `grill-with-docs`, `write-a-prd` |
-| Context | `iterative-retrieval`, `zoom-out`, `update-codemaps` |
-| Delivery | `better-test-driven-development`, `debugging-playbook`, `concurrency-review`, `planning-with-files` |
+| Context | `zoom-out`, `update-codemaps` |
+| Delivery | `better-test-driven-development`, `debugging-playbook`, `concurrency-review` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `design-pattern-fit`, `ddd-fit-check` |
 | Handoff | `handoff` |
 
@@ -177,6 +173,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/pbakaus/impeccable
 - https://github.com/Leonxlnx/taste-skill
 - https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+- https://github.com/emilkowalski/skills `animate` 已 vendor 進 project-skills（`break-ui` 曾 vendor，後移除）；其餘（emil-design-eng, apple-design, mobile-native, animate-expo, write-swift, ask-sonner, animation-vocabulary, find-animation-opportunities）按需安裝：`npx skills@latest add emilkowalski/skills`；prototype, improve-animations, pick-ui-library 刻意不使用（決策紀錄：`docs/audits/emilkowalski-skills-fit-2026-10-06.md`）
 
 ### Commands
 - https://x.com/alvinsng/status/2033969062834045089

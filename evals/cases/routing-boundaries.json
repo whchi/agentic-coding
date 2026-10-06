@@ -3,6 +3,46 @@
   "suite": "skill-routing-boundaries",
   "cases": [
     {
+      "id": "feature-loop-plan-stage",
+      "prompt": "feature-loop plan coupon-checkout：幫這個已開好的 feature 做規劃，先不要寫程式。",
+      "expect": {
+        "activate": ["feature-loop"],
+        "not_activate": ["write-a-prd"]
+      }
+    },
+    {
+      "id": "feature-loop-legacy-name",
+      "prompt": "docs/features/coupon-checkout.md 的下一步寫 loop-build，照它繼續。",
+      "expect": {
+        "activate": ["feature-loop"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "one-off-fix-not-feature-loop",
+      "prompt": "把 header 的 logo 往左移 4px，順便修掉 console 的 key warning。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["feature-loop"]
+      }
+    },
+    {
+      "id": "plain-feature-request-not-feature-loop",
+      "prompt": "幫我在後台加一個 CSV 匯出功能。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["feature-loop"]
+      }
+    },
+    {
+      "id": "trivial-local-edit-not-zoom-out",
+      "prompt": "把 formatPrice 函式裡的變數 recieve 改名成 receive。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["zoom-out"]
+      }
+    },
+    {
       "id": "debug-unknown-cause",
       "prompt": "API 偶發 500，log 看不出規律。請先找出 root cause 並說明證據，不要修改程式。",
       "expect": {
@@ -111,14 +151,6 @@
       "prompt": "在修改陌生的 payments module 前，先畫出它的目的、callers、dependencies、invariants 和系統責任。",
       "expect": {
         "activate": ["zoom-out"],
-        "not_activate": ["iterative-retrieval"]
-      }
-    },
-    {
-      "id": "iterative-large-context",
-      "prompt": "我要做跨多個 packages 的 refactor，但現在無法預測相關檔案，而且一次載入 monorepo 會超過 context。請逐步找出需要的 context。",
-      "expect": {
-        "activate": ["iterative-retrieval"],
         "not_activate": []
       }
     },
@@ -143,6 +175,22 @@
       "prompt": "這個尚未驗證的 MVP，auth 和 search 應該買 managed service 還是自己做？請比較成本、速度與學習價值。",
       "expect": {
         "activate": ["product-engineering-mvp"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "dropdown-open-animation",
+      "prompt": "幫這個 dropdown 加上開啟動畫，要從 trigger 的位置展開，並處理快速連點和 prefers-reduced-motion。",
+      "expect": {
+        "activate": ["animate"],
+        "not_activate": ["frontend-patterns"]
+      }
+    },
+    {
+      "id": "frontend-missing-fields-design",
+      "prompt": "後端有時會漏掉欄位或回傳 null，頁面就 crash。請設計前端該怎麼處理這些資料，不要只在元件裡到處加 optional chaining。",
+      "expect": {
+        "activate": ["frontend-robust-data-handling"],
         "not_activate": []
       }
     }

@@ -236,14 +236,12 @@ GLOBAL_SKILLS=(
 )
 
 PROJECT_SKILLS=(
+  animate
   better-useeffect
+  feature-loop
   frontend-patterns
   frontend-robust-data-handling
   js-ts-coding-standards
-  loop-build
-  loop-feature
-  loop-plan
-  loop-verify
   pure-function-pattern
 )
 
