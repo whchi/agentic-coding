@@ -112,7 +112,6 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
 | `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
 
-> `feature-loop` replaces the former `loop-feature`, `loop-plan`, `loop-build`, and `loop-verify` skills; old `loop-*` names in feature documents still map to its stages. Projects that installed the old skills keep them in their provider skills directory (e.g. `.claude/skills/loop-*`, `.agents/skills/loop-*`) — `setup.sh` no longer knows those names, so remove them manually.
 
 ### Commands
 

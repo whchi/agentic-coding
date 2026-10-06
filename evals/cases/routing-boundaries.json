@@ -11,14 +11,6 @@
       }
     },
     {
-      "id": "feature-loop-legacy-name",
-      "prompt": "docs/features/coupon-checkout.md 的下一步寫 loop-build，照它繼續。",
-      "expect": {
-        "activate": ["feature-loop"],
-        "not_activate": []
-      }
-    },
-    {
       "id": "one-off-fix-not-feature-loop",
       "prompt": "把 header 的 logo 往左移 4px，順便修掉 console 的 key warning。",
       "expect": {
