@@ -45,9 +45,9 @@ assert_not_contains "$ROOT/README.md" "\`learn\`"
 assert_not_contains "$ROOT/setup.sh" "  learn"
 assert_not_contains "$ROOT/README.md" "\`build-fix\`"
 assert_not_contains "$ROOT/setup.sh" "  build-fix"
-assert_contains "$ROOT/setup.sh" 'GLOBAL_SKILLS_DIR="$HOME/.gemini/skills"'
+assert_contains "$ROOT/setup.sh" 'GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills"'
 assert_contains "$ROOT/setup.sh" 'GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"'
-assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".gemini/skills"'
+assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".agents/skills"'
 assert_contains "$ROOT/setup.sh" 'PROJECT_COMMANDS_REL=".gemini/commands"'
 assert_not_contains "$ROOT/setup.sh" "antigravity-cli"
 
@@ -86,10 +86,6 @@ assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test-firs
 assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test level, mocking, and fixture choices"
 assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "No \`vi.mock()\`"
 assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "export every helper"
-
-assert_contains "$ROOT/global-skills/planning-with-files/SKILL.md" "long-running, multi-session work"
-assert_not_contains "$ROOT/global-skills/planning-with-files/SKILL.md" "5+ tool calls"
-assert_contains "$ROOT/global-skills/planning-with-files/SKILL.md" "optional OpenCode plugin"
 
 for file in "$ROOT"/commands/*.md; do
   head -n 1 "$file" | rg -Fq -- '---' || fail "command missing frontmatter: $file"

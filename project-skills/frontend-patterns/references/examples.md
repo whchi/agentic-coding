@@ -145,12 +145,15 @@ export function useItems() {
 ```typescript
 export function NameForm({ onSubmit }: { onSubmit: (name: string) => void }) {
   const [name, setName] = useState('')
+  const [showError, setShowError] = useState(false)
   const error = name.trim() ? null : 'Name is required'
+  const visibleError = showError ? error : null
 
   return (
     <form
       onSubmit={event => {
         event.preventDefault()
+        setShowError(true)
         if (!error) onSubmit(name.trim())
       }}
     >
@@ -159,11 +162,12 @@ export function NameForm({ onSubmit }: { onSubmit: (name: string) => void }) {
         id="name"
         value={name}
         onChange={event => setName(event.target.value)}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? 'name-error' : undefined}
+        onBlur={() => setShowError(true)}
+        aria-invalid={Boolean(visibleError)}
+        aria-describedby={visibleError ? 'name-error' : undefined}
       />
-      {error && <p id="name-error">{error}</p>}
-      <button type="submit" disabled={Boolean(error)}>Save</button>
+      {visibleError && <p id="name-error">{visibleError}</p>}
+      <button type="submit">Save</button>
     </form>
   )
 }
@@ -279,33 +283,9 @@ export function VirtualItemList({ items }: { items: Item[] }) {
 }
 ```
 
-## Animation
-
-### Framer Motion
-
-```typescript
-import { motion, AnimatePresence } from 'framer-motion'
-
-export function AnimatedItemList({ items }: { items: Item[] }) {
-  return (
-    <AnimatePresence>
-      {items.map(item => (
-        <motion.div
-          key={item.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ItemRow item={item} />
-        </motion.div>
-      ))}
-    </AnimatePresence>
-  )
-}
-```
-
 ## Accessibility
+
+Prefer the project's accessible primitives or native elements (`<dialog>`, `<select>`) before hand-rolling; these sketches show the required keyboard and focus behavior.
 
 ### Keyboard Navigation
 
@@ -335,7 +315,7 @@ export function Dropdown({ options, onSelect }: DropdownProps) {
     }
   }
 
-  return <div role="combobox" aria-expanded={isOpen} aria-haspopup="listbox" onKeyDown={handleKeyDown} />
+  return <div role="combobox" tabIndex={0} aria-expanded={isOpen} aria-haspopup="listbox" onKeyDown={handleKeyDown} />
 }
 ```
 
@@ -343,22 +323,16 @@ export function Dropdown({ options, onSelect }: DropdownProps) {
 
 ```typescript
 export function Modal({ isOpen, onClose, children }: ModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const previousFocusRef = useRef<HTMLElement | null>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
-    if (isOpen) {
-      previousFocusRef.current = document.activeElement as HTMLElement
-      modalRef.current?.focus()
-    } else {
-      previousFocusRef.current?.focus()
-    }
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (isOpen && !dialog.open) dialog.showModal()
+    if (!isOpen && dialog.open) dialog.close()
   }, [isOpen])
 
-  return isOpen ? (
-    <div ref={modalRef} role="dialog" aria-modal="true" tabIndex={-1} onKeyDown={event => event.key === 'Escape' && onClose()}>
-      {children}
-    </div>
-  ) : null
+  // showModal() makes the page behind it inert and closes on Escape; on close, the browser returns focus to the opener.
+  return <dialog ref={dialogRef} onClose={onClose}>{children}</dialog>
 }
 ```

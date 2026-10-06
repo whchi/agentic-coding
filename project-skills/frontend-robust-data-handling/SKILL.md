@@ -1,6 +1,6 @@
 ---
 name: frontend-robust-data-handling
-description: Use when frontend code consumes backend data, needs null object/default object handling, protects UI rendering from missing fields, or designs adapters between API payloads and UI state. Do NOT use for general React architecture or API contract design.
+description: Use when frontend rendering must stay stable despite missing, null, partial, or changing backend data, including adapters between API payloads and UI view models, null object/default handling, and explicit empty/partial/error states. Do NOT use for general React architecture or server-state library choice (`frontend-patterns`), or API contract design (`api-design`).
 ---
 
 # Frontend Robust Data Handling
@@ -23,12 +23,12 @@ Frontend code should protect the render layer from raw backend uncertainty. Use 
 
 1. Identify the API payload and the UI model separately.
 2. Create a mapping/adaptation boundary near data fetching.
-3. Normalize optional fields into explicit defaults where the UI expects stable values.
+3. Normalize optional fields into explicit defaults, and unknown enum values into an explicit fallback variant, where the UI expects stable values.
 4. Use null object patterns for common missing nested objects.
 5. Keep loading, empty, error, and partial-data states explicit.
 6. Do not let raw backend shape leak through many components.
 7. Preserve meaningful absence when the UI must distinguish unknown, empty, and unavailable.
-8. Add tests for absent fields, empty lists, partial nested objects, and invalid enum values.
+8. Add tests for absent fields, `null`/`undefined`/`NaN` that would otherwise render literally, empty lists, partial nested objects mixed within the same list, every enum value at once including an unknown one, and API error payloads.
 
 ## Patterns
 

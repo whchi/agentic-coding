@@ -1,6 +1,6 @@
 ---
 name: concurrency-review
-description: Use when reviewing or writing code where a decision and the action it authorizes are separated in time — check-then-act sequences, read-modify-write updates, counters, balance or inventory deduction, lock selection, retried or replayed operations, and cache invalidation. Covers application code, database access, and cross-process coordination. Do NOT use as the primary skill for single-threaded logic bugs, general performance tuning, or migration mechanics.
+description: Use when reviewing or writing code for race conditions or idempotency — anywhere a decision and the action it authorizes are separated in time, such as check-then-act sequences, read-modify-write updates, counters, balance or inventory deduction, lock selection, retried or replayed operations, and cache invalidation. Covers application code, database access, and cross-process coordination. Do NOT use as the primary skill for diagnosing an already-observed failure (`debugging-playbook`), React effect races (`better-useeffect`), single-threaded logic bugs, general performance tuning, or schema-change and backfill mechanics.
 ---
 
 # Concurrency Review
@@ -12,8 +12,7 @@ Concurrency bugs are invisible to sequential reading. The code is correct for on
 Use related skills for narrower ownership questions:
 
 - `repository-boundary-review` for whether behavior belongs in persistence, application, or domain code.
-- `database-migrations` for schema change mechanics and backfill batching.
-- `api-design` for endpoint-level idempotency keys and retry contracts.
+- `api-design` for the HTTP contract of retryable endpoints: method idempotency, status codes, and `Retry-After`.
 - `better-useeffect` for React effect re-entry and stale-closure races.
 - `debugging-playbook` when an intermittent failure is already observed and needs diagnosis.
 
@@ -64,7 +63,7 @@ An update path with none of these and no stated reason is the finding.
 
 **Non-idempotent retries.** Any operation reachable by a client retry, a queue redelivery, a webhook replay, or an at-least-once consumer must produce the same end state when it runs twice. Look for a natural idempotency key or a deduplication record; a bare `INSERT` on a retried path is a finding.
 
-**Lock and transaction scope errors.** Side effects that escape the transaction that authorizes them: publishing an event, calling an external service, or releasing a lock before commit. If the transaction then rolls back, the outside world has already been told.
+**Lock and transaction scope errors.** Side effects that escape the transaction that authorizes them: publishing an event, calling an external service, or releasing a lock before commit. If the transaction then rolls back, the outside world has already been told. Moving the side effect after commit trades this for a lost effect if the process dies in between; when the effect must not be lost, write it to an outbox in the same transaction and publish from there.
 
 **Cache invalidation races.** A write that updates the store and then deletes the cache key can be interleaved by a concurrent read that repopulates the cache with the pre-write value. Ask what the cache holds if the read's fetch and the write's delete land in the wrong order.
 
@@ -78,7 +77,7 @@ Good signs:
 - Uniqueness is enforced by a constraint, not by a prior existence check.
 - Retryable operations carry an idempotency key or deduplication record.
 - The lock strategy is named and matched to expected contention.
-- External calls and event publishing happen after commit, not inside it.
+- External calls and event publishing happen after commit, or through an outbox written in the same transaction — not inside it.
 
 Bad smells:
 

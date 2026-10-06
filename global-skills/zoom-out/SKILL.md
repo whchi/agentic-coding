@@ -1,6 +1,6 @@
 ---
 name: zoom-out
-description: Use when an unfamiliar code area needs a higher-level map before editing, including module purpose, upstream/downstream callers, domain responsibility, invariants, and how it fits the broader system. Pairs well with iterative-retrieval for large codebases.
+description: Use when an unfamiliar code area needs a higher-level map before editing, including module purpose, upstream/downstream callers, domain responsibility, invariants, and how it fits the broader system. Do NOT use for a local edit whose callers and side effects are already visible in the code being changed.
 ---
 
 # Zoom Out
@@ -16,15 +16,7 @@ Do not start by changing code. Build a system-level map of the area first.
    - downstream dependencies
    - public interfaces and entry points
    - related tests, fixtures, and docs
-4. Describe the target at one layer higher than the code:
-   - what module or product area it belongs to
-   - what domain responsibility it owns
-   - what it depends on
-   - who depends on it
-   - what invariants must not break
-   - whether the abstraction is deep or shallow
-
-Use `iterative-retrieval` when the relevant files cannot be predicted in one pass.
+4. Fill the map below one layer above the code. Under **Change risk**, say whether the abstraction is deep (a small interface hiding real behavior) or shallow (callers must understand its implementation).
 
 ## Output
 
