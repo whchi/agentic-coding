@@ -47,6 +47,7 @@ cd ~/agentic-coding
 | `global-skills/` | Provider global skills directory (see below) | Cross-project engineering skills |
 | `project-skills/` | Provider project skills directory (see below) | Stack-specific or project-local engineering skills |
 | `commands/` | Provider commands / prompts directory (see below) | Reusable command templates |
+| `coding-agent-flow/` | Not installed | Skills for a future coding-agent workflow, kept together as one package; `setup.sh` does not install these yet. |
 | `general-skills/` | Not installed | Non-engineering or draft skills kept for reference; `setup.sh` does not install these. Copy manually when needed. |
 
 Install targets, as defined in `setup.sh`:
@@ -125,6 +126,15 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `debug-triage` | Environment/data/logic debugging triage |
 | `mock-or-not` | Test dependency mock/fake/real decision checklist |
 | `update-codemaps` | Code map update workflow |
+
+### Coding Agent Flow (not installed)
+
+Skills that will make up a future coding-agent workflow. Kept in `coding-agent-flow/` as one package and not installed by `setup.sh`; copy manually when needed.
+
+| Skill | Description |
+|---|---|
+| `requirement-breakdown` | Turn requirements into user goals, Gherkin scenarios, and a tracker-agnostic `cards.json` backlog |
+| `requirement-to-jira` | Create, update, or reconcile Jira cards from a `cards.json` via Jira MCP (depends on `requirement-breakdown`) |
 
 ### General Skills (not installed)
 
