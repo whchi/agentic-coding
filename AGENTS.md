@@ -129,6 +129,19 @@ Before any destructive operation:
 - Wait for explicit approval in the current conversation.
 - Past approval, general cleanup requests, or inferred intent do not count.
 
+## 9. Enforce the Worktree Development and Verification Order
+
+**Mandatory: parallel development → serial merges → post-merge e2e / feature tests. Agents must not bypass this order.**
+
+- Development worktrees may run only unit tests, lint, and type checks. All third-party dependencies in unit tests must be mocked; do not call real third-party services.
+- Do not run e2e, feature, integration, or other cross-component verification in development worktrees.
+- Merge worktree changes into the integration target one at a time. Never perform concurrent merges.
+- Run e2e and feature tests against the combined result in the integration target only after the planned serial merges are complete.
+- Agents must not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.
+- General verification requirements elsewhere in this file do not authorize broader testing in development worktrees. Report the permitted local checks and explicitly mark e2e / feature verification as pending until it has run after merging.
+
+This rule prevents redundant cross-validation from delaying merges. Agents must not expand the verification scope on their own.
+
 ---
 
 **These guidelines are working if:** diffs become smaller, unnecessary rewrites decrease, overcomplication decreases, silent failures become visible, risky operations require approval, and agents ask clarifying questions before making correctness-affecting mistakes.
