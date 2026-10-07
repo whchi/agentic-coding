@@ -131,14 +131,14 @@ Before any destructive operation:
 
 ## 9. Enforce the Worktree Development and Verification Order
 
-**Mandatory: parallel development → serial merges → post-merge e2e / feature tests. Agents must not bypass this order.**
+**Mandatory: parallel development with scoped verification → serial merges → full post-merge e2e / feature suites. Agents must not bypass this order.**
 
-- Development worktrees may run only unit tests, lint, and type checks. All third-party dependencies in unit tests must be mocked; do not call real third-party services.
-- Do not run e2e, feature, integration, or other cross-component verification in development worktrees.
+- Development worktrees may run unit tests, lint, and type checks. All third-party dependencies in unit tests must be mocked; do not call real third-party services in unit tests.
+- Feature and e2e tests in a development worktree must be limited to the behavior changed by that worktree. Do not run full suites, unrelated tests, or broader integration / cross-component verification in development worktrees.
 - Merge worktree changes into the integration target one at a time. Never perform concurrent merges.
-- Run e2e and feature tests against the combined result in the integration target only after the planned serial merges are complete.
+- Run the full e2e and feature suites against the combined result in the integration target only after the planned serial merges are complete.
 - Agents must not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.
-- General verification requirements elsewhere in this file do not authorize broader testing in development worktrees. Report the permitted local checks and explicitly mark e2e / feature verification as pending until it has run after merging.
+- General verification requirements elsewhere in this file do not authorize broader testing in development worktrees. Report local checks and the scope of feature / e2e tests run; explicitly mark full-suite verification as pending until it has run after merging.
 
 This rule prevents redundant cross-validation from delaying merges. Agents must not expand the verification scope on their own.
 
