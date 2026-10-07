@@ -58,7 +58,7 @@ Install targets, as defined in `setup.sh`:
 | codex | `~/.agents/skills/` | `~/.codex/prompts/` | `.agents/skills/` | `.codex/prompts/` |
 | claude | `~/.claude/skills/` | `~/.claude/commands/` | `.claude/skills/` | `.claude/commands/` |
 | gemini | `~/.gemini/config/skills/` | `~/.gemini/commands/` (TOML) | `.agents/skills/` | `.gemini/commands/` (TOML) |
-| pi | `~/.pi/agent/skills/` | `~/.pi/agent/prompts/` | `.pi/skills/` | `.pi/prompts/` |
+| pi | `~/.agents/skills/` | `~/.pi/agent/prompts/` | `.agents/skills/` | `.pi/prompts/` |
 | `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see `evals/README.md` |
 | `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
@@ -76,7 +76,7 @@ A skill **with** this field installs only for the listed providers; a skill **wi
 
 Gemini CLI custom commands live in `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. For skills, this setup installs Gemini globally to `~/.gemini/config/skills/` and per project to the interoperable `.agents/skills/` path (shared with Codex).
 
-[Pi](https://pi.dev/docs/latest/skills) discovers skills in `~/.pi/agent/skills/` and `.pi/skills/`. Its [prompt templates](https://pi.dev/docs/latest/prompt-templates) are Markdown files in `~/.pi/agent/prompts/` and `.pi/prompts/`, so `setup.sh pi ...` installs repository commands unchanged.
+[Pi](https://pi.dev/docs/latest/skills) discovers skills in `~/.agents/skills/` and `.agents/skills/` (shared with Codex). Its [prompt templates](https://pi.dev/docs/latest/prompt-templates) are Markdown files in `~/.pi/agent/prompts/` and `.pi/prompts/`, so `setup.sh pi ...` installs repository commands unchanged.
 
 ### Global Skills
 

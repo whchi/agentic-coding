@@ -24,8 +24,10 @@
 # Gemini global commands -> ~/.gemini/commands/
 # Gemini project skills -> .agents/skills/ (current working directory)
 # Gemini project commands -> .gemini/commands/ (current working directory)
-# Pi global installs -> ~/.pi/agent/
-# Pi project installs -> .pi/ (current working directory)
+# Pi global skills -> ~/.agents/skills/
+# Pi global commands -> ~/.pi/agent/prompts/
+# Pi project skills -> .agents/skills/ (current working directory)
+# Pi project commands -> .pi/prompts/ (current working directory)
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
@@ -80,9 +82,9 @@ elif [[ "$PROVIDER" == "gemini" ]]; then
   PROJECT_SKILLS_REL=".agents/skills"
   PROJECT_COMMANDS_REL=".gemini/commands"
 elif [[ "$PROVIDER" == "pi" ]]; then
-  GLOBAL_SKILLS_DIR="$HOME/.pi/agent/skills"
+  GLOBAL_SKILLS_DIR="$HOME/.agents/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.pi/agent/prompts"
-  PROJECT_SKILLS_REL=".pi/skills"
+  PROJECT_SKILLS_REL=".agents/skills"
   PROJECT_COMMANDS_REL=".pi/prompts"
 else
   GLOBAL_SKILLS_DIR="$HOME/.agents/skills"

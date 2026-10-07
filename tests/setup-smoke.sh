@@ -101,7 +101,7 @@ output="$(
     "$ROOT/setup.sh" pi install all --global --dry-run
 )"
 
-assert_contains "$output" "dry-run mkdir -p $PI_HOME/.pi/agent/skills"
+assert_contains "$output" "dry-run mkdir -p $PI_HOME/.agents/skills"
 assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $PI_HOME/.pi/agent/prompts/debug-triage.md"
 
 (
@@ -109,7 +109,7 @@ assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $P
     "$ROOT/setup.sh" pi install all --global
 )
 
-assert_file "$PI_HOME/.pi/agent/skills/api-design/SKILL.md"
+assert_file "$PI_HOME/.agents/skills/api-design/SKILL.md"
 assert_file "$PI_HOME/.pi/agent/prompts/debug-triage.md"
 cmp -s "$ROOT/commands/debug-triage.md" "$PI_HOME/.pi/agent/prompts/debug-triage.md" || fail "Pi command should remain Markdown"
 
@@ -118,7 +118,7 @@ output="$(
     "$ROOT/setup.sh" pi install all --project --target "$TARGET" --dry-run
 )"
 
-assert_contains "$output" "dry-run mkdir -p $TARGET/.pi/skills"
+assert_contains "$output" "dry-run mkdir -p $TARGET/.agents/skills"
 assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $TARGET/.pi/prompts/debug-triage.md"
 
 (
@@ -126,7 +126,7 @@ assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $T
     "$ROOT/setup.sh" pi install all --project --target "$TARGET"
 )
 
-assert_file "$TARGET/.pi/skills/frontend-patterns/SKILL.md"
+assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
 assert_file "$TARGET/.pi/prompts/debug-triage.md"
 
 (
