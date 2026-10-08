@@ -1,56 +1,18 @@
 ---
 name: frontend-robust-data-handling
-description: Use when frontend rendering must stay stable despite missing, null, partial, or changing backend data, including adapters between API payloads and UI view models, null object/default handling, and explicit empty/partial/error states. Do NOT use for general React architecture or server-state library choice (`frontend-patterns`), or API contract design (`api-design`).
+description: Keep UI rendering stable when API payloads contain missing, null, partial, or unknown values; use for render-safe adapters and explicit data states.
 ---
 
 # Frontend Robust Data Handling
 
-Use this skill when UI rendering should stay stable despite incomplete, missing, or changing backend data.
+Separate the API payload from the UI model when their contracts differ. Put normalization near the data boundary rather than scattering fallback logic across components.
 
-## Boundaries
+- Normalize optional fields and unknown enum values only where the actual payload contract requires it.
+- Use a null object for a missing nested object when it simplifies rendering without erasing meaning.
+- Preserve distinctions between unknown, empty, unavailable, loading, and error when they affect the user.
+- Keep partial data usable: one missing relation should not break unrelated rows or the whole page.
+- Reuse the project's data layer; this skill does not require a new adapter abstraction for an already stable payload.
 
-Use related skills for adjacent concerns:
+Check the malformed or partial inputs permitted by the contract, including mixed completeness within a list. Verify that defaults neither render raw `null`/`undefined`/`NaN` nor conceal a business error. Cover unknown enum values when the API can introduce them.
 
-- `frontend-patterns` for component architecture, forms, state placement, performance, accessibility, and server-state library choices.
-- `api-design` when the backend API contract itself should change.
-- `testing-strategy` for choosing unit/integration/e2e coverage shape.
-
-## Principle
-
-Frontend code should protect the render layer from raw backend uncertainty. Use adapters, defaults, and null object patterns so missing data creates intentional UI states instead of runtime errors or broken display.
-
-## Workflow
-
-1. Identify the API payload and the UI model separately.
-2. Create a mapping/adaptation boundary near data fetching.
-3. Normalize optional fields into explicit defaults, and unknown enum values into an explicit fallback variant, where the UI expects stable values.
-4. Use null object patterns for common missing nested objects.
-5. Keep loading, empty, error, and partial-data states explicit.
-6. Do not let raw backend shape leak through many components.
-7. Preserve meaningful absence when the UI must distinguish unknown, empty, and unavailable.
-8. Add tests for absent fields, `null`/`undefined`/`NaN` that would otherwise render literally, empty lists, partial nested objects mixed within the same list, every enum value at once including an unknown one, and API error payloads.
-
-## Patterns
-
-Good:
-
-- `toUserViewModel(apiUser)` maps raw API to render-safe data.
-- Components receive stable arrays, strings, booleans, and known variants.
-- Missing optional relations become explicit empty/null object states.
-
-Bad:
-
-- Deep optional chaining throughout the component tree.
-- UI branches directly on raw backend status strings.
-- One missing nested field breaks the whole page.
-- Defaults erase important business meaning.
-
-## Output
-
-Return:
-
-- Raw data risks
-- Suggested UI model
-- Adapter/default strategy
-- States to render
-- Tests to add
+Explain the data risk, chosen UI state, and verification result. API contract redesign and general component architecture are separate decisions.

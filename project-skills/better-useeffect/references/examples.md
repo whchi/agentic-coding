@@ -90,7 +90,9 @@ function LikeButton() {
 }
 ```
 
-## 4. Restrict mount-only external sync to `useMountEffect`
+## 4. Mount-only external synchronization
+
+Use this wrapper only when all captured inputs remain valid for that mounted instance. It is a local convention, not a substitute for reactive dependencies. Setup that allocates a resource needs matching cleanup and must tolerate repeated setup/cleanup.
 
 ```typescript
 function useMountEffect(callback: () => void | (() => void)) {
@@ -101,7 +103,7 @@ function useMountEffect(callback: () => void | (() => void)) {
 ### Conditional mounting instead of guarding inside an effect
 
 ```typescript
-// Bad: effect waits for props to become ready
+// Keep this reactive form when playback must track isLoading changes.
 function VideoPlayer({ isLoading }: { isLoading: boolean }) {
   useEffect(() => {
     if (!isLoading) {
@@ -110,7 +112,7 @@ function VideoPlayer({ isLoading }: { isLoading: boolean }) {
   }, [isLoading]);
 }
 
-// Good: mount only when the component is actually ready
+// Alternative: mount only when ready, if resetting the instance is intended.
 function VideoPlayerWrapper({ isLoading }: { isLoading: boolean }) {
   if (isLoading) {
     return <LoadingScreen />;
@@ -144,14 +146,14 @@ function VideoPlayerContainer({ isLoading }: { isLoading: boolean }) {
 ## 5. Reset with `key`
 
 ```typescript
-// Bad: effect tries to simulate remount behavior
+// Appropriate when video changes without resetting the rest of the instance.
 function VideoPlayer({ videoId }: { videoId: string }) {
   useEffect(() => {
     loadVideo(videoId);
   }, [videoId]);
 }
 
-// Good: mount-only load plus parent-controlled remount
+// Alternative when each video should get a fresh instance and local state.
 function VideoPlayer({ videoId }: { videoId: string }) {
   useMountEffect(() => {
     loadVideo(videoId);

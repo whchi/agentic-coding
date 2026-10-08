@@ -20,13 +20,13 @@ Requirements, expected behavior, non-goals.
 
 ## Design
 
-Data model, API contracts, UI states and interactions; note why inapplicable parts do not apply.
+Only the affected data model, API contracts, UI states, or interactions.
 
 ## Tasks
 
 - [ ] T-1: Change scope, dependent tasks, matching ACs, verification method.
 
-Throughput checkpoint:
+Throughput checkpoint (only for parallel work; omit otherwise):
 
 - Blocking steps:
 - Parallel streams:

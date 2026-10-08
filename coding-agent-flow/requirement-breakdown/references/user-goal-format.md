@@ -1,8 +1,8 @@
 # `user-goal.md` 骨架
 
-步驟 1–3 的產出。BDD 就寫在 Scenario 底下，不另開第二個檔案。一個主題一個目錄，來源快照放在同層的 `source/`。
+釐清 Goal、撰寫 Scenario 與 review 時的文件格式。BDD 寫在 Scenario 底下，不另開第二個檔案；來源快照放在同層的 `source/` 或沿用既有位置。
 
-術語定義不寫在這個檔案裡。主題有術語爭議、改用 `grill-with-docs` 時，術語放同層的 `CONTEXT.md`（見 `review-and-grill.md`）；`user-goal.md` 的「共同前提」只放規則。
+有需要獨立維護的術語時放同層 `CONTEXT.md`；「共同前提」放跨 Goal 的規則。簡單且無歧義的名詞不必另建文件。
 
 ````markdown
 # <主題> — User Goals & BDD

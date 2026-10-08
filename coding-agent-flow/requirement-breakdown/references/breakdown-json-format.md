@@ -1,10 +1,10 @@
-# 步驟 4 的兩個產出
+# 卡片清單的兩個產出
 
 同一批內容兩種形狀：`breakdown.md` 給人讀，`cards.json` 給建卡用。卡數、點數、Summary 必須一致，改一邊就要改另一邊。
 
 # `cards.json` — 固定格式
 
-步驟 5 **唯一**的建卡依據。一張卡一個物件，欄位固定。tracker 專屬的東西全部收在 `meta.target` 裡，其餘與任何 issue tracker 無關。
+交棒時的建卡依據。一張卡一個物件，欄位固定。tracker 專屬設定收在 `meta.target` 裡，其餘與 issue tracker 無關。
 
 ```jsonc
 {
@@ -54,7 +54,7 @@
 - 檔案本身是標準 JSON（上面的 `//` 只是這份說明的註解，實際檔案不要寫註解）。
 - `gherkin` 用 `\n` 換行；步驟文字與 `user-goal.md` 的 Scenario 一字不差，只去掉 markdown 粗體與條列符號、加上 `Feature:`／`Scenario:` 表頭與編號。
 - `tasks` 有值時，每個物件的 `title` 是一個子項的標題，掛在這張卡底下、不另計點。子項有自己的 `key`，建一張回填一張，重跑時 `key` 非 null 的跳過。
-- `key` 決定下游動作：null → 建新卡；有值 → 已存在，先讀 tracker 現況再改（見 `SKILL.md` Step 5）。`cards.json` 是建卡當下的快照，不是 tracker 上卡片的即時內容。
+- `key` 決定下游動作：null → 先排除已建卡再建立；有值 → 先讀 tracker 現況再改（見 `SKILL.md` 交棒邊界）。`cards.json` 是快照，不是 tracker 的即時內容。
 - `points` 的單位由 `meta.estimate` 定義。沒有 `meta.estimate` 的 `cards.json` 不算完成。
 - 「來源落差」不進 JSON，只留在 `breakdown.md`——它們是要回頭問人的問題，不是卡。
 
@@ -94,11 +94,11 @@
 - `points` 都是正數，沒有為了壓上限而改小的數字
 - `meta.estimate` 三個欄位都有值
 - 「來源落差」裡每一項都標了影響哪幾張卡，且那幾張卡的點數是按暫採的讀法估的
-- 初次建卡前所有 `key` 都是 null；重跑時只有 `key` 為 null 的會被建立
+- 未建立也未對應既有 issue 的 `key` 才是 null；重跑時已有 key 的不重建
 
 # `breakdown.md` 骨架
 
-章節順序固定。
+以下是建議章節順序；保留追溯與估點資訊即可，不必為格式重寫既有文件。
 
 ````markdown
 # <主題> — 拆解與建卡清單

@@ -1,136 +1,35 @@
 ---
 name: frontend-patterns
-description: Use when designing React or Next.js component structure, state placement, form patterns, accessibility, UI performance boundaries, or interaction behavior. Do NOT use for useEffect-specific rewrites (`better-useeffect`), JS/TS language conventions (`js-ts-coding-standards`), render-safe API adapters (`frontend-robust-data-handling`), building or tuning an animation (`animate`), or HTML slide decks.
+description: Choose React or Next.js component, state, form, and accessibility patterns when designing or restructuring interactive UI.
 origin: ECC
 ---
 
 # Frontend Development Patterns
 
-Modern frontend patterns for React, Next.js, and performant interfaces. This skill owns frontend architecture and UI behavior decisions, not language-level JavaScript/TypeScript standards.
+Use the project's existing component and data layers. Choose patterns for the interaction being changed; ordinary UI work does not require an architecture overhaul.
 
-## When To Use
+## Component and state decisions
 
-Use this skill when the task involves:
-- component structure: composition, compound components, controlled/uncontrolled APIs
-- state decisions: local state, lifted state, Context, reducer, Zustand/Jotai/Redux, server state
-- performance boundaries: interaction latency, virtualization, code splitting, measured render cost
-- UI patterns: forms, error boundaries, accessibility
+- Keep state with its owner; lift it for shared interactions. Use existing global stores only for genuinely shared client state.
+- Keep server data in the project's query layer and derive values instead of storing duplicate state.
+- Use composition for reusable structure and controlled APIs when a parent must coordinate state. Compound components are useful for related controls, not every wrapper.
+- Use stable list keys that preserve the intended item identity.
+- Keep server concerns out of client components unless the interaction needs them.
 
-Do NOT use when:
-- the task is specifically about removing or reviewing `useEffect` usage — use `better-useeffect`
-- the task is about JS/TS naming, immutability, async, or type standards — use `js-ts-coding-standards`
-- the task is about adapting raw backend payloads into stable UI view models — use `frontend-robust-data-handling`
-- the task is about slide decks — use the provider's presentation skill
-- the task is building or tuning a specific animation (whether to animate, easing, duration, springs, interruption, exit) — use `animate`
+## Forms and accessibility
 
-## Approach
+Use existing form wrappers; simple forms rarely need a new library. Associate labels and errors with inputs, validate on submit, and choose earlier feedback to fit the interaction.
 
-1. Identify the problem category: component structure, state, performance, forms, or accessibility.
-2. Check existing project conventions before introducing a library or pattern.
-3. Choose the simplest pattern that fits the requirement.
-4. Use `references/examples.md` when the example fixes project style or non-obvious API details.
-5. Verify the result does not add complexity disproportionate to the problem.
+For the controls being changed, preserve keyboard operation, visible focus, semantic HTML, and accessible names. Modals need focus containment and restoration; menus need appropriate keyboard navigation and dismissal.
 
-## Component Patterns
-
-| Pattern | Best For | Avoid When |
-|---------|----------|------------|
-| Composition | Flexible layouts, reusable components | Deep prop drilling needed |
-| Compound Components | Tabs, Selects, RadioGroups | Simple single components |
-| Controlled component API | Forms, inputs, popovers, reusable stateful UI | State should stay fully internal |
-
-Prefer combining small, focused components over extending base components.
-
-```tsx
-<Card>
-  <CardHeader>Title</CardHeader>
-  <CardBody>Content</CardBody>
-</Card>
-```
-
-## State Management
-
-| Scope | Recommended Approach |
-|-------|----------------------|
-| Single component | `useState` |
-| Sibling components | Lift state up or Context |
-| Deep tree, related transitions | Context + `useReducer` |
-| Global client state | Zustand, Jotai, or Redux if already used |
-| Server state | Project query layer, React Query, or SWR |
-
-Context rules:
-- Use Context for values that change rarely: theme, user, locale.
-- Avoid frequently updating Context values; they re-render broad subtrees.
-- Split contexts by concern and update frequency.
+Respect reduced-motion preferences; reduce or remove movement while preserving understandable state changes. Gate decorative hover effects with `@media (hover: hover) and (pointer: fine)`; never make content or actions hover-only. Do not disable browser zoom. For iOS input zoom, prefer input font sizes of at least 16px.
 
 ## Performance
 
-| Pattern | When to Use | Gotcha |
-|---------|-------------|--------|
-| `startTransition` | Non-urgent updates should not block interaction | Keep urgent visual feedback outside the transition |
-| `useDeferredValue` | Derived UI can lag slightly behind user input | Do not use when the UI must update synchronously |
-| Virtualization | Large lists or complex rows | Adds layout complexity |
-| Code splitting | Heavy routes, charts, editors, 3D, rarely-used panels | Add useful fallback states |
-| `useMemo` / `useCallback` / `React.memo` | Only when profiling shows they help, or the project already relies on them | Avoid by default; they add cognitive cost |
+Use profiling or a clear expensive boundary to justify memoization, virtualization, code splitting, transitions, or deferred values. Keep urgent input feedback synchronous. Split contexts when unrelated consumers otherwise rerender frequently. Follow React Compiler guidance when present.
 
-Rule: measure first. Prefer simpler rendering until there is measured cost or an obvious high-cost boundary. Follow project React Compiler guidance when present.
+## Conditional examples
 
-## Forms
+Read only the relevant section of [examples](references/examples.md): composition/compound components, hooks, Context/reducer, forms, error boundaries, performance, or keyboard/focus handling. The examples illustrate choices, not required dependencies.
 
-| Approach | Best For |
-|----------|----------|
-| Controlled inputs + local validation | Simple forms, few fields |
-| React Hook Form + Zod | Complex forms, schema validation |
-| Existing project form wrapper | Any project with established form conventions |
-
-Patterns:
-- Validate on blur or submit unless live validation is explicitly useful.
-- Associate labels and error messages with inputs.
-- Disable submit only when that matches product behavior; still validate on submit.
-
-## Accessibility
-
-Required for interactive components:
-- keyboard navigation for reachable controls
-- focus management for modals, popovers, and route-like transitions
-- visible focus indicators
-- semantic HTML first; ARIA only when native semantics are insufficient
-- screen-reader labels for custom controls
-- respect `prefers-reduced-motion`: fewer and gentler animations, not zero — keep opacity/color transitions that aid comprehension, remove movement and position changes
-- gate decorative hover effects (motion, lift, color shifts) behind `@media (hover: hover) and (pointer: fine)` so taps don't leave sticky hover states; never make an action or content reachable only by hover
-- never disable zoom (`user-scalable=no`, `maximum-scale=1`); if inputs zoom the page on iOS, set input font-size to at least 16px instead
-
-Common patterns:
-- Modals: trap focus, save previous focus, restore on close.
-- Dropdowns/menus: arrow key navigation and Escape to close.
-- Forms: label association and error messages linked to inputs.
-
-## Common Mistakes
-
-- **Over-using Context** — frequently changing values re-render broad subtrees.
-- **Memoizing without measuring** — `useMemo`/`useCallback` can add complexity for no gain.
-- **Duplicating derived state** — store the source of truth once and derive the rest.
-- **Escalating to global state too early** — local or lifted state is often enough.
-- **Wrong keys** — unstable list keys cause incorrect item state retention.
-- **Blurring server/client boundaries** — avoid pushing server concerns into client components without a clear need.
-- **Inventing a pattern before checking conventions** — existing project patterns usually matter more than generic preference.
-- **Treating effect problems as frontend architecture** — use `better-useeffect` for direct `useEffect` review.
-
-## Output
-
-Return:
-
-- Recommended pattern
-- Simpler alternatives rejected and why
-- Project conventions to preserve
-- Verification points: behavior, accessibility, and performance checks when relevant
-
-## References
-
-For code examples, see `references/examples.md`:
-- component patterns: composition and compound components
-- custom hooks: `useToggle`, `useDebounce`
-- state patterns: Context + reducer
-- forms and error boundaries
-- performance: memoization, code splitting, virtualization
-- accessibility: keyboard navigation and focus management
+For effect-specific rewrites use `better-useeffect`; for unstable payload normalization use `frontend-robust-data-handling`; for motion design use `animate` when those are the actual task.

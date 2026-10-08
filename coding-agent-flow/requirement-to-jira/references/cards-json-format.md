@@ -1,6 +1,6 @@
 # `cards.json` 的 Jira 層
 
-schema 本體在 `requirement-breakdown` skill 的 `references/breakdown-json-format.md`。這份只寫 Jira 專屬的部分：`meta.target` 放什麼、欄位怎麼對到 `createJiraIssue`。
+建立或修改 Jira 欄位對應時讀這份。Schema 本體在 [breakdown-json-format.md](../../requirement-breakdown/references/breakdown-json-format.md)；這裡只記 `meta.target` 與 Jira 欄位對應。
 
 ## `meta.target`
 
