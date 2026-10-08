@@ -1,6 +1,6 @@
-# React Without Direct useEffect Examples
+# React Effect Refactoring Examples
 
-Use these examples when you need a concrete rewrite pattern.
+Use these examples when you need a concrete rewrite pattern. Apply the lifecycle and dependency decisions in [effect boundaries](effects.md); fewer effects alone is not the goal.
 
 ## 1. Derive state during render
 
@@ -167,7 +167,7 @@ function VideoPlayerWrapper({ videoId }: { videoId: string }) {
 
 ## Smell Checklist
 
-Reach for this skill when you see code like:
+Inspect the responsibility and lifecycle of code like:
 
 - `useEffect(() => setX(...), [...])`
 - `useEffect(() => { fetch(...).then(setState) }, [...])`

@@ -1,6 +1,6 @@
 ---
 name: frontend-patterns
-description: Choose React or Next.js component, state, form, and accessibility patterns when designing or restructuring interactive UI.
+description: Choose React or Next.js component, state, form, and accessibility patterns when designing interactive UI, or refactor effects that duplicate state or misplace event and lifecycle work.
 origin: ECC
 ---
 
@@ -28,8 +28,8 @@ Respect reduced-motion preferences; reduce or remove movement while preserving u
 
 Use profiling or a clear expensive boundary to justify memoization, virtualization, code splitting, transitions, or deferred values. Keep urgent input feedback synchronous. Split contexts when unrelated consumers otherwise rerender frequently. Follow React Compiler guidance when present.
 
-## Conditional examples
+## Conditional guidance
+
+For effect review or refactoring, read [effect boundaries](references/effects.md). Classify derived state, event work, instance resets, and external synchronization before choosing a replacement; preserve lifecycle and cleanup behavior.
 
 Read only the relevant section of [examples](references/examples.md): composition/compound components, hooks, Context/reducer, forms, error boundaries, performance, or keyboard/focus handling. The examples illustrate choices, not required dependencies.
-
-For effect-specific rewrites use `better-useeffect`; for unstable payload normalization use `frontend-robust-data-handling`; for motion design use `animate` when those are the actual task.
