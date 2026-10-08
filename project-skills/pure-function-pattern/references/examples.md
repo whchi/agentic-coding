@@ -1,6 +1,6 @@
 # Pure Function Pattern — Examples
 
-Full worked examples showing the complete module structure: types, helpers, main function, and tests.
+Read the matching example for a concrete boundary or rule. Helper granularity, filenames, and Vitest syntax are illustrative; preserve the project's conventions. These examples do not make runtime type validation or database constraints unnecessary.
 
 ## Table of Contents
 
@@ -39,7 +39,7 @@ export interface ValidateCouponInput {
   productId: string
   userCouponUses: number           // how many times this user has used this coupon
   now: Date                        // injected — never call Date.now() inside
-  allowedProductLookup: Set<string> // precomputed — never build inside
+  allowedProductLookup: Set<string> // injected here; a lookup derived from inputs may also be built locally
 }
 
 export type CouponError =
@@ -263,7 +263,7 @@ describe('validateCoupon', () => {
 
   describe('order of checks', () => {
     it('returns COUPON_NOT_FOUND before COUPON_INACTIVE', () => {
-      // Both conditions are true — first check wins
+      // A missing coupon must return before any property access.
       expect(validateCoupon(makeInput({ coupon: null }))).toEqual({
         ok: false,
         error: 'COUPON_NOT_FOUND',

@@ -1,8 +1,16 @@
 # Animation Recipes
 
-Ready-to-build implementations for the cases that come up most. Start from the recipe, then adapt — don't rebuild from scratch.
+Read the section matching the requested interaction. These snippets illustrate motion; adapt them to the existing component and its accessibility behavior.
 
-Curves are the `--ease-out`, `--ease-in-out`, and `--ease-drawer` tokens defined in SKILL.md.
+Reuse project tokens. If a matching token is absent, these are possible starting values:
+
+```css
+--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+```
+
+Add the reduced-motion variant for the selected recipe. Movement may be reduced or removed; preserve readable content and interaction when animation is disabled.
 
 The `data-*` state selectors (`[data-starting-style]`, `[data-ending-style]`, `[data-instant]`, `[data-closed]`) and `var(--transform-origin)` assume a primitive that sets them (Base UI, per the popover recipe). On another library, or none, map them to what that library exposes, or use `@starting-style`, before copying a recipe.
 
@@ -224,7 +232,7 @@ For destructive actions where a plain click is too easy to fire by accident.
 
 Timing individual color transitions across a tab list never quite lands. Clip instead.
 
-Duplicate the tab list. Style the copy as the active state — different background, different text color. Clip the copy so only the active tab shows, and animate the clip on change:
+For a clipped overlay, duplicate only the visual presentation. Keep the copy hidden from assistive technology and non-interactive so it does not duplicate focus targets or IDs. Style it as the active state and clip it to the active tab:
 
 ```css
 .tabs-active-copy {
@@ -323,4 +331,4 @@ element.animate(
 );
 ```
 
-Hardware-accelerated, interruptible, no bundle cost.
+No additional library is needed. Check compositor support and performance for the property and target browser rather than assuming every WAAPI animation is accelerated.

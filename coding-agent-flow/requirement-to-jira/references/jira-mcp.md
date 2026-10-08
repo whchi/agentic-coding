@@ -51,7 +51,7 @@
 ## 改卡
 
 - `editJiraIssue` 的 `fields` 是**整組覆蓋**，不是附加：`labels` 要送完整清單。
-- 改之前先 `getJiraIssue`（`view: "evidence"` 才看得到 `Story point estimate` 等 custom field），和 `cards.json` 比差異，給使用者看過再改。卡建出去後常被人改過 AC、加過子項、換過狀態與點數。
+- 改之前先 `getJiraIssue`（`view: "evidence"` 才看得到 `Story point estimate` 等 custom field），和 `cards.json` 比差異。只改已授權欄位；未涵蓋的差異先確認，避免覆蓋他人改過的 AC、子項、狀態與點數。
 - 改狀態用 `transitionJiraIssue`，不是 `editJiraIssue`。
 - Jira 上的描述若含圖片等 inline media，用 markdown 改 `description` 會把它們弄掉。這種卡先把差異給使用者看，必要時用 `contentFormat: "html"`，或不動 description。
 
@@ -67,4 +67,4 @@ project = <meta.target.projectKey> AND labels = <label> ORDER BY key ASC
 
 ## 前置檢查：卡已經存在但 `cards.json` 沒有 key
 
-舊主題的卡可能早就建在 Jira，repo 卻沒有卡號。`key` 為 null 不代表 Jira 上沒有。建卡前先用上面的 JQL 讀出該 label 的卡，用 summary 逐字比對：對得上的把 key 回填、不要重建；對不上的（summary 在 Jira 上被改過）列給使用者人工對應。
+`key` 為 null 不代表 Jira 上沒有。建卡前用上述 JQL 讀出該 label 的卡，逐字比對 summary。唯一且確認對應的回填 key，不重建；多筆同名或未對應的卡先釐清。Create 回應若不確定是否成功，也先查現況再決定是否重試。

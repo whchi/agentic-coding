@@ -1,6 +1,6 @@
 # Frontend Patterns Examples
 
-Code examples for patterns described in SKILL.md. Keep examples when they fix project style or show APIs the model may get wrong; do not include outdated patterns only because they are familiar.
+Read the section needed for the current decision. These are partial examples; preserve the project's libraries and complete the relevant behavior before shipping.
 
 ## Component Patterns
 
@@ -26,6 +26,8 @@ export function CardBody({ children }: { children: React.ReactNode }) {
 ```
 
 ### Compound Components
+
+This demonstrates composition and shared state only. A production tabs widget also needs tab/panel relationships and keyboard/focus behavior; prefer the project's accessible primitive.
 
 ```typescript
 interface TabsContextValue {
@@ -288,6 +290,8 @@ export function VirtualItemList({ items }: { items: Item[] }) {
 Prefer the project's accessible primitives or native elements (`<dialog>`, `<select>`) before hand-rolling; these sketches show the required keyboard and focus behavior.
 
 ### Keyboard Navigation
+
+This is only a key-handler sketch, not a complete combobox. A complete control needs an accessible name, rendered options, active-option association, open/close behavior, empty-list handling, and focus management.
 
 ```typescript
 export function Dropdown({ options, onSelect }: DropdownProps) {

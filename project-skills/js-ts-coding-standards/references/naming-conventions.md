@@ -1,122 +1,20 @@
 # Naming Conventions
 
-Variable, function, and file naming standards.
+Use when names are ambiguous or a naming convention must be established. Existing repository conventions and domain terms take precedence; avoid renaming unrelated code.
 
-## Variable Naming
+| Meaning | Useful pattern | Example |
+| --- | --- | --- |
+| Boolean predicate | `is`, `has`, `can`, `should` | `hasPermission` |
+| Collection | Plural noun | `markets` |
+| Calculation | Verb and result | `calculateTotal` |
+| Conversion | `parse`, `format`, `to` | `parseMarket` |
+| Event handler | `handle` + event | `handleSubmit` |
+| Bounded quantity | Name with unit | `timeoutMs`, `priceCents` |
 
-```typescript
-// ✅ GOOD: Descriptive names
-const marketSearchQuery = 'election'
-const isUserAuthenticated = true
-const totalRevenue = 1000
-const hasCompletedOnboarding = false
-const canDeleteResource = true
+Use domain vocabulary consistently. Short names are fine in a small, unambiguous scope; longer names should add meaning rather than repeat the type.
 
-// ❌ BAD: Unclear names
-const q = 'election'
-const flag = true
-const x = 1000
-const temp = false
-const val = true
-```
+For types, prefer domain names such as `Market` or `MarketStatus`; avoid adding `I`/`T` prefixes unless the project requires them. Distinguish fetching remote data from reading local state when that distinction helps callers.
 
-### Naming Patterns
+For files, preserve the surrounding convention: React components often use `MarketCard.tsx`, hooks `useAuth.ts`, and utilities either camelCase or kebab-case. Do not mix naming systems within the same module category.
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Boolean | `is*`, `has*`, `can*`, `should*` | `isActive`, `hasPermission`, `canEdit` |
-| Number | `*Count`, `*Index`, `*Total` | `itemCount`, `currentIndex`, `totalPrice` |
-| Array | Plural nouns | `users`, `markets`, `items` |
-| Object | Singular nouns | `user`, `market`, `config` |
-| Function | Verb-noun | `fetchUsers`, `calculateTotal`, `validateInput` |
-
-## Function Naming
-
-```typescript
-// ✅ GOOD: Verb-noun pattern
-async function fetchMarketData(marketId: string) { }
-function calculateSimilarity(a: number[], b: number[]) { }
-function isValidEmail(email: string): boolean { }
-function formatUserName(user: User): string { }
-function transformApiResponse(data: unknown): Market[] { }
-
-// ❌ BAD: Unclear or noun-only
-async function market(id: string) { }
-function similarity(a, b) { }
-function email(e) { }
-```
-
-### Verb Prefixes
-
-| Prefix | Use Case |
-|--------|----------|
-| `get*` | Retrieve data (sync) |
-| `fetch*` | Retrieve data (async) |
-| `calculate*` | Compute derived value |
-| `is*`, `has*`, `can*` | Return boolean |
-| `validate*` | Check and throw/return result |
-| `format*`, `parse*` | Transform data |
-| `create*`, `make*` | Construct new instance |
-| `update*`, `set*` | Modify existing |
-| `delete*`, `remove*` | Remove |
-| `handle*` | Event handler |
-
-## File Naming
-
-```
-components/Button.tsx          # PascalCase for components
-components/MarketCard.tsx     # PascalCase for components
-hooks/useAuth.ts               # camelCase with 'use' prefix
-hooks/useDebounce.ts           # camelCase with 'use' prefix
-lib/formatDate.ts             # camelCase for utilities
-lib/api-client.ts              # kebab-case for multi-word
-types/market.types.ts          # camelCase with .types suffix
-types/api.types.ts             # camelCase with .types suffix
-services/market-service.ts     # kebab-case for services
-utils/string-utils.ts          # kebab-case for utilities
-```
-
-## Interface and Type Naming
-
-```typescript
-// ✅ GOOD: Descriptive names, no redundant prefixes
-interface User {
-  id: string
-  name: string
-  email: string
-}
-
-interface Market {
-  id: string
-  name: string
-  status: 'active' | 'resolved' | 'closed'
-}
-
-type MarketStatus = 'active' | 'resolved' | 'closed'
-type ApiResponse<T> = {
-  data: T
-  error?: string
-}
-
-// ❌ BAD: Redundant prefixes
-interface IUser { }      // No 'I' prefix needed
-type TMarket = { }       // No 'T' prefix needed
-```
-
-## Constants
-
-```typescript
-// ✅ GOOD: SCREAMING_SNAKE_CASE for true constants
-const MAX_RETRIES = 3
-const DEBOUNCE_DELAY_MS = 500
-const API_BASE_URL = 'https://api.example.com'
-
-// ✅ GOOD: camelCase for runtime constants
-const defaultConfig = {
-  timeout: 5000,
-  retries: 3
-}
-
-// ❌ BAD: SCREAMING_SNAKE_CASE for non-constants
-const USER_INPUT = getUserInput()  // This is a variable, not a constant
-```
+Use uppercase constants where the project uses them for fixed configuration, such as `MAX_RETRIES`; ordinary runtime bindings remain camelCase. A `const` declaration alone does not determine naming or immutability.

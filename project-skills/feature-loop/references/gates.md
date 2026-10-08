@@ -4,7 +4,7 @@ Plan uses this file to define verification checks; build runs local checks for i
 
 ## Confirm runnable commands first
 
-- Read the project's manifests and scripts — the project's tools and services are listed in [tech stack](tech-stack.md) — and use only scripts and tools that actually exist. First confirm the runtime, package manager, and any required services meet the project constraints.
+- Use the project's manifests and scripts to identify actual commands, runtime, and required services. Read [tech stack](tech-stack.md) only when its Node/pnpm/React/Hono/Drizzle example matches the project.
 - Run from the correct location in the feature workspace; when using workspace filters, take the actual package names from the manifests instead of guessing script or package names.
 - If the repo has no app skeleton, scripts, or test environment yet, record the gap; needed capabilities should be added in plan/build. Never treat nonexistent commands or "no tests to run" as passing.
 - When a required environment, tool, or access is missing, record "not executed" and why; in verify, a missing external environment stops the round with a setup hint (see the verify stage). Without evidence for a required verification the feature cannot be declared done; explain the reason for checks marked not applicable.
@@ -21,5 +21,6 @@ Plan uses this file to define verification checks; build runs local checks for i
 | Dependencies / workspace config | Dependency ownership per app, the lockfile, version constraints, and the install/build results of affected workspaces. |
 
 - Run only the checks relevant to this change and its acceptance criteria; existing format or lint tools also stay scoped to the change, not repo-wide cleanups.
+- In a development worktree, select explicit feature/e2e cases for the changed behavior. Full feature/e2e suites remain pending until planned serial merges finish in the integration target; the verify stage does not override that restriction.
 - Every acceptance criterion must state the rule it protects; tests should fail when that rule is broken, without fixed constants or implementation-mirroring assertions masking errors.
 - Records must distinguish "passed", "failed", "not executed", and "not applicable", with the actual commands/operations and necessary evidence. Existing local results are reference only and cannot stand in for checks not yet run in this round.
