@@ -1,6 +1,6 @@
 ---
 name: blast-radius
-description: Use when the question is what a change can break outside its diff before it ships, such as "what could this break" or a small diff that is not trusted; proves the one fact that the change is safe because of. Do NOT use to explain what code does (`zoom-out`), to explain why code has its shape (`why`), or to decide merge readiness (`code-review` command).
+description: Assess what a proposed change can break outside its diff when downstream compatibility or hidden effects need investigation.
 origin: backnotprop/pstack@3a60467 (MIT)
 ---
 
@@ -10,7 +10,7 @@ Find what a change breaks outside its diff, before it ships. A list of callers i
 
 ## Terms
 
-- **Safety fact**: the one fact that makes the change safe. If it is true, most risks are cleared.
+- **Safety fact**: an invariant or assumption on which the change's safety depends. A change can depend on more than one.
 - **Risk**: one way that the change can break other code or behavior.
 - **Certainty level**: how far a fact is verified on the ladder below.
 - **Proof script**: a throwaway script or test that calls the real code and fails if the fact is false.
@@ -31,7 +31,7 @@ This skill is read-only by default.
 - Do not change product code, tests, or configuration in the repository.
 - You can write and run a proof script in a scratch location, such as the session scratchpad or a temporary directory.
 - Report the path of each proof script.
-- Do not delete files that you did not create.
+- Follow repository approval rules for deleting scratch files as well as existing files.
 
 ## Do not trust your own writeup
 
@@ -51,22 +51,22 @@ Level 4 is often one small script. The script imports the library version that t
 
 ## Steps
 
-1. Read the change. Identify the diff and the symbols that it adds, changes, and deletes. Identify the change in behavior, including the part that the diff does not show. To find the PR and the commits, use Step 2 of `why`.
+1. Read the diff and identify changed behavior and affected contracts. Use git or PR context as needed; a separate history investigation is optional.
 2. Find the safety fact. Most changes that look risky are safe because of one fact. An example is "this call removes only expired cache entries and has no other effect". Spend most of your time on this step, not on a long list of possible risks.
 3. Examine the areas that a symbol search does not reach:
-   - Read the source of each library that the change calls. Examine the pinned version and each local patch.
+   - Inspect the pinned library version or local patch when safety depends on behavior the public contract does not establish.
    - Identify when code runs: microtasks, unmount, teardown, and framework lifecycle.
    - Trace data that crosses a boundary: API responses, database columns, wire formats, and other languages that read the same bytes.
-   - Examine feature flags and code three or more calls downstream.
-4. Assess each risk honestly. Give each risk a realistic probability and a realistic cost. Keep confirmed risks separate from cleared risks.
+   - Follow feature flags and downstream consumers until the relevant contract or side effect is accounted for.
+4. Describe each concrete failure and its impact. Use qualitative likelihood unless evidence supports a numeric estimate; keep confirmed risks separate from cleared ones.
 5. Cite only real code. A search that finds nothing is a valid result. Do not invent a caller or an API.
-6. Prove the safety fact. Write a proof script that runs the real code. Run it. Paste the output.
+6. Verify the safety facts with the cheapest useful evidence. Run a focused proof when inspection leaves an important uncertainty and the environment permits it; otherwise mark the fact unproven. Respect worktree test scope and side-effect permissions.
 
 ## Output
 
 - **What it does**: what changed, including the part that is not obvious.
 - **Safety fact**: the fact, its certainty level, and the proof. If you did not prove it, write "unproven".
-- **Risks**: for each risk, how it breaks, the `file:line`, the probability, the cost, and how to verify it. Paste the proof for each important risk.
+- **Risks**: for each risk, how it breaks, the `file:line`, the supported likelihood, the impact, and how to verify it. Link or summarize evidence for important risks.
 - **Cleared**: what you examined, and why it is safe.
 - **Before merge**: the cheapest test or reproduction that catches the real failure. Include the path of each proof script.
 

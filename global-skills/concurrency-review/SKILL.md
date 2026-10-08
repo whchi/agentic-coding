@@ -1,6 +1,6 @@
 ---
 name: concurrency-review
-description: Use when reviewing or writing code for race conditions or idempotency — anywhere a decision and the action it authorizes are separated in time, such as check-then-act sequences, read-modify-write updates, counters, balance or inventory deduction, lock selection, retried or replayed operations, and cache invalidation. Covers application code, database access, and cross-process coordination. Do NOT use as the primary skill for diagnosing an already-observed failure (`debugging-playbook`), React effect races (`better-useeffect`), single-threaded logic bugs, general performance tuning, or schema-change and backfill mechanics.
+description: Review race conditions and idempotency when overlapping callers or retries can change shared state between a decision and its action.
 ---
 
 # Concurrency Review
@@ -60,9 +60,9 @@ Fix with an atomic in-place update (`SET count = count + 1`), a database sequenc
 - Pessimistic (`SELECT ... FOR UPDATE`, advisory lock): contention is common, or the losing writer cannot be retried.
 - Neither: the operation is already atomic, or a constraint enforces the invariant.
 
-An update path with none of these and no stated reason is the finding.
+Report a missing control when a concrete interleaving violates the invariant; do not require locks on unshared state.
 
-**Non-idempotent retries.** Any operation reachable by a client retry, a queue redelivery, a webhook replay, or an at-least-once consumer must produce the same end state when it runs twice. Look for a natural idempotency key or a deduplication record; a bare `INSERT` on a retried path is a finding.
+**Non-idempotent retries.** Identify which attempts represent the same logical operation and what duplicate effects the contract permits. For retried payments, deliveries, or creates that must happen once, require a natural idempotency key, deduplication record, or equivalent constraint. A bare `INSERT` is a finding when replay can duplicate a prohibited effect.
 
 **Lock and transaction scope errors.** Side effects that escape the transaction that authorizes them: publishing an event, calling an external service, or releasing a lock before commit. If the transaction then rolls back, the outside world has already been told. Moving the side effect after commit trades this for a lost effect if the process dies in between; when the effect must not be lost, write it to an outbox in the same transaction and publish from there.
 

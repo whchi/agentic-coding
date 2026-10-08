@@ -1,6 +1,6 @@
 ---
 name: project-structure-advisor
-description: Use when designing, reviewing, or refactoring project folder structure, module boundaries, MVC/function-based vs domain-based organization, and high-level separation of user-facing code from database/IO code. Do NOT use for detailed DDD modeling or line-level repository behavior review.
+description: Recommend folder and module boundaries when reorganizing a project or choosing between feature, MVC, and domain-based structures.
 ---
 
 # Project Structure Advisor
@@ -35,7 +35,7 @@ Small project:
 
 Larger project:
 
-- Consider domain-based structure when more than about three people develop the project at the same time.
+- Consider domain-based structure when business ownership or repeated cross-feature changes make the current organization costly.
 - Group code by business capability.
 - Keep domain rules close to use cases and models.
 - Keep infrastructure adapters behind clear interfaces.
@@ -60,7 +60,9 @@ UI -> Application -> Domain <- Infrastructure
 
 Outer layers may call inward. Inner layers should not know about outer mechanisms.
 
-## Review Checklist
+## Review Questions
+
+Use these where they bear on the requested structure decision; team size alone does not justify a migration.
 
 1. How many people actively modify the codebase?
 2. Are changes usually feature-local or cross-cutting?

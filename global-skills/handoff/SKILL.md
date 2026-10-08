@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Use when compacting current work into a durable handoff document for another agent or future session, especially before context loss, pausing a long task, or transferring implementation ownership.
+description: Save or resume a durable handoff when work transfers to another agent or session, or must survive context loss.
 argument-hint: "What will the next session be used for?"
 ---
 
@@ -40,8 +40,7 @@ If the user passed arguments, treat them as a description of what the next sessi
 
 When you continue work from a handoff document, do these steps before you change files:
 
-1. Read the handoff document and the implementation notes that it names.
-2. Read the last entries of the decision log. Find entries that a later session wrote after the handoff.
-3. Examine the real state: the branch, the worktree, `git status`, uncommitted changes, and running processes.
-4. Compare the real state with the document. Report each difference.
-5. Do not trust a "done" or "passed" statement from the previous agent. Run the verification again, or mark it as not verified.
+1. Read the handoff and follow links only for the work being resumed.
+2. Compare its recorded revision and pending work with the current branch, worktree, and relevant changes. Inspect running processes only if resuming a live service or test session.
+3. Check later decisions when they could supersede the handoff; report material differences.
+4. Reuse recorded verification tied to the same revision and environment when appropriate. Rerun affected checks when state changed or evidence is missing; distinguish inherited results from checks run in this session.

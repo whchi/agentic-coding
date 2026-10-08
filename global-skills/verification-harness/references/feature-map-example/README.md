@@ -1,6 +1,8 @@
 # Notes verification map
 
-This directory is the maintained source for verifying the user-facing behavior of Notes. Read the index before driving the app, then use the matching feature file as the recipe.
+This is an illustrative feature map for a fictional Notes app. Its commands and selectors show the format; they are not installed tools or facts about the target repository. Replace them with discovered, verified commands when creating a real map.
+
+In the example, this index routes to the matching feature recipe.
 
 ## Baseline preconditions
 
@@ -15,7 +17,7 @@ This directory is the maintained source for verifying the user-facing behavior o
 
 - Start every recipe from the baseline state unless its preconditions say otherwise.
 - Prefer ARIA roles and accessible names over CSS selectors or DOM position.
-- Treat every command as literal. Keep quoted names and flags unchanged.
+- In a verified project map, use the recorded commands and flags. Do not execute these illustrative commands against another app.
 - Run browser actions through `control-notes browser`.
 - Run terminal actions through `control-notes cli -- <command>`.
 - Restore seeded data after a mutation. Do not remove proof artifacts during cleanup.

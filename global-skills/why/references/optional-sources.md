@@ -4,11 +4,11 @@ Use a source in this file only when the harness has a tool for it. MCP tool name
 
 ## General rules
 
-- Search each available source. Record each query exactly.
-- Read the full item: the full issue, the full document, or the full chat thread. The reason is often in a comment or a reply.
-- Record a verbatim quote, a link or an ID, the author, and the date for each item.
-- If a tool fails authentication, stop and record the source as a gap. Do not invent results.
-- If no tool exists for a category, write "not available" in Sources consulted.
+- Search available sources likely to resolve the current question or gap. Availability alone does not justify a search.
+- Read enough surrounding context to interpret the relevant item. Expand to comments or replies when they may change the conclusion.
+- Record a citation, author, and date for evidence used. Quote only the short passage needed to support the claim.
+- If a tool fails authentication, stop querying that source and record the gap; continue with other relevant available evidence.
+- Mention an unavailable category only when it limits the answer.
 - Correlation in time is Inferred evidence, not Direct evidence. Other changes can occur in the same time window.
 - An empty result after the retention limit of a source is a gap. It is not evidence that nothing happened.
 
@@ -29,7 +29,7 @@ Examples: Jira, Linear, GitHub Issues.
 Examples: Confluence, Notion, Google Docs.
 
 - Search by feature name, symbol, author, and error string.
-- Read the full page. Open child pages and pages that link to it.
+- Follow child pages or backlinks only when they contain a relevant decision or unresolved lead.
 - Errors: a design document can describe a plan that changed later. Compare the document with the PR. Record each difference as a contradiction.
 
 ### Team chat
@@ -72,6 +72,6 @@ Examples: Databricks, Snowflake, BigQuery.
 Use this angle when the target is defensive code. Examples are retries, timeouts, null guards, rate limits, and feature flags.
 
 - In git, search for commit messages with "incident", "hotfix", "revert", or "defensive".
-- In each available optional source, search for incidents and postmortems near the merge date.
+- Search relevant incident or postmortem sources near the merge date when that history could explain the target.
 - If you find a postmortem, read the action items. Action items often link to the code change.
 - Agreement across two or more sources is Supported evidence. An example is an incident ID that is in an issue, a postmortem, and the PR.

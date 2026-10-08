@@ -2,7 +2,7 @@
 
 Use these rules when reviewing or designing endpoint contracts, request boundaries, response shapes, and API-facing interface contracts.
 
-Review in this order:
+Resolve conflicting guidance in this order:
 
 1. Existing public contract or published API docs
 2. Existing local conventions for this API surface
@@ -79,10 +79,10 @@ Check:
 
 1. Prefer returning one stable self-defined type when the result has structure.
 2. Returning `null` or a primitive is acceptable for simple cases if the contract is explicit.
-3. Avoid returning more than two unrelated shapes from one function or endpoint.
+3. Use explicit, documented result variants; flag ambiguous unrelated shapes rather than enforcing an arbitrary variant count.
 4. Avoid parameters that accept many unrelated types.
 5. Use generics only when runtime behavior genuinely depends on caller-provided type or shape.
-6. Replace primitive condition values with enums, constants, or discriminated unions.
+6. Use named constants or discriminated unions where they clarify a real contract; do not wrap every literal mechanically.
 7. Make error cases explicit instead of mixing magic values into success returns.
 
 Output:
@@ -94,7 +94,7 @@ Output:
 
 ## API Edge Cases
 
-Cover these before inventing exotic cases:
+Select cases that apply to the changed contract; this is a menu, not a requirement to add every case:
 
 | Shape | Examples |
 |---|---|
@@ -107,7 +107,7 @@ Cover these before inventing exotic cases:
 | Duplicate/conflict | Repeated items, unique constraint collision, idempotency retry |
 | Permission/state boundary | Allowed vs denied, draft vs published, active vs deleted |
 
-Output a table with:
+When several cases need comparison, a table can include:
 
 - Case
 - Why it matters

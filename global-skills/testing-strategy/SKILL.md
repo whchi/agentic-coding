@@ -1,6 +1,6 @@
 ---
 name: testing-strategy
-description: Use when choosing test levels, writing or reviewing unit/integration/e2e tests, deciding whether to mock dependencies, selecting test data or a test database, or checking whether behavior/spec changes are covered by tests. Do NOT use as a substitute for strict test-first workflow.
+description: Choose test levels, dependency boundaries, and fixtures when deciding how to verify behavior or reviewing whether existing tests protect it.
 ---
 
 # Testing Strategy
@@ -31,11 +31,10 @@ E2E tests:
 
 ## Database Choice
 
-For most small and medium projects using an ORM, prefer SQLite for tests when it is supported and behavior is close enough.
+Use the repository's established test database when it represents the contract under test. SQLite can suit isolated persistence behavior when its semantics are close enough; project size alone does not decide equivalence.
 
 Use the production-like database when:
 
-- The project is large.
 - SQL dialect behavior matters.
 - Transaction, lock, index, JSON, timezone, or migration behavior differs materially.
 - The test is specifically about database behavior.
@@ -74,7 +73,7 @@ For DDD-style code:
 - Happy path is covered but boundary cases are not.
 - Mocks hide a broken integration boundary.
 - Seed data is too artificial to catch real scenarios.
-- The test still passes when each imported function returns `undefined`. The assertion does not measure the behavior. Rewrite the assertion, or remove the test.
+- A plausible mutation of the required behavior still passes. Strengthen assertions around the observable contract rather than around incidental helper return values.
 - The test asserts that a value exists, or that no error occurred, but not the expected value. Call the code the way its users do, and compare the result with a literal expected value.
 
 ## Realistic Test Data
@@ -96,12 +95,12 @@ Keep seeds deterministic enough for tests and demos. Avoid fake data that trains
 
 1. Name the behavior under test.
 2. Pick the narrowest test level that gives confidence.
-3. Add edge cases: empty, one, ordinary, max, mixed sizes, invalid shape, duplicate/conflict.
+3. Select boundary and failure cases that matter to the behavior; do not generate every shape for unrelated changes.
 4. Decide which dependencies are real, fake, or mocked.
 5. Use realistic fixtures or seeds.
 6. If DDD layers exist, choose the test level by layer: domain, application, repository, or adapter.
 7. Confirm the test would fail before the fix when working on a bug.
-8. Run the targeted test first, then the relevant broader suite.
+8. Run the targeted test and affected checks. In development worktrees, select only changed feature/e2e cases; reserve full suites for the integration target after serial merges.
 
 ## Output
 

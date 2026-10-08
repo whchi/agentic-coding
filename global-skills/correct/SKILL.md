@@ -1,6 +1,6 @@
 ---
 name: correct
-description: Use only when the user explicitly asks to run "/correct", or asks to make a repeated agent mistake impossible in this repo. Finds mistake classes, fixes each at the highest level (architecture, types, lint or CI, test, docs last), and proves each check fails on a real past mistake. Do NOT use for a single bug fix, a normal code review, or on your own initiative after a correction.
+description: Turn repeated agent mistakes into enforceable repo checks. Use only for an explicit /correct request or a request to prevent a recurring agent mistake.
 origin: backnotprop/pstack@3a60467 (MIT)
 ---
 
@@ -24,11 +24,7 @@ If a structural fix is possible, use only the structural fix. Do not also add th
 
 ## Find the mistake classes
 
-1. Read the recent commits, reverts, and review comments.
-2. Read the agent instruction files and `docs/agents/rules.md`.
-3. Read code comments that explain workarounds.
-4. Read the session transcripts of the current workspace (see "Transcripts").
-5. Put the mistakes into classes.
+Start from the repeated mistake the user identified. Check the relevant rule table, commits, reviews, or current-workspace transcripts to establish its cause and recurrence; expand the search only if the request is a broader audit.
 
 A class counts after it happens twice.
 
@@ -44,12 +40,7 @@ Use this order. Go to a lower level only when the higher level cannot stop the m
 
 ## Get approval
 
-Some fixes need explicit user approval before you apply them (AGENTS.md section 8):
-
-- A new lint rule, CI job, or hook that changes production configuration.
-- A new dependency or a broad dependency upgrade.
-
-Show the exact files and packages. Wait for approval in the current conversation.
+Follow the target repository's approval rules for destructive changes, production configuration, and dependency changes. Ordinary local checks and rule edits within the requested correction do not require a separate approval unless those rules say so. For an action needing approval, show the exact targets; existing authorization remains valid within its stated scope.
 
 ## Fix and prove
 
@@ -58,7 +49,7 @@ Show the exact files and packages. Wait for approval in the current conversation
 3. Prove that each new check fails on a real past mistake.
 4. Use the same command locally and in CI.
 
-An exception to a check goes on the offending line. The exception must have a reason, an expiry date, and human approval.
+Use the repository's exception mechanism. Record the reason and scope; add an expiry or owner approval when the exception creates an ongoing risk.
 
 ## Keep the rule table
 
@@ -75,7 +66,7 @@ Keep the rule table in the target project's `docs/agents/rules.md`. Create the f
 - **Enforced by**: the file, rule, or test that fails. Write `none` for Docs.
 - **Status**: Active, or Retired when the mistake cannot occur.
 
-When the user corrects you, fix the mistake and add the rule to the table. Sometimes the rule is already in the table and nothing enforces it. Then the correction is a repeat. Fix that class at the highest level in the same change. Mark a rule Retired when its mistake cannot occur.
+During an explicitly invoked correction workflow, record recurring mistakes and their enforcement in the table. Sometimes the rule is already in the table and nothing enforces it. Then the correction is a repeat. Fix that class at the highest level in the same change. Mark a rule Retired when its mistake cannot occur.
 
 ## Transcripts
 

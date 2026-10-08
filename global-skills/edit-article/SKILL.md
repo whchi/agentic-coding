@@ -1,6 +1,6 @@
 ---
 name: edit-article
-description: Use when the user wants to revise an article draft that feels unclear, repetitive, poorly structured, or hard to follow. Also use when a piece of writing needs section reordering, tighter prose, or sharper argument flow before publication or sharing.
+description: Revise an article's structure and argument flow when the draft is repetitive, unclear, or hard to follow; preserve its meaning and voice.
 ---
 
 # Edit Article
@@ -23,13 +23,13 @@ Do not use this skill when:
 
 ## Workflow
 
-1. **Get the draft.** If the user hasn't provided the article text, ask for it. Optionally ask what they most want improved (structure, flow, argument clarity, cuts).
+1. **Get the draft.** Use the supplied text or file. Ask for it only if unavailable; infer the editing emphasis from the request when possible.
 
 2. **Identify the article structure.** Break the draft into sections based on headings or implied topic shifts. Note what each section introduces or depends on.
 
 3. **Check information order.** List the key ideas each section introduces. A later section should not depend on a concept that hasn't been introduced yet. If ideas appear out of order, note where they should move.
 
-4. **Confirm restructuring if needed.** If the fix involves major section reordering (not just local flow), propose the new order and confirm with the user before rewriting. Small moves within a section don't need confirmation.
+4. **Restructure within scope.** When structural editing is requested, make the needed section moves and explain significant changes. Ask first only if the rewrite would change the argument, audience, or agreed scope.
 
 5. **Rewrite section by section.** Improve clarity, flow, transitions, and sentence economy. Preserve the author's core argument, evidence, and voice. Cut repetition and filler.
 

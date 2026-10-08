@@ -1,6 +1,6 @@
 ---
 name: domain-driven-design-advisor
-description: Use when deciding whether and how to apply DDD, bounded contexts, aggregates, aggregate roots, entities, value objects, domain services, application services, or clean/onion architecture. Do NOT use for ordinary folder cleanup or isolated repository behavior placement.
+description: Evaluate DDD adoption or model bounded contexts and aggregate invariants when business-domain complexity requires architectural decisions.
 ---
 
 # Domain Driven Design Advisor
@@ -91,7 +91,9 @@ The repository may use ORM entities, DAO, DTO, or query builders internally, but
 
 When ORM models already contain useful behavior, decide pragmatically whether to wrap, adapt, or keep them. Do not force separate DDD entities for every table if the domain does not benefit.
 
-## Workflow
+## Applying the guidance
+
+Use the decisions relevant to the requested scope; an aggregate question does not require redesigning every context.
 
 1. Decide if DDD is worth its cost for this project and team.
 2. Name the core domain and candidate bounded contexts.
@@ -104,7 +106,7 @@ When ORM models already contain useful behavior, decide pragmatically whether to
 
 ## Output
 
-Return:
+Report the relevant decisions and their tradeoffs; omit categories outside the request:
 
 - DDD fit assessment
 - Bounded contexts
