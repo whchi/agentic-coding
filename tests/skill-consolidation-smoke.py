@@ -59,6 +59,7 @@ class PackageTests(unittest.TestCase):
                     for name in expected:
                         source_files = {p.relative_to(source / name): p.read_bytes()
                                         for p in (source / name).rglob("*") if p.is_file()}
+                        self.assertIn(Path("SKILL.md"), source_files)
                         installed_files = {p.relative_to(installed / name): p.read_bytes()
                                            for p in (installed / name).rglob("*") if p.is_file()}
                         self.assertEqual(installed_files, source_files, name)
