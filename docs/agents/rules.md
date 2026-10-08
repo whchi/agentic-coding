@@ -14,6 +14,6 @@ Levels, from strongest to weakest: Architecture, Types, Lint, CI, Test, Docs.
 | Install paths in `setup.sh`, the README table, and the smoke test agree. | `e022f37` changed paths without the test; fixed 2026-10-08 | Test | `tests/setup-smoke.sh`, `tests/command-skill-policy.sh` (path checks) | Active |
 | Eval case counts come from the case files, not from a hardcoded number. | Hardcoded `30` failed after cases grew to `35`; fixed 2026-10-08 | Test | `tests/skill-evals-smoke.sh` | Active |
 | A behavior eval grades evidence from the transcript and files, not a claim in the response. | `docs/audits/pstack-fit-2026-10-08.md` | Test | `tests/skill-evals-smoke.sh` (behavior runner checks) | Active |
-| A skill description uses the form "Use when ... Do NOT use ...". | Repo convention; `grilling` and several older skills do not follow it yet, so a test cannot enforce it now | Docs | none | Active |
+| A skill description states its capability and concrete trigger concisely; add an exclusion only to distinguish a likely neighboring task. | User-supplied skills and prompting article, 2026-10-08 | Docs | Manual routing review; case definitions in `evals/cases/` | Active |
 | A vendored MIT skill (`origin:` ends with `(MIT)`) has a `LICENSE` file. | `docs/audits/emilkowalski-skills-fit-2026-10-06.md`, `docs/audits/pstack-fit-2026-10-08.md` | Test | `tests/command-skill-policy.sh` (LICENSE loop) | Active |
 | Destructive operations need a target list and explicit approval in the current conversation. | `AGENTS.md` section 8 | Docs | none | Active |

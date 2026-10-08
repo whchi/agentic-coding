@@ -1,118 +1,45 @@
 # AGENTS.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Shared constraints for this repository. Read additional guidance only when the task needs it:
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+- `AGENTS.long-running.md`: work that needs durable decisions or a handoff across sessions.
+- `AGENTS.JEV.md`: explicitly selected Jev-assisted model routing.
+- `docs/agents/rules.md`: maintaining a repeated-mistake rule or its enforcement.
+- `commands/qa.md`: acceptance verification, including browser navigation and persisted state.
 
 ## 1. Repository Is the System of Record
 
-The code repository is the only system of record: **if knowledge is not in the repo, it does not exist for the agent**.
-
-Discussions, decisions, assumptions, external docs, and operational knowledge that affect development must be saved as versioned artifacts in the repo.
-
-This file is a map, not an encyclopedia:
-
-- Point to deeper content in `docs/`.
-- Each level should show only its own information and the next step.
-- Repeated agent mistakes and the mechanism that enforces each rule: `docs/agents/rules.md` (maintained by the `correct` skill).
+Keep decisions and operational knowledge needed by future contributors in versioned repo artifacts, preferably an existing relevant document. Distinguish inspected facts from assumptions. Do not create a note for every routine action or load unrelated docs before editing.
 
 ## 2. Clarify Ambiguity Before Coding
 
-**Do not assume. Do not hide confusion.**
-
-- State assumptions that affect implementation.
-- If the task has materially different interpretations, present options before choosing.
-- Ask only when missing information affects correctness, data safety, public APIs, migrations, or user-visible behavior.
-- Otherwise, make the smallest reversible assumption and state it.
-- Stop when confused and name what is unclear.
+Ask when missing information changes correctness, data safety, public APIs, migrations, or user-visible behavior. Otherwise, choose the smallest reversible interpretation and state material assumptions. Continue independent work while a necessary answer is pending.
 
 ## 3. Keep Changes Small and Local
 
-Minimum code that solves the problem. Touch only what the task requires. Nothing speculative.
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No unnecessary configurability.
-- No defensive branches for scenarios that cannot occur under the current type, schema, or runtime contract.
-- Do not refactor, reformat, or improve anything outside the requested change.
-- Remove only imports, variables, functions, or files made unused by your own change.
-- Match local conventions: naming, file organization, error handling, component style, state management, testing, logging, and observability.
-- If you notice unrelated dead code or harmful conventions, mention them — do not change them.
-- Push back when a simpler approach exists.
-
-Ask yourself: **"Would a senior engineer say this is overcomplicated?"** If yes, simplify.
-
-The test: **every changed line should trace directly to the user's request.**
+Make the smallest complete change that satisfies the request and follows local conventions. Avoid speculative abstractions, configuration, and impossible defensive branches. Mention unrelated problems without changing them; preserve existing user work.
 
 ## 4. Verify Intent and Report Honestly
 
-**State the success condition before coding. Verify it. Never claim checks you did not run. Never invent results.**
+For non-trivial work, state the success condition and verification method before implementing. Continue through implementation, inspection, and fixes to failures caused by the change. Do not stop at a first draft or ask again for already-authorized, reversible work.
 
-For every non-trivial task:
+Match checks to the changed behavior and the worktree limits in section 9. Documentation edits need content, reference, and diff checks. Tests should fail when the protected contract breaks; avoid assertions that merely mirror implementation. For navigation or persisted UI state, verify Back, Forward, and Reload against explicit retention or reset expectations.
 
-1. State the success condition explicitly before writing code.
-2. Identify the verification method.
-3. Implement the smallest change.
-4. Run the check. Report the result.
+Reuse evidence for the same code state, environment, and scope. Rerun affected checks after a change or failure; broaden only for an unresolved concern or a required integration check.
 
-**Before calling a test sufficient, answer these three questions:**
-
-1. If the required behavior broke, would this test fail? Check observable outputs, state changes, or side effects that define the requirement.
-   → Assert the contract; do not assert implementation details or add side-effect checks when the output fully defines the behavior.
-2. Can I name in one sentence the invariant or rule this test protects?  
-   → If no, the test is underdefined.
-3. Does any hardcoded constant in this test allow broken logic to still pass?  
-   → If yes, fix it.
-
-Match verification to the change. Documentation-only edits need content and diff checks, not application tests. For UI changes involving navigation or persisted state, verify browser Back, Forward, and Reload against explicit expectations for state retention or reset; see the [QA command](commands/qa.md). Apply the worktree scope limits in section 9.
-
-When finished, report:
-
-- What changed.
-- What was verified.
-- What was not verified, and why.
-- Any assumptions, skipped checks, partial failures, or unrelated issues noticed.
-
-Do not invent: files, APIs, commands, test results, logs, dependency behavior, migration outcomes, or runtime behavior you did not inspect. If something was not inspected or executed, describe it as an assumption.
-
-An inconclusive result, or a result from the wrong surface, is not a pass. Report it as inconclusive, and name the missing evidence.
-
-**"Completed" is wrong if anything important was skipped silently.**
+Report what changed, actual verification results, and material assumptions or unverified work with reasons. Inconclusive evidence or the wrong verification surface is not a pass.
 
 ## 5. Surface Conflicts Explicitly
 
-**Do not average contradictory patterns.**
-
-When the codebase contains conflicting patterns:
-
-- Do not blend them.
-- Prefer the pattern that is newer, better tested, or closer to the touched module.
-- Explain why that pattern was chosen.
-- Flag the other pattern for later cleanup instead of silently spreading both.
-
-"Average" code that partially satisfies multiple incompatible conventions is worse than choosing one clear convention.
+Choose the pattern closest to the touched module and supported by current tests or documentation. Explain material conflicts and the chosen precedent; do not blend incompatible conventions or expand into unrelated cleanup.
 
 ## 6. Do Not Replace Deterministic Logic With LLM Calls
 
-When writing application code, do not use LLM calls for behavior that can be determined by explicit rules, structured data, or normal code.
-
-Use models only when ambiguity, language understanding, classification, summarization, extraction, or judgment is part of the product requirement.
-
-When acting as an agent, inspect the repo, logs, tests, and command output instead of guessing deterministic facts.
+Use normal code for explicit rules and structured computation. Use models when language understanding or judgment is part of the requirement. Inspect tools and source evidence for deterministic facts.
 
 ## 7. Respect Context Budgets
 
-**Context budgets are limits, not suggestions.**
-
-Set per-project token budgets in `docs/`. If no project budget is defined, treat any significant degradation in output quality or coherence as the signal to stop.
-
-If approaching budget:
-
-- Stop before quality degrades.
-- Summarize current state, decisions, files touched, verification status, risks, and remaining work.
-- Continue from the summary instead of pushing through bloated context.
-
-Budget limits are checkpoint triggers, not permission to hide incomplete work.
+Honor any project budget recorded in `docs/`. Before context loss threatens reliable continuation, save decisions, changed files, verification status, blockers, and remaining work. Resume from that checkpoint; do not equate exhausted context with completion.
 
 ## 8. Protect Destructive Operations
 
@@ -145,8 +72,4 @@ Before any destructive operation:
 - Agents must not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.
 - General verification requirements elsewhere in this file do not authorize broader testing in development worktrees. Report local checks and the scope of feature / e2e tests run; explicitly mark full-suite verification as pending until it has run after merging.
 
-This rule prevents redundant cross-validation from delaying merges. Agents must not expand the verification scope on their own.
-
----
-
-**These guidelines are working if:** diffs become smaller, unnecessary rewrites decrease, overcomplication decreases, silent failures become visible, risky operations require approval, and agents ask clarifying questions before making correctness-affecting mistakes.
+This order prevents duplicate cross-validation. It does not require application suites for documentation-only edits.
