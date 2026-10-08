@@ -16,6 +16,44 @@ Success means useful domain guidance and authorization boundaries remain intact 
 - Replace the old mandatory description formula in `docs/agents/rules.md` with a capability and trigger rule; exclusions are useful only for likely routing ambiguity.
 - Remove unconditional Jev routing, arbitrary long-running thresholds, append-only activity logs, and repeated generic guidance from AGENTS files. Link optional guidance by task.
 
-## Verification status
+## Completed changes
 
-Development is split into disjoint worktrees. Each worktree receives content and diff checks; combined repository checks run after serial integration. Structural checks can verify packaging and references but cannot prove improved model routing or behavior. Live model evaluations require an adapter and are not implied by static checks.
+| Scope | Markdown reviewed | Markdown changed |
+| --- | ---: | ---: |
+| `global-skills/` | 44 | 38 |
+| `project-skills/` | 22 | 17 |
+| `coding-agent-flow/` | 7 | 7 |
+| `commands/` | 9 | 9 |
+| Root `AGENTS*.md` | 3 | 3 |
+| Total | 85 | 74 |
+
+All 32 skill entrypoints and all 9 commands were updated. No files were deleted: redundant instructions were removed within files, and useful references were retained. Names, non-description skill metadata, and license files were preserved.
+
+- API, PRD, harness, and reflect guidance routes to existing references by task. Specialized domain examples remain available.
+- TDD no longer requires deleting an existing implementation or running full suites in a development worktree. Debugging uses an evidence loop and continues a fix already authorized by the user.
+- Review and architecture skills no longer require unrelated documents, arbitrary finding counts, or automatic chains of other skills.
+- Frontend guidance preserves reactive lifecycle, reset, data-state, and accessibility semantics instead of prescribing one pattern universally.
+- Requirement breakdown can proceed through supported deliverables without six intermediate approvals. Jira still requires concrete write authorization, immediate key checkpoints, and reconciliation after uncertain creates.
+- Feature-loop retains its explicit stages and bounded verification policy; those limits are part of its selected workflow.
+- Commands retain their single-file installation contract and distinguish diagnosis/review from authorized edits.
+
+Two existing test files needed related maintenance: remove assertions for obsolete process wording, retain actual purity and authorization contracts, enforce command description placement, and compare installed command content with its source instead of a hardcoded old description. No installer or eval-runner implementation changed.
+
+## Verification
+
+Changes were developed with scoped checks in disjoint worktrees and merged serially into `main`. After integration and the final repairs, these checks passed:
+
+- `bash tests/command-skill-policy.sh`
+- `bash tests/setup-smoke.sh` (isolated temporary installation targets)
+- `bash tests/skill-evals-smoke.sh`
+- `python3 scripts/run-skill-evals.py --cases evals/cases --validate-only` (46 cases)
+- `python3 scripts/run-behavior-evals.py --cases evals/behavior --validate-only` (2 cases)
+- `git diff b00d810 --check`
+- Ruby YAML parsing of all 32 skill frontmatters, name/description constraints, and comparison of preserved metadata against `b00d810`.
+- Code-fence and literal local-link checks across all 85 scoped Markdown files; 50 actual local references resolved. Paths inside illustrative code blocks were treated as examples.
+
+The first integration pass exposed a stale installation-test description and angle brackets in one skill description. Both were corrected and the affected checks rerun successfully.
+
+The bundled `quick_validate.py` could not run because system Python lacks PyYAML; its allowed-field list also excludes this repository's preserved `origin` metadata. Ruby YAML parsing and repository checks were used instead. No dependencies were installed.
+
+Live model routing or behavior trials were not run. Eval smoke tests use fixture adapters; case validation checks definitions only. These results establish structural and packaging compatibility, not measured improvements in model decisions. No application feature/e2e suite was applicable to these instruction-only changes. Global installations and excluded directories were not changed.
