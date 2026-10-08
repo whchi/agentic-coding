@@ -1,6 +1,6 @@
 # Git Archaeology
 
-Git archaeology is the default source. It is attached directly to the code, and it is always available through `git` and `gh`.
+Start with local git history when available. Shallow history, missing remotes, or unavailable `gh` access may limit the investigation; record those gaps and use other relevant evidence.
 
 ## What the source contains
 
@@ -68,6 +68,6 @@ rg -l -i 'decision|ADR' docs/
 - **Squash merges.** The branch commits are not available. Use the PR body and the review comments.
 - **Wrong commit messages.** A message such as "small refactor" can hide a change in behavior. Read the diff.
 - **Copied patterns.** The author possibly copied a pattern from other code. Find the commit that first added the pattern and examine that commit.
-- **Bot commits.** Dependency bots and automatic backports do not contain motivation. Ignore them when you search for intent.
+- **Bot commits.** Generated messages may not explain intent, but can point to upstream fixes, advisories, or an original change. Follow those links when relevant.
 - **Code as evidence.** A function name is not evidence of intent. Evidence is text that a person wrote about the code.
 - **No `gh` access.** If `gh` fails, record "PR and issue context not available" as a gap. Do not guess the PR content.

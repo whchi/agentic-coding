@@ -1,6 +1,6 @@
 ---
 name: product-engineering-mvp
-description: Use when making early product engineering decisions, estimating MVP costs, pricing technical effort, choosing managed services vs custom builds, or balancing business value against implementation complexity.
+description: Evaluate MVP scope, build-versus-buy choices, and delivery costs when an early product needs a practical path to validation.
 ---
 
 # Product Engineering MVP
@@ -16,7 +16,7 @@ Use this skill when technical choices should be driven by business value and lea
 
 ## Cost Estimation
 
-List all plausible costs:
+Include cost categories material to the proposed MVP:
 
 - Engineering time
 - Design/product time
@@ -27,7 +27,7 @@ List all plausible costs:
 - Migration/rework risk
 - Opportunity cost
 
-After estimating, add a buffer around 50 percent unless there is strong historical data.
+State estimate ranges and the assumptions driving them. Use historical delivery data or identified uncertainty for contingency; do not apply an unexplained fixed percentage.
 
 ## Pricing / Value Lens
 
@@ -67,5 +67,5 @@ Return:
 - Fastest MVP path
 - Managed services to use
 - What to build custom
-- Cost estimate with buffer
+- Cost range, assumptions, and contingency where justified
 - Risks and revisit triggers

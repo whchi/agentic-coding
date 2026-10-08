@@ -4,7 +4,7 @@ These rules control confidence when the evidence is historical, incomplete, or c
 
 ## Confidence tiers
 
-Put each claim in one tier. The tier sets the output section and the wording.
+Classify claims by the strength of their historical evidence. Labels can be inline; separate sections are useful only for a substantial investigation.
 
 ### 1. Direct
 
@@ -43,11 +43,11 @@ You searched and found no answer. This result is valid and important.
 
 ## Wording
 
-These words state a cause or an intent. Use them only for Direct or Supported claims, with a citation next to them: "because", "the reason is", "was designed to", "fixes", "the team decided".
+State historical intent as established only for Direct or Supported claims, with citations. Inferences may explain their reasoning using causal language, but must be explicitly qualified; wording alone does not establish evidence.
 
 These words show a hedge. Use them for Inferred and Speculative claims: "appears to", "likely", "suggests", "is consistent with", "one reading is", "may have been".
 
-Do not use these words: "obviously", "clearly", "of course", "just", "I think", "I believe".
+Avoid rhetorical certainty that overstates the evidence.
 
 ## Rationalization
 
@@ -65,7 +65,7 @@ The user can include a hypothesis in the question. Treat it as one candidate. Ex
 
 When two sources disagree, show both claims with their citations. Do not select the source that gives a simpler story.
 
-Example: the issue says "customer X needs this for compliance", and the PR says "clean up tech debt". Both can be true, because the issue gave the motivation and the PR gave the author's description. One source can also be wrong. Give both to the user and let the user decide.
+Example: the issue says "customer X needs this for compliance", and the PR says "clean up tech debt". Both can be true, because the issue gave the motivation and the PR gave the author's description. One source can also be wrong. Check chronology and scope before treating them as contradictory; report any unresolved conflict.
 
 ## Missing evidence
 
@@ -87,4 +87,4 @@ Do this check before you return the output.
 3. Make sure that no claim uses the code as evidence for its own intent.
 4. Make sure that each contradiction is in the output.
 5. Make sure that a hypothesis from the user was examined, not accepted.
-6. Make sure that "What we do not know" names specific gaps. If it is empty, examine the evidence again.
+6. Name unresolved gaps when they exist. Do not manufacture uncertainty or repeat searches after the evidence resolves the question.

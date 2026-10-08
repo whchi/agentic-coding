@@ -1,6 +1,6 @@
 ---
 name: repository-boundary-review
-description: Use when reviewing repository, DAO, service, use case, model, ORM, or aggregate boundaries to decide whether specific behavior belongs in persistence, application/use-case, or domain code. Do NOT use for broad project folder structure or full DDD adoption decisions.
+description: Review responsibility placement when behavior may belong in persistence, an application use case, or a domain aggregate.
 ---
 
 # Repository Boundary Review
@@ -66,13 +66,15 @@ Entity vs value object:
 - Entity matters because of identity and lifecycle, not merely because it has an ID.
 - Value object has no identity, describes a concept by attributes, and should be immutable or replace-as-a-whole.
 
-## Workflow
+## Review approach
+
+A review produces findings; implement moves only when the user requests a refactor or fix. Apply aggregate-specific checks only where the project uses aggregate boundaries.
 
 1. Identify the behavior being reviewed.
-2. Mark each line or function as user IO, business logic, or DB/external IO.
+2. Trace the functions that mix user IO, business policy, or persistence responsibilities.
 3. Check whether repository functions are only retrieving/persisting data.
 4. Identify the aggregate root and check whether callers bypass it.
-5. Move display, pagination, workflow, and policy decisions into use cases/services.
+5. Identify misplaced display, pagination, workflow, or policy decisions; keep data-access pagination in the repository when it belongs to that contract.
 6. Keep query helpers in repositories when they are reusable data access concepts.
 7. Decide pragmatically whether ORM entities should be adapted into separate domain entities.
 8. Add tests at the layer where the behavior actually belongs.

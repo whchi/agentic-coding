@@ -12,11 +12,11 @@ Answer these questions from the codebase. Ask the user only for facts that you c
 - **Observe:** Which evidence can you capture? Examples are screenshots, terminal transcripts, response bodies, logs, exit codes, and database state.
 - **Isolate:** Can two instances run at the same time with different ports, data folders, and profiles? If not, write this limit in the generated skill. The generated skill must refuse to drive a shared instance.
 
-The checkout can fail to build or start. Then report the exact failure and stop. Fix it only after the user approves. A skill that you write against a broken base teaches incorrect steps.
+If the checkout fails to build or start, diagnose whether the failure belongs to the harness or the product. Correct harness mistakes within scope; report unrelated product fixes and obtain any additional authorization they require. Continue useful authoring, but label unproved launch steps as draft.
 
-A missing asset that is not related to the test can block startup. An example is a static folder that the API does not serve. With user approval, the generated skill can create that asset. Mark it as verification scaffolding, and remove it in Cleanup.
+Create disposable verification scaffolding only within the authorized scope. Document why it is needed, keep it separate from product state, and clean it according to repository rules.
 
-Do not install a tool without user approval. If a necessary tool is missing, report it and stop.
+Do not install tools outside the authorized scope. If a required tool is missing, report the blocked proof and continue steps that do not depend on it.
 
 ## 2. Generated skill contract
 
@@ -35,7 +35,7 @@ Write these sections. Base each section on facts from step 1. Do not leave place
 
 - Use the real user path. Do not use internal setters or test-only endpoints.
 - Capture the user action and the resulting state, not only the final screen.
-- Check side effects, such as files written, rows inserted, and messages sent.
+- Check side effects when they define the requirement, such as a saved file or durable record. Do not send real messages or mutate shared services merely to gather proof without authorization.
 - Use mocks only where a production boundary already isolates the external system.
 - A dry-run or test mode can still touch the network or open a browser. Observe what it skips, such as files, network calls, and git refs. Do not trust its name.
 - Keep evidence files out of source control. Write the evidence location in the skill.
@@ -52,16 +52,16 @@ Give each parallel worker its own account, profile, data folder, and port. Do no
 
 ## 5. Feature map
 
-Write `verify-<app>/features/README.md`. Write one file for each user-facing feature that you can find. Start with the top 3 to 5 features. Find them from routes, commands, menus, or documentation.
+Write `verify-<app>/features/README.md` and entries for the requested or highest-value features, discovered from routes, commands, menus, or documentation. State the mapped scope; creating an initial harness does not require mapping the whole app.
 
-Use the shape in `feature-map-example/`. Each feature file has an H1 title and one paragraph. Then it has exactly four H2 sections, in this order:
+Use the shape in [feature-map-example/README.md](feature-map-example/README.md). Its Notes app, commands, and selectors are illustrative; discover the real equivalents instead of copying them as facts. Each feature file has an H1 title and one paragraph. Then it has exactly four H2 sections, in this order:
 
 1. `Sub-features`
 2. `How to get to it (user POV)`
 3. `Driving it with <harness>`
 4. `Gotchas`
 
-Write each file from the point of view of the user. Say what the feature is, how to reach it, and how to drive it. Say which observable end state proves it. The map is the maintained verification record for the repo. A proof that drives one entry point is incomplete when the map lists other entry points.
+Write each file from the point of view of the user. Say what the feature is, how to reach it, and how to drive it. Say which observable end state proves it. The map is the maintained verification record for the repo. Record the entry points actually driven; do not claim untested alternatives passed. Creating the harness requires one representative live proof, while acceptance coverage follows the selected task scope.
 
 ## 6. Prove the generated skill
 

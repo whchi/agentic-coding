@@ -1,6 +1,6 @@
 # Implementation Examples
 
-Use these when you need concrete handler shapes. Preserve project conventions if they differ.
+Use the matching language example when a concrete handler shape helps. These are partial sketches, not deployable endpoints: use the project's authentication, authorization, malformed-input handling, and exception mapping. Preserve existing contract conventions.
 
 ## TypeScript: Next.js Route Handler
 

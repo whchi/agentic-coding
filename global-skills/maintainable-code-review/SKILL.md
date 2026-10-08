@@ -1,6 +1,6 @@
 ---
 name: maintainable-code-review
-description: Use when reviewing code or refining an implementation for maintainability, team readability, abstraction level, dynamic behavior, return/parameter contracts, and long-term change cost. Do NOT use as the primary skill for API contracts, folder structure, repository boundaries, or test strategy.
+description: Review maintainability when abstraction, indirection, or unclear function contracts make code difficult for its owning team to change.
 ---
 
 # Maintainable Code Review
@@ -32,7 +32,7 @@ Simple problems should use simple solutions. Complex problems may need complex s
 5. Apply the deletion test: if deleting an abstraction makes complexity disappear, it is likely pass-through code; if complexity reappears across callers, the abstraction may be earning its keep.
 6. Distinguish real seams from hypothetical seams. One adapter usually means direct code may be enough; two or more adapters make the seam more credible.
 7. Prefer explicit constants, enums, and named concepts over primitive condition strings.
-8. Check return contracts: avoid functions returning more than two unrelated shapes.
+8. Check return contracts: prefer explicit result types over unrelated, ambiguous shapes; a well-defined union can have more than two variants.
 9. Check parameter contracts: avoid broad unions or many unrelated accepted types unless the runtime behavior truly requires it.
 10. Flag clever dynamic behavior when it hides control flow, validation, or data shape.
 11. Check whether DDD or clean architecture abstractions are paying for themselves.
@@ -47,14 +47,14 @@ Before calling anything dead, confirm:
 - Static references are absent (`rg` across the repo, including tests, fixtures, and config).
 - No dynamic reach: reflection, string-keyed dispatch, dependency-injection registries, template or query strings, generated clients, database-stored handler names.
 - No external consumers: published APIs, SDKs, other repositories, documentation, saved dashboards or scripts.
-- Runtime evidence agrees: telemetry, logs, or a feature flag showing zero use over a stated window.
+- For public, dynamic, or deployed entry points, runtime evidence or consumer ownership confirms disuse; state the observation window when using telemetry.
 
 Then split findings:
 
 - **Safe to remove now** — evidence complete, no active consumers. State the deletion steps and how to verify afterwards.
 - **Defer with a plan** — name the missing precondition (flag off for a stated period, telemetry threshold, consumer migration, owner sign-off), and the rollback if removal proves wrong.
 
-Absent runtime evidence, say so and default to defer. Report the exact target list and obtain explicit approval before deleting anything.
+For private code whose reachability is fully visible, static and build evidence may suffice. For external or dynamic consumers, defer removal when the relevant evidence is missing. Follow repository deletion rules and obtain required approval for exact targets.
 
 ## Review Signals
 
@@ -80,7 +80,7 @@ Bad smells:
 - Pass-through modules add names without leverage.
 - Interfaces exist only for hypothetical future variation.
 - Test seams are broader than the behavior they protect.
-- A new internal API replaces an old one, but callers stay on the old API behind a compatibility layer. Move the callers and remove the old API in the same change set.
+- A compatibility layer has no identified consumer or migration need. Check ownership and deployment constraints before recommending caller migration or removal.
 
 ## Output
 

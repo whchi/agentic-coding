@@ -1,6 +1,6 @@
 ---
 name: grill-with-docs
-description: Use when stress-testing a feature, refactor, PRD, architecture proposal, or engineering plan against project documentation, domain language, code evidence, CONTEXT.md, CONTEXT-MAP.md, and ADRs. Updates docs when stable terminology or decisions crystallize.
+description: Stress-test a plan against repository evidence when domain terminology, documented decisions, or existing behavior may contradict it.
 ---
 
 # Grill With Docs
@@ -22,15 +22,9 @@ Use `grill-with-docs` when any of these matter:
 ## Workflow
 
 1. Establish the target plan, feature, refactor, PRD, or architecture decision.
-2. Inspect relevant repo evidence before asking questions:
-   - `AGENTS.md`
-   - `CONTEXT.md`
-   - `CONTEXT-MAP.md`
-   - `docs/adr/`
-   - `docs/plans/`
-   - nearby code, tests, and fixtures
+2. Inspect evidence that resolves the current uncertainty: a glossary for terminology, a context map for ownership, an ADR for a prior decision, or code/tests for actual behavior. Do not load every document before asking a focused question.
 3. Restate the plan using the repo's canonical language.
-4. Ask one high-leverage question at a time, waiting for the user's answer before continuing.
+4. Ask consequential questions the repo cannot answer. Bundle independent questions when useful; wait before making decisions that depend on the user's response.
 5. For each question, include your recommended answer and why.
 6. If the answer can be found in code or docs, inspect the repo instead of asking.
 7. When terminology or decisions stabilize, update the appropriate repo artifact inline.
@@ -88,7 +82,7 @@ When the user states how something works, check whether the code agrees. If the 
 
 ### Update CONTEXT.md Inline
 
-When a term is resolved, update `CONTEXT.md` immediately. Do not batch glossary updates until the end of the session. Use [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+Capture resolved terms in the existing glossary as they stabilize. Use [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) when creating or changing its structure; avoid writing tentative discussion as settled terminology.
 
 `CONTEXT.md` is a glossary and shared language artifact. It is not a spec, scratch pad, implementation plan, or implementation detail dump.
 

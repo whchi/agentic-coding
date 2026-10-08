@@ -1,6 +1,6 @@
 ---
 name: zoom-out
-description: Use when an unfamiliar code area needs a higher-level map before editing, including module purpose, upstream/downstream callers, domain responsibility, invariants, and how it fits the broader system. Do NOT use for a local edit whose callers and side effects are already visible in the code being changed.
+description: Map an unfamiliar code area's role, callers, dependencies, and invariants when local code is insufficient to understand an intended change.
 ---
 
 # Zoom Out
@@ -10,13 +10,13 @@ Do not start by changing code. Build a system-level map of the area first.
 ## Workflow
 
 1. Identify the local target: file, function, component, route, module, or behavior.
-2. Read project context that exists: `AGENTS.md`, `CONTEXT.md`, `CONTEXT-MAP.md`, ADRs near the area, and nearby tests.
+2. Follow the applicable project instructions. Read a glossary for unfamiliar domain terms, a context map for cross-module ownership, or a relevant ADR when a decision needs context; inspect nearby tests for behavioral contracts.
 3. Search outward:
    - direct callers and imports
    - downstream dependencies
    - public interfaces and entry points
    - related tests, fixtures, and docs
-4. Fill the map below one layer above the code. Under **Change risk**, say whether the abstraction is deep (a small interface hiding real behavior) or shallow (callers must understand its implementation).
+4. Summarize one layer above the target. Stop expanding when its role, relevant contracts, and change risks are clear; assess abstraction depth only if it affects the intended edit.
 
 ## Output
 

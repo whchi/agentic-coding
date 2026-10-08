@@ -1,6 +1,6 @@
 ---
 name: content-engine
-description: Use when creating social posts, threads, scripts, content calendars, or adapting one asset across platforms (X, LinkedIn, TikTok, YouTube, newsletters). Invoke for content repurposing, launch campaigns, or multi-platform distribution.
+description: Create platform-specific social content or repurpose an existing asset for posts, video scripts, newsletters, or a content campaign.
 origin: ECC
 ---
 
@@ -10,7 +10,7 @@ Turn one idea into platform-native content instead of posting the same thing eve
 
 ## First Questions
 
-Clarify:
+Use the supplied context; clarify only missing choices that materially change the content:
 - source asset: what we're adapting from
 - audience: builders, investors, customers, operators, or general
 - platform: X, LinkedIn, TikTok, YouTube, newsletter, or multi-platform
@@ -22,7 +22,7 @@ Clarify:
 2. **Hooks > summaries.** The first line does the work.
 3. **One idea per piece.** Split rather than compress.
 4. **Specifics over slogans.** Replace hype with concrete claims.
-5. **Clear, small ask.** Every post should answer "what do I do with this?"
+5. **Clear purpose.** Include a call to action when it serves the piece; an informative post need not ask for engagement.
 
 ## Platform Guidance
 
@@ -44,7 +44,7 @@ Clarify:
 ### YouTube
 - Show the result early.
 - Structure by chapter.
-- Refresh visual every 20-30 seconds.
+- Vary visuals where they help the viewer follow the explanation; avoid a fixed cadence that interrupts the content.
 
 ### Newsletter
 - One lens per issue, not a bundle.
@@ -54,7 +54,7 @@ Clarify:
 ## Repurposing Flow
 
 1. Anchor asset: article, video, demo, memo, or launch doc.
-2. Extract 3-7 atomic ideas.
+2. Extract the distinct ideas needed for the requested outputs.
 3. Write platform-native variants.
 4. Trim repetition across outputs.
 5. Align CTAs with platform intent.
@@ -62,8 +62,8 @@ Clarify:
 ## Common Mistakes
 
 - **Generic content that works nowhere.** Each platform rewards its own format.
-- **Missing CTA.** Every post should have a clear next step.
-- **Over-production before publishing.** Ship imperfect content rather than perfect content that never ships.
+- **Forced CTA.** Requests for engagement should fit the content and goal.
+- **Expanding drafting into publishing.** Deliver the requested drafts; publish or send only when separately authorized.
 - **Same hook across platforms.** LinkedIn needs a different opening than X.
 - **Burying the idea.** If the core point isn't in the first line, rewrite.
 

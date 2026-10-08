@@ -1,6 +1,6 @@
 ---
 name: why
-description: Use when the question is why code has its current shape, such as a design decision, a tradeoff, a threshold value, defensive code, dead code, or the history of a regression; returns cited claims with confidence tiers. Do NOT use to explain what code does or how it connects to the system (`zoom-out`), to find what a change breaks elsewhere (`blast-radius`), or to diagnose a current failure (`debugging-playbook`).
+description: Investigate why code or a design decision exists using commits, discussions, and documented history; distinguish recorded intent from inference.
 origin: backnotprop/pstack@3a60467 (MIT)
 ---
 
@@ -44,11 +44,11 @@ git log -L <start>,<end>:<file>
 gh pr view <number> --json title,body,comments,reviews,closingIssuesReferences
 ```
 
-Do not stop at the most recent commit. The current shape is often the result of many earlier decisions. Trace the history to the commit that first added the behavior.
+Follow earlier history when the latest commit does not explain the decision. Stop once the evidence answers the question or further search is unlikely to resolve a stated gap.
 
 ## Step 3. Search the sources
 
-Git archaeology is the default source and is always available. Search it first and completely.
+Start with available history near the target. A shallow checkout or missing PR access is a limitation, not a reason to invent context or search the entire history.
 
 1. Read commit messages, PR bodies, review comments, and linked issues for each relevant commit.
 2. Read code comments, tests, ADRs, CHANGELOG entries, and `docs/` near the target.
@@ -62,7 +62,7 @@ Other sources are optional. Use them only when the harness has a tool for them. 
 
 ## Step 4. Optional fan-out
 
-A single agent can complete all steps in order. Fan-out is useful when two or more optional sources are available. If the harness has subagents, give one source to each subagent.
+Use a single agent for a focused investigation. Consider authorized delegation only for substantial, independent source searches; available sources alone do not require fan-out.
 
 Give each subagent the question, the code anchor, and one source. Tell each subagent to return evidence, not conclusions:
 
@@ -86,7 +86,7 @@ The full rules and the calibration check are in [references/epistemics.md](refer
 
 ## Output
 
-Use these sections. Remove a section only when the note says so.
+Use the sections that help answer the question. For a simple finding, a cited explanation with confidence and any gap is sufficient.
 
 - **The question**: one or two sentences.
 - **The code**: paths, line ranges, and symbols.
