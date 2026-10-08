@@ -1,29 +1,8 @@
----
-name: project-structure-advisor
-description: Recommend folder and module boundaries when reorganizing a project or choosing between feature, MVC, and domain-based structures.
----
-
-# Project Structure Advisor
-
-Use this skill when folder structure and module boundaries affect team speed or maintainability.
-
-## Boundaries
-
-Use related skills for narrower decisions:
-
-- `domain-driven-design-advisor` when the task needs DDD fit, aggregates, entities, value objects, or bounded contexts.
-- `repository-boundary-review` when the question is whether a repository, DAO, service, or use case owns specific behavior.
-- `maintainable-code-review` for local abstraction/readability issues inside existing files.
+# Project Structure
 
 ## Principle
 
-Structure should follow project scale and ownership. Keep code near the side it serves:
-
-- User-facing IO: controllers, views, request validation, DTOs, use cases.
-- Database/external IO: DB clients, DAO, repositories, third-party adapters.
-- Business logic sits between user intent and data access.
-
-Do not split folders mechanically. Split by how the team changes the code.
+Structure should follow project scale and ownership. Split by how the team changes the code, not by a mechanical folder template.
 
 ## Choosing Structure
 
@@ -47,7 +26,7 @@ DDD-oriented project:
 - Treat legacy systems and external services as separate contexts behind adapters.
 - Use `domain-driven-design-advisor` for the actual modeling work.
 
-Layering guideline:
+For a project that needs layered boundaries:
 
 ```text
 UI -> Application -> Domain <- Infrastructure
@@ -58,7 +37,7 @@ UI -> Application -> Domain <- Infrastructure
 - Domain: aggregate roots, entities, value objects, domain services, repository interfaces.
 - Infrastructure: ORM, DAO, DB, repository implementations, vendor SDKs.
 
-Outer layers may call inward. Inner layers should not know about outer mechanisms.
+Outer layers may call inward. Inner layers should not know about outer mechanisms. Do not introduce every layer into a simple feature structure. For disputed ownership of concrete behavior, read [responsibility-placement.md](responsibility-placement.md).
 
 ## Review Questions
 

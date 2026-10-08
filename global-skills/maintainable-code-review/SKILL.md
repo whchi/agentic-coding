@@ -12,8 +12,7 @@ Use this skill when code needs to be understandable and maintainable by the actu
 Use related skills for narrower ownership questions:
 
 - `api-design` for endpoint contracts, status codes, response shapes, and request validation.
-- `project-structure-advisor` for folder/module organization.
-- `repository-boundary-review` for persistence vs business behavior placement.
+- `module-boundaries` for folder/module organization or persistence vs business behavior placement.
 - `testing-strategy` for test levels, mocks, fixtures, and coverage.
 - `js-ts-coding-standards` for JavaScript/TypeScript language-level conventions.
 
