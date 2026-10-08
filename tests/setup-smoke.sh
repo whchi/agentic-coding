@@ -80,14 +80,17 @@ assert_not_contains "$output" "$GEMINI_HOME/.gemini/antigravity-cli"
 assert_file "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
 rg -Fq "prompt = '''" "$GEMINI_HOME/.gemini/commands/debug-triage.toml" || fail "Gemini command missing TOML prompt"
 assert_not_contains "$(cat "$GEMINI_HOME/.gemini/commands/debug-triage.toml")" "---"
-python3 - "$GEMINI_HOME/.gemini/commands/debug-triage.toml" <<'PY'
+python3 - "$GEMINI_HOME/.gemini/commands/debug-triage.toml" "$ROOT/commands/debug-triage.md" <<'PY'
+from pathlib import Path
 import sys
 import tomllib
 
 with open(sys.argv[1], "rb") as command_file:
     command = tomllib.load(command_file)
-assert command["prompt"].lstrip().startswith("# /debug-triage")
-assert command["description"].startswith("Triage a bug")
+source = Path(sys.argv[2]).read_text()
+description = source.splitlines()[1].removeprefix("description:").strip().strip('"')
+assert command["description"] == description
+assert command["prompt"].strip() == source.split("---", 2)[2].strip()
 PY
 
 (
