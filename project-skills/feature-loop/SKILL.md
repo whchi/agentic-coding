@@ -1,6 +1,6 @@
 ---
 name: feature-loop
-description: Run the staged open/plan/build/verify workflow when the user invokes feature-loop or resumes a feature tracked in docs/features/<slug>.md.
+description: Run the staged open/plan/build/verify workflow when the user invokes feature-loop or resumes a feature document under docs/features/.
 ---
 
 # Feature Loop
