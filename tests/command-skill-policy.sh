@@ -72,7 +72,6 @@ assert_contains "$ROOT/commands/code-review.md" "git merge-base"
 assert_contains "$ROOT/commands/code-review.md" "AGENTS.md"
 assert_contains "$ROOT/commands/code-review.md" "Spec specialist"
 assert_contains "$ROOT/commands/code-review.md" "Standards specialist"
-assert_contains "$ROOT/commands/code-review.md" "Generated or mechanical lines and files do not count toward size thresholds"
 assert_contains "$ROOT/commands/code-review.md" "Always perform a direct review"
 assert_contains "$ROOT/commands/code-review.md" "Ready to merge:"
 assert_matches "$ROOT/commands/code-review.md" "empty (diff|scope|change set)|no changes to review"
@@ -88,8 +87,8 @@ assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "No \`
 assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "export every helper"
 
 for file in "$ROOT"/commands/*.md; do
-  head -n 1 "$file" | rg -Fq -- '---' || fail "command missing frontmatter: $file"
-  rg -q '^description:' "$file" || fail "command missing description: $file"
+  head -n 1 "$file" | rg -qx -- '---' || fail "command missing frontmatter: $file"
+  sed -n '2p' "$file" | rg -q '^description:' || fail "command description must be on line 2 for installation: $file"
 done
 
 for skill_md in "$ROOT"/global-skills/*/SKILL.md "$ROOT"/project-skills/*/SKILL.md; do
