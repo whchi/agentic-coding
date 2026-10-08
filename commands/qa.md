@@ -22,7 +22,7 @@ description: Build and run scoped acceptance tests, including browser Back, Forw
 - 適用時驗證權限、404/403、錯誤 ID、URL manipulation 等情境
 - 優先沿用專案既有測試框架與測試結構
 - API、business logic、authorization 等情境優先使用程式化測試
-- 需要驗證真實 UI、routing、browser behavior 或完整使用者流程時，使用專案既有的瀏覽器測試工具，例如 Playwright
+- 需要驗證真實 UI、routing、browser behavior 或完整使用者流程時，使用專案既有的瀏覽器測試工具，例如 Playwright, Chrome Devtool
 - unit tests 的第三方依賴全部 mock；不要把這個限制套用成 UI 測試只能驗證 mock 畫面
 - 本 command 授權新增或調整測試並執行驗證；發現產品缺陷時回報，不要自行修改 production behavior
 - 實際執行新增與相關既有測試；缺少環境、帳號或工具時，回報未驗證項目與原因，不得以 mock 結果宣稱真實流程通過
