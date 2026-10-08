@@ -81,8 +81,8 @@ assert_matches "$ROOT/commands/code-review.md" "(validate|verify) every candidat
 assert_matches "$ROOT/commands/code-review.md" "deduplicat.*specialist finding"
 assert_matches "$ROOT/commands/code-review.md" "do not claim.*passed unless"
 
-assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test-first sequencing"
-assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "test level, mocking, and fixture choices"
+assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "does not mutate inputs or shared state"
+assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "preserve rule order and observable error precedence"
 assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "No \`vi.mock()\`"
 assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "export every helper"
 
