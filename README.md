@@ -49,6 +49,8 @@ cd ~/agentic-coding
 | `commands/` | Provider commands / prompts directory (see below) | Reusable command templates |
 | `coding-agent-flow/` | Not installed | Skills for a future coding-agent workflow, kept together as one package; `setup.sh` does not install these yet. |
 | `general-skills/` | Not installed | Non-engineering or draft skills kept for reference; `setup.sh` does not install these. Copy manually when needed. |
+| `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see [evals/README.md](evals/README.md). |
+| `CONTEXT.example.md` | Copy to a project's repo root | Example domain glossary; copy to `CONTEXT.md` when needed. |
 
 Install targets, as defined in `setup.sh`:
 
@@ -59,8 +61,6 @@ Install targets, as defined in `setup.sh`:
 | claude | `~/.claude/skills/` | `~/.claude/commands/` | `.claude/skills/` | `.claude/commands/` |
 | gemini | `~/.gemini/config/skills/` | `~/.gemini/commands/` (TOML) | `.agents/skills/` | `.gemini/commands/` (TOML) |
 | pi | `~/.agents/skills/` | `~/.pi/agent/prompts/` | `.agents/skills/` | `.pi/prompts/` |
-| `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see `evals/README.md` |
-| `CONTEXT.example.md` | Repo root | Example domain glossary following the `grill-with-docs` CONTEXT-FORMAT. Copy to `CONTEXT.md` in your own repo. |
 
 Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.
 
@@ -124,7 +124,12 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `ddd-fit-check` | DDD adoption fit check |
 | `debug-triage` | Environment/data/logic debugging triage |
 | `mock-or-not` | Test dependency mock/fake/real decision checklist |
+| `qa` | Scoped acceptance tests and browser Back / Forward / Reload state verification |
 | `update-codemaps` | Code map update workflow |
+
+Install the QA command with `./setup.sh <provider> install commands --global qa` (replace `<provider>` with a provider from the table above). Its source is [commands/qa.md](commands/qa.md); installation follows the same provider-specific paths and format conversion as other commands.
+
+`qa` and `code-review` remain commands: explicit entry points for scoped acceptance verification and change review. `testing-strategy` remains a skill: reusable guidance on test levels, dependency boundaries, and fixtures for both workflows. QA produces acceptance evidence; code review assesses the change and its evidence. Reuse verifiable results for the same code state, environment, and scope instead of rerunning checks solely because the entry point changed.
 
 ### Coding Agent Flow (not installed)
 
@@ -149,7 +154,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 | Alignment | `grilling`, `grill-with-docs`, `write-a-prd`, `product-engineering-mvp` |
 | Context | `zoom-out`, `update-codemaps` |
 | Delivery | `feature-loop`, `better-test-driven-development`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
-| Testing | `testing-strategy`, `mock-or-not` |
+| Testing | `testing-strategy`, `mock-or-not`, `qa` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
 | Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `better-useeffect`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
 | Review | `code-review` |

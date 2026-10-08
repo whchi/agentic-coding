@@ -56,12 +56,14 @@ For every non-trivial task:
 
 **Before calling a test sufficient, answer these three questions:**
 
-1. If I broke the business rule but kept the return value, would this test catch it?  
-   → If no, the assertion is testing output, not intent.
+1. If the required behavior broke, would this test fail? Check observable outputs, state changes, or side effects that define the requirement.
+   → Assert the contract; do not assert implementation details or add side-effect checks when the output fully defines the behavior.
 2. Can I name in one sentence the invariant or rule this test protects?  
    → If no, the test is underdefined.
 3. Does any hardcoded constant in this test allow broken logic to still pass?  
    → If yes, fix it.
+
+Match verification to the change. Documentation-only edits need content and diff checks, not application tests. For UI changes involving navigation or persisted state, verify browser Back, Forward, and Reload against explicit expectations for state retention or reset; see the [QA command](commands/qa.md). Apply the worktree scope limits in section 9.
 
 When finished, report:
 
@@ -134,7 +136,7 @@ Before any destructive operation:
 **Mandatory: parallel development with scoped verification → serial merges → full post-merge e2e / feature suites. Agents must not bypass this order.**
 
 - Development worktrees may run unit tests, lint, and type checks. All third-party dependencies in unit tests must be mocked; do not call real third-party services in unit tests.
-- Feature and e2e tests in a development worktree must be limited to the behavior changed by that worktree. Do not run full suites, unrelated tests, or broader integration / cross-component verification in development worktrees.
+- Feature and e2e tests in a development worktree must be limited to the behavior changed by that worktree. Select explicit test files or cases before running them. Those cases may cross components as needed to verify the changed behavior; do not run full suites or expand into unrelated integration / cross-component verification. If scoped execution is unavailable, report that limitation and defer the suite until after merging.
 - Merge worktree changes into the integration target one at a time. Never perform concurrent merges.
 - Run the full e2e and feature suites against the combined result in the integration target only after the planned serial merges are complete.
 - Agents must not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.

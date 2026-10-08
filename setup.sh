@@ -320,6 +320,7 @@ COMMANDS=(
   ddd-fit-check
   debug-triage
   mock-or-not
+  qa
   update-codemaps
   content-to-skill
 )
