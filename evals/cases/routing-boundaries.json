@@ -63,14 +63,14 @@
       "prompt": "用尖銳問題 challenge 我的 SaaS 上線計畫，逼我釐清假設、風險和取捨。",
       "expect": {
         "activate": ["grilling"],
-        "not_activate": ["grill-with-docs"]
+        "not_activate": ["write-a-prd"]
       }
     },
     {
       "id": "docs-grounded-grill",
       "prompt": "請對照 repository 的 CONTEXT.md、ADR 和現有 code，challenge 這份 checkout refactor 計畫。",
       "expect": {
-        "activate": ["grill-with-docs"],
+        "activate": ["grilling"],
         "not_activate": []
       }
     },
@@ -78,16 +78,16 @@
       "id": "project-folder-structure",
       "prompt": "幫我評估這個專案應該採用 feature-based 還是 layer-based folders，並調整高階 module boundaries。",
       "expect": {
-        "activate": ["project-structure-advisor"],
-        "not_activate": ["domain-driven-design-advisor", "repository-boundary-review"]
+        "activate": ["module-boundaries"],
+        "not_activate": ["domain-driven-design-advisor"]
       }
     },
     {
       "id": "repository-method-placement",
       "prompt": "OrderRepository 的 cancel() 應該只存資料，還是可以包含退款規則？請判斷這段 behavior 屬於 repository、use case 或 domain。",
       "expect": {
-        "activate": ["repository-boundary-review"],
-        "not_activate": ["domain-driven-design-advisor", "project-structure-advisor"]
+        "activate": ["module-boundaries"],
+        "not_activate": ["domain-driven-design-advisor"]
       }
     },
     {
@@ -95,15 +95,15 @@
       "prompt": "我們的訂票系統規則很多、跨團隊語言不一致。請判斷是否值得導入 DDD，並建議 bounded contexts 和 aggregates。",
       "expect": {
         "activate": ["domain-driven-design-advisor"],
-        "not_activate": ["project-structure-advisor", "repository-boundary-review"]
+        "not_activate": ["module-boundaries"]
       }
     },
     {
       "id": "useeffect-specific-rewrite",
       "prompt": "這個 React component 用 useEffect 把 props 複製到 state，還造成 render loop。請重構掉這個 effect。",
       "expect": {
-        "activate": ["better-useeffect"],
-        "not_activate": ["frontend-patterns"]
+        "activate": ["frontend-patterns"],
+        "not_activate": ["frontend-robust-data-handling"]
       }
     },
     {
@@ -135,7 +135,7 @@
       "prompt": "設計 Next.js checkout page 的 component boundaries、state placement、form flow、accessibility 和 performance boundaries。",
       "expect": {
         "activate": ["frontend-patterns"],
-        "not_activate": ["better-useeffect"]
+        "not_activate": ["frontend-robust-data-handling"]
       }
     },
     {
@@ -151,7 +151,7 @@
       "prompt": "Review 這個 implementation 的 module depth、abstraction level、return contracts、可讀性和長期修改成本。",
       "expect": {
         "activate": ["maintainable-code-review"],
-        "not_activate": ["api-design", "project-structure-advisor", "repository-boundary-review"]
+        "not_activate": ["api-design", "module-boundaries"]
       }
     },
     {

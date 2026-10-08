@@ -66,7 +66,7 @@ Install targets, as defined in `setup.sh`:
 | gemini | `~/.gemini/config/skills/` | `~/.gemini/commands/` (TOML) | `.agents/skills/` | `.gemini/commands/` (TOML) |
 | pi | `~/.agents/skills/` | `~/.pi/agent/prompts/` | `.agents/skills/` | `.pi/prompts/` |
 
-Project context docs such as `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/plans/`, and `docs/agents/` are created lazily by `grill-with-docs` when a project needs them. See `CONTEXT.example.md` in this repo for a reference implementation of the format.
+The repository-evidence workflow in `grilling` creates context and decision documents only when a project needs them. See `CONTEXT.example.md` for a reference implementation of the format.
 
 ### Provider compatibility
 
@@ -96,14 +96,12 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
-| `grilling` | Plan/design stress-testing via questioning |
-| `grill-with-docs` | Stress-test plans against project docs, domain language, code evidence, and ADRs |
+| `grilling` | Stress-test plans through questioning, with optional repository evidence, terminology, and ADR guidance |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
 | `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
+| `module-boundaries` | Folder/module organization and persistence, application, and domain responsibility placement |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
-| `project-structure-advisor` | Folder structure and module boundary guidance |
 | `reflect` | Explicit `reflect` only: mine the session transcript for skill edits, applied after approval |
-| `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
 | `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
 | `verification-harness` | Create or refresh a project-local `verify-<app>` skill that drives the real app |
 | `why` | Find why code has its shape from the historical record, with confidence tiers |
@@ -115,9 +113,8 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | Skill | Description |
 |---|---|
 | `animate` | Build a single web animation with the right purpose, curve, duration, interruption, and reduced-motion handling |
-| `better-useeffect` | React / Next.js `useEffect` refactoring patterns |
 | `feature-loop` | Staged feature workflow: open → plan → build → verify, with a feature document and a 2-round verify budget |
-| `frontend-patterns` | React / Next.js component, state, performance, a11y |
+| `frontend-patterns` | React / Next.js components, state/effect boundaries, performance, and accessibility |
 | `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards |
 | `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
@@ -161,17 +158,34 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `grilling`, `grill-with-docs`, `write-a-prd`, `product-engineering-mvp` |
+| Alignment | `grilling`, `write-a-prd`, `product-engineering-mvp` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
 | Delivery | `feature-loop`, `better-test-driven-development`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
 | Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |
-| Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
-| Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `better-useeffect`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
+| Architecture | `maintainable-code-review`, `module-boundaries`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
+| Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
 | Review | `code-review` |
 | Skill authoring | `anthropic-skill-review`, `content-to-skill`, `reflect` |
 | Feedback loop | `correct` |
 | Writing | `edit-article`, `content-engine` |
 | Handoff | `handoff` |
+
+### Skill boundaries
+
+One entrypoint can route related tasks to conditional references: `grilling` covers both general interviews and repository-grounded questioning; `frontend-patterns` includes effect refactoring; `module-boundaries` separates folder organization from responsibility placement. Each installed skill contains its own required references.
+
+Keep distinct outcomes independently discoverable:
+
+- `frontend-robust-data-handling` handles payload normalization across UI frameworks; it is not limited to React.
+- `domain-driven-design-advisor` owns DDD fit and aggregate modeling; `module-boundaries` handles concrete organization and ownership without requiring DDD.
+- `testing-strategy` chooses test levels and collaborators; `better-test-driven-development` guides red-green-refactor implementation.
+- `js-ts-coding-standards` covers language conventions; `pure-function-pattern` isolates deterministic domain decisions from side effects.
+- `zoom-out`, `why`, and `blast-radius` answer current structure, historical rationale, and change impact respectively.
+- `reflect` proposes skill improvements; `correct` implements enforcement for repeated mistakes. Both retain their explicit invocation boundaries.
+
+Essential constraints may appear in independently installable skills. Do not remove them by creating a dependency on another skill's files or automatically loading a neighboring skill.
+
+Verify the catalog and installed contents with `bash tests/command-skill-policy.sh` and `python3 tests/skill-consolidation-smoke.py`. The latter installs into temporary homes/projects for all supported providers; it does not alter existing user installations.
 
 ## References
 ### AGENTS.md

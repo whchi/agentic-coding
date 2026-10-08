@@ -11,9 +11,9 @@ Concurrency bugs are invisible to sequential reading. The code is correct for on
 
 Use related skills for narrower ownership questions:
 
-- `repository-boundary-review` for whether behavior belongs in persistence, application, or domain code.
+- `module-boundaries` for whether behavior belongs in persistence, application, or domain code.
 - `api-design` for the HTTP contract of retryable endpoints: method idempotency, status codes, and `Retry-After`.
-- `better-useeffect` for React effect re-entry and stale-closure races.
+- `frontend-patterns` and its effects reference for React effect re-entry and stale-closure races.
 - `debugging-playbook` when an intermittent failure is already observed and needs diagnosis.
 
 ## Core Principle

@@ -229,13 +229,11 @@ GLOBAL_SKILLS=(
   domain-driven-design-advisor
   edit-article
   grilling
-  grill-with-docs
   handoff
   maintainable-code-review
+  module-boundaries
   product-engineering-mvp
-  project-structure-advisor
   reflect
-  repository-boundary-review
   testing-strategy
   verification-harness
   why
@@ -245,7 +243,6 @@ GLOBAL_SKILLS=(
 
 PROJECT_SKILLS=(
   animate
-  better-useeffect
   feature-loop
   frontend-patterns
   frontend-robust-data-handling
