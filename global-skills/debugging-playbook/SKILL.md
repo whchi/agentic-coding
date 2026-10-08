@@ -38,7 +38,7 @@ If logic inspection has gone on for about 30 minutes without a strong lead, deli
    - Data: actual records, nulls, duplicates, stale state, migrations, payload shape, permissions, deleted rows.
    - Logic: branching, transformations, async order, state transitions, boundary values.
 9. Instrument only where it distinguishes hypotheses. Tag temporary logs so they can be removed.
-10. Once the likely cause is known, write a failing test or reproducible command if practical.
+10. Once the likely cause is known, write a failing test or reproducible command if practical. Keep this failing reproduction. If the active workflow permits commits, commit the reproduction before the fix.
 11. If the user has explicitly asked for a fix, switch to the relevant implementation skill, then re-run the original loop and the smallest relevant verification. Otherwise, report the confirmed cause and proposed fix without changing application code.
 
 ## Guardrails
@@ -47,6 +47,10 @@ If logic inspection has gone on for about 30 minutes without a strong lead, deli
 - Do not change multiple unrelated variables at once.
 - Do not proceed on vibes when no feedback loop exists. State what context or artifact is missing.
 - Do not leave temporary instrumentation behind.
+- When evidence disproves a hypothesis, revert each change that the hypothesis caused.
+- When two fixes that share one premise fail the same check, stop. Examine the premise before you try a third fix. Identify which component holds the wrong state.
+- A passing unit test shows the behavior of one branch. It does not show that the bug is absent. Verify on the surface where the user saw the symptom.
+- An inconclusive result, or a result from the wrong surface, is not a pass. Report it as inconclusive.
 - Do not assume frontend data is trustworthy.
 - Do not expose low-level IO details while adding diagnostics.
 - Preserve useful logs and trace IDs.

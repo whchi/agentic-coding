@@ -6,6 +6,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/agentic-coding-setup.XXXXXX")"
 RUN_CWD="$TMP_ROOT/run-cwd"
 TARGET="$TMP_ROOT/target-project"
+PI_TARGET="$TMP_ROOT/pi-target-project"
+GEMINI_TARGET="$TMP_ROOT/gemini-target-project"
 
 cleanup() {
   rm -rf "$TMP_ROOT"
@@ -13,8 +15,10 @@ cleanup() {
 
 trap cleanup EXIT
 
-mkdir -p "$RUN_CWD" "$TARGET"
+mkdir -p "$RUN_CWD" "$TARGET" "$PI_TARGET" "$GEMINI_TARGET"
 TARGET="$(cd "$TARGET" && pwd)"
+PI_TARGET="$(cd "$PI_TARGET" && pwd)"
+GEMINI_TARGET="$(cd "$GEMINI_TARGET" && pwd)"
 
 fail() {
   echo "FAIL: $*" >&2
@@ -47,16 +51,16 @@ output="$(
 assert_contains "$output" "Project target: $TARGET"
 assert_contains "$output" "Dry run: no files will be changed"
 assert_contains "$output" "dry-run install"
-assert_not_exists "$TARGET/.codex"
-assert_not_exists "$RUN_CWD/.codex"
+assert_not_exists "$TARGET/.agents"
+assert_not_exists "$RUN_CWD/.agents"
 
 (
   cd "$RUN_CWD"
   "$ROOT/setup.sh" codex install skills --project frontend-patterns --target "$TARGET"
 )
 
-assert_file "$TARGET/.codex/skills/frontend-patterns/SKILL.md"
-assert_not_exists "$RUN_CWD/.codex"
+assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
+assert_not_exists "$RUN_CWD/.agents"
 
 GEMINI_HOME="$TMP_ROOT/gemini-home"
 output="$(
@@ -64,7 +68,7 @@ output="$(
     "$ROOT/setup.sh" gemini install all --global --dry-run
 )"
 
-assert_contains "$output" "dry-run mkdir -p $GEMINI_HOME/.gemini/skills"
+assert_contains "$output" "dry-run mkdir -p $GEMINI_HOME/.gemini/config/skills"
 assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $GEMINI_HOME/.gemini/commands/debug-triage.toml"
 assert_not_contains "$output" "$GEMINI_HOME/.gemini/antigravity-cli"
 
@@ -115,19 +119,19 @@ cmp -s "$ROOT/commands/debug-triage.md" "$PI_HOME/.pi/agent/prompts/debug-triage
 
 output="$(
   HOME="$PI_HOME" \
-    "$ROOT/setup.sh" pi install all --project --target "$TARGET" --dry-run
+    "$ROOT/setup.sh" pi install all --project --target "$PI_TARGET" --dry-run
 )"
 
-assert_contains "$output" "dry-run mkdir -p $TARGET/.agents/skills"
-assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $TARGET/.pi/prompts/debug-triage.md"
+assert_contains "$output" "dry-run mkdir -p $PI_TARGET/.agents/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $PI_TARGET/.pi/prompts/debug-triage.md"
 
 (
   HOME="$PI_HOME" \
-    "$ROOT/setup.sh" pi install all --project --target "$TARGET"
+    "$ROOT/setup.sh" pi install all --project --target "$PI_TARGET"
 )
 
-assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
-assert_file "$TARGET/.pi/prompts/debug-triage.md"
+assert_file "$PI_TARGET/.agents/skills/frontend-patterns/SKILL.md"
+assert_file "$PI_TARGET/.pi/prompts/debug-triage.md"
 
 (
   HOME="$PI_HOME" \
@@ -140,12 +144,12 @@ assert_not_exists "$PI_HOME/.pi/agent/prompts/debug-triage.md"
 
 output="$(
   HOME="$GEMINI_HOME" \
-    "$ROOT/setup.sh" gemini install all --project --target "$TARGET" --dry-run
+    "$ROOT/setup.sh" gemini install all --project --target "$GEMINI_TARGET" --dry-run
 )"
 
-assert_contains "$output" "dry-run mkdir -p $TARGET/.gemini/skills"
-assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $TARGET/.gemini/commands/debug-triage.toml"
-assert_not_contains "$output" "$TARGET/.agents/skills"
+assert_contains "$output" "dry-run mkdir -p $GEMINI_TARGET/.agents/skills"
+assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $GEMINI_TARGET/.gemini/commands/debug-triage.toml"
+assert_not_contains "$output" "$GEMINI_TARGET/.gemini/skills"
 
 output="$(
   cd "$RUN_CWD"
@@ -153,6 +157,6 @@ output="$(
 )"
 
 assert_contains "$output" "dry-run uninstall"
-assert_file "$TARGET/.codex/skills/frontend-patterns/SKILL.md"
+assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
 
 echo "setup smoke checks passed"

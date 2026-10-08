@@ -120,6 +120,13 @@ Avoid:
 function getMarket(id: any): Promise<any>
 ```
 
+- Make an illegal state impossible to write. Use a discriminated union, not a set of optional fields or booleans that can conflict.
+- Handle each variant. Put a `never` check in the default branch, so that a new variant causes a compile error.
+- Parse external data at the boundary with a schema. External data includes API responses, environment variables, files, and user input. Pass only the parsed type inward.
+- Do not use `as` to claim a type that the code did not check.
+- Derive a type from its authoritative schema, such as OpenAPI, the database schema, or a validation schema. Do not write a second copy by hand.
+- Use a branded type for a primitive with meaning, such as `UserId`, when two such values can be confused.
+
 ## Code Smells
 
 | Smell | Detection | Fix |

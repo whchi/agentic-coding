@@ -80,6 +80,7 @@ Bad smells:
 - Pass-through modules add names without leverage.
 - Interfaces exist only for hypothetical future variation.
 - Test seams are broader than the behavior they protect.
+- A new internal API replaces an old one, but callers stay on the old API behind a compatibility layer. Move the callers and remove the old API in the same change set.
 
 ## Output
 

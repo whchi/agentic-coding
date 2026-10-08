@@ -74,6 +74,8 @@ For DDD-style code:
 - Happy path is covered but boundary cases are not.
 - Mocks hide a broken integration boundary.
 - Seed data is too artificial to catch real scenarios.
+- The test still passes when each imported function returns `undefined`. The assertion does not measure the behavior. Rewrite the assertion, or remove the test.
+- The test asserts that a value exists, or that no error occurred, but not the expected value. Call the code the way its users do, and compare the result with a literal expected value.
 
 ## Realistic Test Data
 

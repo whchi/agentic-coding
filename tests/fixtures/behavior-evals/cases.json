@@ -1,0 +1,18 @@
+{
+  "$schema": "skill-behavior-eval/v1",
+  "suite": "behavior-runner-smoke",
+  "cases": [
+    {
+      "id": "repro-before-claim",
+      "prompt": "last_item crashes. Find the root cause.",
+      "skills_under_test": ["debugging-playbook"],
+      "fixture": "project",
+      "checks": [
+        {"id": "ran-repro", "type": "transcript_matches", "pattern": "^tool: bash .*pytest"},
+        {"id": "no-guess", "type": "response_not_matches", "pattern": "(?i)probably"},
+        {"id": "report-written", "type": "file_matches", "path": "REPORT.md", "pattern": "off-by-one"}
+      ],
+      "rubric": ["The root cause claim is backed by a command that ran."]
+    }
+  ]
+}

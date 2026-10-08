@@ -1,0 +1,35 @@
+{
+  "$schema": "skill-behavior-eval/v1",
+  "suite": "pstack-skills",
+  "cases": [
+    {
+      "id": "benchmark-cache-measured",
+      "prompt": "我把 parser 換成 new_parser.py，bench.sh 顯示快很多。幫我寫 PR 描述裡的效能段落。",
+      "skills_under_test": ["benchmark-checklist"],
+      "fixture": "fixtures/parser-bench",
+      "checks": [
+        {"id": "ran-bench", "type": "transcript_matches", "pattern": "bench\\.sh"},
+        {"id": "names-cache", "type": "response_matches", "pattern": "(?i)(lru_cache|cache|快取)"}
+      ],
+      "rubric": [
+        "The response says that the speedup comes from the cache on repeated identical input, or it labels the result inconclusive.",
+        "The response gives a run count and a range, or it states that only one run exists."
+      ]
+    },
+    {
+      "id": "blast-radius-cross-language-consumer",
+      "prompt": "change.patch 是我要套的改動，把 serialize() 的欄位改成 snake_case。幫我確認會不會弄壞別的地方。",
+      "skills_under_test": ["blast-radius"],
+      "fixture": "fixtures/serialize-rename",
+      "checks": [
+        {"id": "finds-js-consumer", "type": "response_matches", "pattern": "profile\\.js"},
+        {"id": "ran-proof", "type": "transcript_matches", "pattern": "(?i)\\b(python3?|node)\\b"},
+        {"id": "product-unchanged", "type": "file_matches", "path": "user.py", "pattern": "\"userId\""}
+      ],
+      "rubric": [
+        "The response names web/profile.js as a confirmed risk with a file and line.",
+        "The response states the safety fact and its certainty level, or marks it unproven."
+      ]
+    }
+  ]
+}

@@ -185,6 +185,94 @@
         "activate": ["frontend-robust-data-handling"],
         "not_activate": []
       }
+    },
+    {
+      "id": "blast-radius-small-diff",
+      "prompt": "這個 PR 只改了 cache key 的組法，幫我看會不會弄壞別的地方，要有證據。",
+      "expect": {
+        "activate": ["blast-radius"],
+        "not_activate": ["why", "debugging-playbook"]
+      }
+    },
+    {
+      "id": "why-design-rationale",
+      "prompt": "為什麼 retry 上限寫死 3 次？當初是誰、基於什麼理由決定的？",
+      "expect": {
+        "activate": ["why"],
+        "not_activate": ["blast-radius", "debugging-playbook"]
+      }
+    },
+    {
+      "id": "zoom-out-not-why",
+      "prompt": "我第一次看 billing 模組，先幫我整理它怎麼運作、誰呼叫它，我等一下要改。",
+      "expect": {
+        "activate": ["zoom-out"],
+        "not_activate": ["why", "blast-radius"]
+      }
+    },
+    {
+      "id": "benchmark-vet-speedup",
+      "prompt": "我改了 JSON parser，跑一次 benchmark 快了 40%，幫我把這個數字寫進 PR 描述。",
+      "expect": {
+        "activate": ["benchmark-checklist"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "translate-not-benchmark",
+      "prompt": "把 README 裡效能章節的文字翻成英文，數字不用動。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["benchmark-checklist"]
+      }
+    },
+    {
+      "id": "correct-explicit",
+      "prompt": "/correct",
+      "expect": {
+        "activate": ["correct"],
+        "not_activate": ["reflect"]
+      }
+    },
+    {
+      "id": "single-fix-not-correct",
+      "prompt": "這個 null pointer 修一下，順便補一個 regression test。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["correct", "reflect"]
+      }
+    },
+    {
+      "id": "reflect-explicit",
+      "prompt": "reflect",
+      "expect": {
+        "activate": ["reflect"],
+        "not_activate": ["correct"]
+      }
+    },
+    {
+      "id": "summary-not-reflect",
+      "prompt": "任務完成了，簡單總結一下這次改了什麼。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["reflect", "correct"]
+      }
+    },
+    {
+      "id": "verification-harness-create",
+      "prompt": "幫這個專案建一個能啟動並操作真實 app 的 verify skill，之後 QA 要用。",
+      "expect": {
+        "activate": ["verification-harness"],
+        "not_activate": []
+      }
+    },
+    {
+      "id": "acceptance-not-verification-harness",
+      "prompt": "跑一下這次 checkout 流程改動的驗收測試。",
+      "expect": {
+        "activate": [],
+        "not_activate": ["verification-harness"]
+      }
     }
   ]
 }

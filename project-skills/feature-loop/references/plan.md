@@ -14,6 +14,11 @@ Only handle features opened by the open stage; write no product code in this sta
 2. Write down the background, scope, and explicit non-goals; acceptance criteria describe observable behavior and the rules to protect.
 3. Cover the affected data models, API contracts, and UI states and interactions, following the project instructions (`AGENTS.md` or equivalent) and the relevant domain skills.
 4. Split the work into independently verifiable tasks, marking dependencies, expected change locations, matching acceptance criteria, and verification method.
+   Then write the throughput checkpoint under "Tasks". It has four items. If an item does not apply, keep it and write `n/a: <reason>`.
+   - **Blocking steps**: the tasks that must finish before parallel work starts.
+   - **Parallel streams**: the tasks that change disjoint files, services, or layers.
+   - **Shared mutable state**: the files, keys, or records that two tasks write. Split the shared target first. Serialize the tasks only when one writer is a real invariant.
+   - **Smallest safe split**: the number of workers and the reason. If one worker is best, state why.
 5. Using the [shared verification rules](gates.md), build the verification plan from actual package scripts and tools; record commands, where to run them, required environment, and expected results. If a needed verification capability is missing, add a task for it; do not assume commands exist.
 6. Ask the user only about open questions affecting correctness, data safety, public APIs, migrations, or user-visible behavior; record the answers in the decision log. Keep the status "Planning" while such blockers remain.
 

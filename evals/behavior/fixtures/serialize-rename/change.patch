@@ -1,0 +1,8 @@
+--- a/user.py
++++ b/user.py
+@@ -9,4 +9,4 @@ class User:
+ 
+ 
+ def serialize(user):
+-    return {"userId": user.user_id, "name": user.name}
++    return {"user_id": user.user_id, "name": user.name}

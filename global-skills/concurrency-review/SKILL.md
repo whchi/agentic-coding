@@ -27,10 +27,11 @@ Correctness under concurrency is not a property of a function. It is a property 
 1. List the state this change reads and writes: process memory, module or global scope, cache, database rows, filesystem, external service.
 2. For each write, ask: can two callers reach this line at once? Two requests, two workers, two tabs, a retry overlapping its own original, a cron overlapping the previous run.
 3. Locate the decision-to-action gaps. Ask: between checking and acting, could the state have changed?
-4. For each gap, decide the control deliberately: atomic operation, optimistic lock, pessimistic lock, unique constraint, queue, or accept the race with a stated reason.
-5. Ask what a retry does. If the operation runs twice, is the result identical or doubled?
-6. Check failure paths, not just success paths: a partial write, a timeout that leaves the peer's state unknown, a lock released before the transaction commits.
-7. Keep the control proportional. A row-level unique constraint often replaces a distributed lock; reach for coordination only when cheaper mechanisms cannot express the invariant.
+4. First, ask whether the sharing is necessary. If each caller can own a separate file, key, row, or branch, remove the shared state. Use serialization only when one shared writer is a real invariant.
+5. For each remaining gap, decide the control deliberately: atomic operation, optimistic lock, pessimistic lock, unique constraint, queue, or accept the race with a stated reason.
+6. Ask what a retry does. If the operation runs twice, is the result identical or doubled?
+7. Check failure paths, not just success paths: a partial write, a timeout that leaves the peer's state unknown, a lock released before the transaction commits.
+8. Keep the control proportional. A row-level unique constraint often replaces a distributed lock; reach for coordination only when cheaper mechanisms cannot express the invariant.
 
 ## Patterns To Flag
 

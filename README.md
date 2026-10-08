@@ -18,7 +18,11 @@ cd ~/agentic-coding
 ./setup.sh gemini install all --global
 ./setup.sh pi install all --global
 # or every provider at once
-./setup.sh all install all --global
+./setup.sh all reinstall all --global
+
+# codex, gemini (project), and pi share `.agents/skills` (global: codex and pi share
+# `~/.agents/skills`). After one of them is installed, `install` for the next stops with
+# "already exists"; use `reinstall` for the rest, or for `all` as above.
 
 # Install project skills + commands into another project
 ./setup.sh opencode install all --project --target /path/to/your/project
@@ -49,7 +53,7 @@ cd ~/agentic-coding
 | `commands/` | Provider commands / prompts directory (see below) | Reusable command templates |
 | `coding-agent-flow/` | Not installed | Skills for a future coding-agent workflow, kept together as one package; `setup.sh` does not install these yet. |
 | `general-skills/` | Not installed | Non-engineering or draft skills kept for reference; `setup.sh` does not install these. Copy manually when needed. |
-| `evals/` | Repository contributors | Versioned skill-routing cases and ignored run results; see [evals/README.md](evals/README.md). |
+| `evals/` | Repository contributors | Versioned skill-routing and skill-behavior cases, and ignored run results; see [evals/README.md](evals/README.md). |
 | `CONTEXT.example.md` | Copy to a project's repo root | Example domain glossary; copy to `CONTEXT.md` when needed. |
 
 Install targets, as defined in `setup.sh`:
@@ -83,9 +87,12 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | Skill | Description |
 |---|---|
 | `api-design` | REST API design and review guidance |
+| `benchmark-checklist` | Vet a measured number (limiter, tuning, errors, repeat runs, relevance) before you report it |
 | `better-test-driven-development` | Strict test-first workflow with meaningful behavior coverage |
+| `blast-radius` | Find what a change breaks outside its diff and prove the one fact that makes it safe |
 | `concurrency-review` | Shared-state race, locking, idempotency, and cache-invalidation review |
 | `content-engine` | Multi-platform content creation and repurposing |
+| `correct` | Explicit `/correct` only: turn repeated agent mistakes into architecture, type, lint, or test enforcement |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
@@ -95,8 +102,11 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `project-structure-advisor` | Folder structure and module boundary guidance |
+| `reflect` | Explicit `reflect` only: mine the session transcript for skill edits, applied after approval |
 | `repository-boundary-review` | Repository, DAO, service, and aggregate boundary review |
 | `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
+| `verification-harness` | Create or refresh a project-local `verify-<app>` skill that drives the real app |
+| `why` | Find why code has its shape from the historical record, with confidence tiers |
 | `write-a-prd` | PRD / spec writing workflow |
 | `zoom-out` | Higher-level module map before editing unfamiliar code |
 
@@ -152,13 +162,14 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 | Area | Skills / Commands |
 |---|---|
 | Alignment | `grilling`, `grill-with-docs`, `write-a-prd`, `product-engineering-mvp` |
-| Context | `zoom-out`, `update-codemaps` |
+| Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
 | Delivery | `feature-loop`, `better-test-driven-development`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
-| Testing | `testing-strategy`, `mock-or-not`, `qa` |
+| Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |
 | Architecture | `maintainable-code-review`, `repository-boundary-review`, `project-structure-advisor`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
 | Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `better-useeffect`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
 | Review | `code-review` |
-| Skill authoring | `anthropic-skill-review`, `content-to-skill` |
+| Skill authoring | `anthropic-skill-review`, `content-to-skill`, `reflect` |
+| Feedback loop | `correct` |
 | Writing | `edit-article`, `content-engine` |
 | Handoff | `handoff` |
 
@@ -208,6 +219,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/yetone/native-feel-skill
 - https://github.com/tw93/waza engineer 思維
 - https://github.com/mattpocock/skills real engineer skills
+- https://github.com/backnotprop/pstack poteto 的工程流程（`cursor/plugins/pstack` mirror）；`why`、`blast-radius`、`benchmark-checklist`、`verification-harness`、`correct`、`reflect` 改寫自此，其餘規則融入既有 skills（決策紀錄：`docs/audits/pstack-fit-2026-10-08.md`）
 
 #### UI/UX
 - https://github.com/pbakaus/impeccable

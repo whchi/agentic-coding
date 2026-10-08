@@ -35,6 +35,37 @@ Update the notes when implementation interprets or diverges from the spec:
 
 Do not wait until the final response to reconstruct these notes. Record decisions close to when they happen.
 
+### Decision Log
+
+Keep a decision log as a table in the same notes file. Do not start a second log file.
+
+| Time | Decision | Reason | Evidence | Result |
+|---|---|---|---|---|
+| 2026-10-08T09:40Z | Captured baseline screenshots before the style change | To compare old and new output | `scripts/snapshot.sh`, `baseline/` | 120 screenshots saved |
+
+- Add one row for each decision point: a selected option, a completed unit with its check result, a revert with its cause, or a blocker.
+- Do not add rows for trivial actions.
+- Put a pointer in the Evidence cell: a commit SHA, a `file:line`, a PR number, or an artifact path. Do not write a paragraph.
+- Do not edit or delete a row. To correct a row, add a new row that replaces it.
+- When a new session continues the log, its first row has the decision `start`. Read the last rows before you add a row.
+
+Before the final response, audit the log against the transcript of the current workspace. Do not read the transcripts of other projects.
+
+1. Make sure that each row agrees with an action that occurred.
+2. Make sure that each Evidence pointer opens and shows what the row claims.
+3. Add a row for each decision that changed the work but has no row.
+4. Correct the log, not the story. Do not remove an incorrect row. Add a row that replaces it.
+
+## Mechanical Bulk Changes
+
+For a repeated edit across many files, write a tool that makes the change, such as a codemod, a script, or a generator. Do not make the edits by hand. A reviewer can run the tool again.
+
+1. Complete one example by hand.
+2. Run the tool on the same input.
+3. Compare the tool output with the hand-made example. They must be identical.
+4. Run the tool on the remaining files.
+5. Check the result with a command, such as a type check, a test, or a search for the old pattern.
+
 ## Checkpoint Before Context Loss
 
 Context and token budgets are checkpoint triggers.

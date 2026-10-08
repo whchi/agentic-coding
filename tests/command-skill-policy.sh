@@ -92,6 +92,12 @@ for file in "$ROOT"/commands/*.md; do
   rg -q '^description:' "$file" || fail "command missing description: $file"
 done
 
+for skill_md in "$ROOT"/global-skills/*/SKILL.md "$ROOT"/project-skills/*/SKILL.md; do
+  if rg -q '^origin:.*\(MIT\)' "$skill_md"; then
+    assert_file "$(dirname "$skill_md")/LICENSE"
+  fi
+done
+
 python3 - "$ROOT" <<'PY'
 from pathlib import Path
 import sys

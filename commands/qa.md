@@ -15,6 +15,7 @@ description: Build and run scoped acceptance tests, including real-browser verif
 - `better-test-driven-development` 負責測試驅動的產品實作，不因 QA 發現失敗就自動進入修改產品程式的流程
 - 已在 `feature-loop verify` 中驗收時，由該流程管理輪次、狀態與修復；本 command 提供驗收方法，不另開一套驗證循環
 - 同一程式狀態、環境與測試範圍的可查證結果可以共用；只有變更、證據不足或新風險才補跑，不因切換 QA / review 入口重跑同一批測試
+- 專案已有 `verify-<app>` skill（由 `verification-harness` 產生）時，真實 app 的操作依它的 Launch、Doctor、Drive、Evidence、Cleanup 執行；本次變更觸及的功能，以它 feature map 列出的所有入口為驗收範圍。feature map 與實際行為不符時，回報並建議執行 `verification-harness` 的 scoped refresh，不在 QA 中修改它
 
 ## 測試要求
 

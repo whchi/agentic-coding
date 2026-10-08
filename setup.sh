@@ -219,9 +219,12 @@ reinstall_file() {
 
 GLOBAL_SKILLS=(
   api-design
+  benchmark-checklist
   better-test-driven-development
+  blast-radius
   concurrency-review
   content-engine
+  correct
   debugging-playbook
   domain-driven-design-advisor
   edit-article
@@ -231,8 +234,11 @@ GLOBAL_SKILLS=(
   maintainable-code-review
   product-engineering-mvp
   project-structure-advisor
+  reflect
   repository-boundary-review
   testing-strategy
+  verification-harness
+  why
   write-a-prd
   zoom-out
 )

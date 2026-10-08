@@ -26,6 +26,13 @@ Data model, API contracts, UI states and interactions; note why inapplicable par
 
 - [ ] T-1: Change scope, dependent tasks, matching ACs, verification method.
 
+Throughput checkpoint:
+
+- Blocking steps:
+- Parallel streams:
+- Shared mutable state:
+- Smallest safe split:
+
 ## Verification plan
 
 | Check | Location and command/operation | Required environment | Expected result / ACs |

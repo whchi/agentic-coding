@@ -14,6 +14,7 @@ This file is a map, not an encyclopedia:
 
 - Point to deeper content in `docs/`.
 - Each level should show only its own information and the next step.
+- Repeated agent mistakes and the mechanism that enforces each rule: `docs/agents/rules.md` (maintained by the `correct` skill).
 
 ## 2. Clarify Ambiguity Before Coding
 
@@ -73,6 +74,8 @@ When finished, report:
 - Any assumptions, skipped checks, partial failures, or unrelated issues noticed.
 
 Do not invent: files, APIs, commands, test results, logs, dependency behavior, migration outcomes, or runtime behavior you did not inspect. If something was not inspected or executed, describe it as an assumption.
+
+An inconclusive result, or a result from the wrong surface, is not a pass. Report it as inconclusive, and name the missing evidence.
 
 **"Completed" is wrong if anything important was skipped silently.**
 

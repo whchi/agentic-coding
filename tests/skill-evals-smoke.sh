@@ -96,7 +96,68 @@ output="$(
     --cases "$ROOT/evals/cases" \
     --validate-only
 )"
-assert_contains "$output" "Validated 30 cases from 2 suites."
+expected_counts="$(python3 - "$ROOT/evals/cases" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+suites = [json.loads(path.read_text()) for path in sorted(Path(sys.argv[1]).glob("*.json"))]
+print(f"Validated {sum(len(suite['cases']) for suite in suites)} cases from {len(suites)} suites.")
+PY
+)"
+assert_contains "$output" "$expected_counts"
+
+BEHAVIOR_FIXTURES="$ROOT/tests/fixtures/behavior-evals"
+BEHAVIOR_RESULTS_DIR="$TMP_ROOT/behavior-results"
+output="$(
+  python3 "$ROOT/scripts/run-behavior-evals.py" \
+    --cases "$BEHAVIOR_FIXTURES/cases.json" \
+    --adapter "$BEHAVIOR_FIXTURES/fake-adapter.py" \
+    --judge "$BEHAVIOR_FIXTURES/fake-judge.py" \
+    --runs 2 \
+    --seed 7 \
+    --output-dir "$BEHAVIOR_RESULTS_DIR"
+)"
+assert_contains "$output" "with: 2/2 runs passed all checks."
+assert_contains "$output" "without: 0/2 runs passed all checks."
+assert_contains "$output" "judge: with 2, without 0, tie 0, errors 0."
+
+behavior_result_file="$(find "$BEHAVIOR_RESULTS_DIR" -maxdepth 1 -type f -name 'behavior-*.json' -print)"
+python3 - "$behavior_result_file" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+result = json.loads(Path(sys.argv[1]).read_text())
+for run in result["runs"]:
+    assert run["response"] == "Root cause confirmed by repro.", run
+    expected = {"ran-repro": True, "no-guess": True, "report-written": True}
+    if run["arm"] == "without":
+        expected = {"ran-repro": False, "no-guess": True, "report-written": False}
+    assert run["checks"] == expected, run
+for verdict in result["verdicts"]:
+    assert verdict["preferred"] == "with", verdict
+    assert verdict["criteria"] == {"with": [True], "without": [False]}, verdict
+PY
+
+python3 "$ROOT/scripts/run-behavior-evals.py" --cases "$ROOT/evals/behavior" --validate-only >/dev/null \
+  || fail "expected versioned behavior cases to validate"
+
+BAD_CASES="$TMP_ROOT/bad-behavior.json"
+python3 - "$BEHAVIOR_FIXTURES/cases.json" "$BAD_CASES" <<'PY'
+import json
+import sys
+
+document = json.load(open(sys.argv[1]))
+document["cases"][0]["skills_under_test"] = ["no-such-skill"]
+json.dump(document, open(sys.argv[2], "w"))
+PY
+set +e
+output="$(python3 "$ROOT/scripts/run-behavior-evals.py" --cases "$BAD_CASES" --validate-only 2>&1)"
+status=$?
+set -e
+[[ "$status" -eq 2 ]] || fail "expected unknown skills_under_test to fail validation"
+assert_contains "$output" "unknown skills_under_test"
 
 git -C "$ROOT" check-ignore -q evals/results/example.json || fail "expected eval results to be ignored"
 if git -C "$ROOT" check-ignore -q evals/results/.gitkeep; then
@@ -107,7 +168,9 @@ for source in \
   evals/README.md \
   evals/cases/routing-boundaries.json \
   evals/cases/super-google-search.json \
-  scripts/run-skill-evals.py; do
+  scripts/run-skill-evals.py \
+  scripts/run-behavior-evals.py \
+  evals/behavior/pstack-skills.json; do
   if git -C "$ROOT" check-ignore -q "$source"; then
     fail "expected source file to remain trackable: $source"
   fi

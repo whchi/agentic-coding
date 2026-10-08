@@ -35,3 +35,13 @@ Include:
 Do not duplicate content already captured in PRDs, plans, ADRs, issues, commits, or diffs. Reference those artifacts by path or URL instead.
 
 If the user passed arguments, treat them as a description of what the next session will focus on and tailor the doc accordingly.
+
+## Pick up a handoff
+
+When you continue work from a handoff document, do these steps before you change files:
+
+1. Read the handoff document and the implementation notes that it names.
+2. Read the last entries of the decision log. Find entries that a later session wrote after the handoff.
+3. Examine the real state: the branch, the worktree, `git status`, uncommitted changes, and running processes.
+4. Compare the real state with the document. Report each difference.
+5. Do not trust a "done" or "passed" statement from the previous agent. Run the verification again, or mark it as not verified.
