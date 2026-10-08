@@ -2,8 +2,6 @@
 
 Shared constraints for this repository. Read additional guidance only when the task needs it:
 
-- `AGENTS.long-running.md`: work that needs durable decisions or a handoff across sessions.
-- `AGENTS.JEV.md`: explicitly selected Jev-assisted model routing.
 - `docs/agents/rules.md`: maintaining a repeated-mistake rule or its enforcement.
 - `commands/qa.md`: acceptance verification, including browser navigation and persisted state.
 

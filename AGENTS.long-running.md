@@ -1,6 +1,6 @@
 # Long-Running Agent Guidelines
 
-Use alongside `AGENTS.md` when work must survive a context reset, spans sessions or owners, or has decisions and verification state that a later contributor needs.
+Independent guidelines for work that must survive a context reset, spans sessions or owners, or has decisions and verification state that a later contributor needs.
 
 ## When This Applies
 

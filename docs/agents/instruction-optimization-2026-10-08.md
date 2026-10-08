@@ -14,9 +14,12 @@ Success means useful domain guidance and authorization boundaries remain intact 
 - Keep commands self-contained because installation copies or converts each command independently.
 - Preserve explicit-only invocation policies, licensing, domain contracts, destructive-action authorization, and serial worktree integration with scoped local checks.
 - Replace the old mandatory description formula in `docs/agents/rules.md` with a capability and trigger rule; exclusions are useful only for likely routing ambiguity.
-- Remove unconditional Jev routing, arbitrary long-running thresholds, append-only activity logs, and repeated generic guidance from AGENTS files. Link optional guidance by task.
+- Remove arbitrary long-running thresholds, append-only activity logs, and repeated generic guidance from AGENTS files. Link optional guidance by task.
+- Treat `AGENTS.md` and `AGENTS.long-running.md` as independent documents, as clarified by the user. Neither routes to or requires the other; optimize each for its own purpose.
 
 ## Completed changes
+
+The counts below describe the original optimization. The optional model-routing document was subsequently removed at the user's request.
 
 | Scope | Markdown reviewed | Markdown changed |
 | --- | ---: | ---: |

@@ -2,7 +2,7 @@
 
 ## 範圍
 
-審查 repo 的 9 份一般文件：`AGENTS.md`、`AGENTS.long-running.md`、`AGENTS.JEV.md`、`README.md`、`README.pi.md`、`CONTEXT.example.md`、`evals/README.md`，以及 `docs/audits/` 的兩份歷史報告。
+本報告保留以下 8 份一般文件的審查紀錄：`AGENTS.md`、`AGENTS.long-running.md`、`README.md`、`README.pi.md`、`CONTEXT.example.md`、`evals/README.md`，以及 `docs/audits/` 的兩份歷史報告。已依使用者要求移除選用模型路由文件及其審查項目。
 
 排除所有 skill 套件、`coding-agent-flow/`、`meta-prompts/` 與既有 commands / prompts 的內容審查。唯一例外是使用者要求將 QA prompt 放入 `commands/`；讀取既有 command 的格式作為依據，不修改其他 command。另讀取 installer、eval runner、policy check 與 `.gitignore`，核對文件描述。
 
@@ -22,7 +22,6 @@
 |---|---|---|---|
 | 高 | [README](../../README.md) 的 References / UI/UX；`.gitignore` 的 `docs/audits/*` | README 把決策依據指向被忽略、未追蹤的 audit，新 clone 無法讀取，與 AGENTS 的 repo 作為紀錄來源不一致。 | 將仍有效的決策摘要保存到可追蹤的 `docs/decisions/`，README 改連該摘要；歷史報告可繼續保留為本機快照。 |
 | 中 | [AGENTS.long-running.md](../../AGENTS.long-running.md) 的 When This Applies | 「提供 ticket」、「3 個檔案」或「5 次工具呼叫」任一條件都觸發長任務筆記，與後文排除小型機械修改的規則不夠一致。短任務也可能被迫建立額外文件。 | 用跨 session、需交接或存在未決設計作為主要條件；檔案數與呼叫數只作輔助訊號，明定小型機械修改的例外優先。 |
-| 中 | [AGENTS.JEV.md](../../AGENTS.JEV.md) 的 Default orchestration / Initial routing / Escalation | 要求所有工程任務進入 Jev / Luna / Sol 路由，但沒有啟用條件、可用模型識別、呼叫介面、confidence threshold 或工具缺席時的處理。複用時 agent 無法可靠執行。 | 標成選用設定；只有環境已提供對應工具與模型映射時啟用，否則使用當前 agent 與確定性工具。用可觀察失敗條件取代未定義的 confidence threshold，並明確繼承 AGENTS 的驗證範圍。 |
 | 中 | [AGENTS.md](../../AGENTS.md) 的 Respect Context Budgets | 無專案 budget 時，以輸出品質已明顯下降作為停止訊號，與「下降前停止」的要求存在時序矛盾。 | 改成出現 context 壓力、重複讀取或決策遺失風險時先做 checkpoint；引用 long-running 文件處理詳細交接步驟。 |
 | 低 | [README.pi.md](../../README.pi.md) 的套件版本與 Installation commands | 「Installed globally」看似即時狀態，但沒有觀測日期；表格列固定版本，安裝指令卻不帶版本，無法重現表格狀態。 | 明確標示為歷史快照並提供實際查核日期；若目的是重現環境，指令應帶表格版本。不要補猜測日期或宣稱這是目前已安裝版本。 |
 | 低 | [CONTEXT.example.md](../../CONTEXT.example.md) 的 Example dialogue | 用「Skill 是完整流程、Command 是單一 prompt」區分兩者，容易被理解成 command 不可含多步驟流程，與本 repo 的 command 形式不符。 | 用包裝和入口區分：skill 是含 `SKILL.md` 的可重用行為包，command 是明確呼叫的 prompt 入口；兩者都可包含多步驟。 |
