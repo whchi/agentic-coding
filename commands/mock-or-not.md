@@ -1,20 +1,15 @@
 ---
-description: Decide whether a test dependency should be real, a fake, or a mock; use testing-strategy for the complete test-boundary decision.
+description: "Choose real, fake, or mock collaborators for a specific test dependency."
 ---
 
 # /mock-or-not
 
-Use this command as a short entry point before adding a test double. Follow `testing-strategy` for the complete decision, using the behavior under test, target test level, and dependency boundary as input.
+Decide from the behavior under test, target test level, and dependency boundary. Use `testing-strategy` when available; otherwise apply the project's testing conventions directly.
 
-Use these terms consistently:
+- **Real:** actual collaborator when deterministic, practical, and part of the behavior being verified.
+- **Fake:** a lightweight working implementation when behavior matters but real infrastructure is impractical.
+- **Mock:** a controlled boundary when the external interaction or response is the contract.
 
-- **Real**: the actual collaborator, used when it is cheap, deterministic, and part of the behavior being verified.
-- **Fake**: a lightweight working implementation used when the real collaborator is too slow or infrastructure-heavy but behavior still matters.
-- **Mock**: a test-controlled boundary used when interaction with an uncontrollable external dependency is the contract.
+Follow project restrictions; in this repository, unit tests must mock third-party dependencies. Do not extend that restriction to integration or real-browser acceptance tests.
 
-Return:
-
-- Dependency boundary and target test level
-- Real/fake/mock choice with reason
-- What behavior should be asserted
-- What would make the test brittle
+Return the dependency and test level, choice with reason, behavior to assert, and material brittleness or fidelity limits. If the request includes writing the test, implement and run the relevant test within the authorized scope.

@@ -1,16 +1,13 @@
 ---
-description: Decide whether DDD is worth adopting before introducing aggregates, repositories, domain services, or domain-based folders; delegate the full assessment to domain-driven-design-advisor.
+description: "Assess whether DDD is justified before adopting aggregates, repositories, domain services, or domain-based folders."
 ---
 
 # /ddd-fit-check
 
-Use this command as a short entry point before introducing DDD concepts. Read `CONTEXT.md`, `CONTEXT-MAP.md`, and relevant ADRs when they exist, then follow `domain-driven-design-advisor` for the full fit assessment.
+Assess the proposed adoption against actual business rules, change pressure, and team needs. Use `domain-driven-design-advisor` when available for the full assessment; otherwise make the bounded assessment directly.
 
-Return only:
+Read `CONTEXT.md` for relevant domain language, `CONTEXT-MAP.md` when context boundaries matter, and only ADRs that constrain the proposal. Missing documents are unknowns, not permission to invent a domain model.
 
-- DDD fit: strong, partial, weak, or insufficient evidence
-- Evidence and unknowns
-- Whether MVC/function folders are enough for now
-- The smallest useful next step, or `No DDD adoption recommended`
+Return the fit (strong, partial, weak, or insufficient evidence), supporting evidence, material unknowns, and smallest useful next step. Consider whether existing MVC or function-based organization is enough. Say `No DDD adoption recommended` when appropriate.
 
-When fit is weak or evidence is insufficient, do not invent bounded contexts, subdomains, or patterns. If the user asks to implement the chosen direction, switch to the relevant architecture skill and verify the change separately.
+This command assesses fit. If implementation is already part of the user's request, continue through the chosen change and its relevant verification within that authorization; otherwise leave a recommendation.

@@ -1,30 +1,15 @@
 ---
-description: Triage a bug or confusing failure by gathering evidence and identifying the confirmed cause; diagnosis only unless the user explicitly asks for a fix.
+description: "Diagnose a bug, flaky behavior, or confusing failure; diagnosis only unless a fix is also requested."
 ---
 
 # /debug-triage
 
-Use this command for diagnosis only when debugging a bug, flaky behavior, production issue, or confusing local failure. For the full investigation workflow, follow `debugging-playbook`.
+Identify the cause from observable evidence. Use `debugging-playbook` when available; otherwise investigate directly.
 
-## Workflow
+Establish the symptom, expected behavior, and a rerunnable reproduction when practical. Read logs, configuration, data, and affected code only as needed to distinguish plausible causes. Test the cheapest discriminating hypothesis first; do not invent a fixed number of hypotheses.
 
-1. State the observed symptom and expected behavior.
-2. Classify likely causes into environment, data, or logic.
-3. Start with the cheapest evidence that separates those buckets.
-4. Reproduce the symptom with a rerunnable test, command, or request when practical.
-5. Form 3 to 5 falsifiable hypotheses and test the cheapest one first.
-6. Record the evidence that confirms or rules out each hypothesis.
+Continue until evidence supports a cause or a specific missing input prevents progress. Separate confirmed facts from inference and record checks that rule out alternatives.
 
-Do not modify application code in triage mode. If the user explicitly asks for a fix after the cause is confirmed, switch to the relevant implementation skill and report its verification separately.
+In diagnosis only mode, do not modify application code. When the user's request already includes a fix, continue from the confirmed cause through the smallest repair and scoped verification; do not require a second request.
 
-## Output
-
-Return:
-
-- Symptom and expected behavior
-- Reproduction status and path
-- Most likely bucket
-- Hypotheses tested and evidence
-- Confirmed cause, or the exact missing evidence
-- Next check
-- Proposed fix (not applied in triage mode)
+Return the reproduction, confirmed cause or missing evidence, supporting checks, and proposed fix. If a fix was authorized and applied, report its verification separately. Include a next diagnostic check only when the cause remains unresolved.

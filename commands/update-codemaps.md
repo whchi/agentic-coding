@@ -1,80 +1,25 @@
 ---
-description: Scan project structure and generate token-lean architecture codemaps.
+description: "Create or refresh architecture codemaps after structural changes or when the user requests a codebase map."
 ---
 
 # /update-codemaps
 
-Analyze the codebase structure and generate token-lean architecture documentation.
+Produce concise, navigable documentation of observed module responsibilities, boundaries, entry points, and data flow.
 
-When `CONTEXT.md` or `CONTEXT-MAP.md` exists, use the same domain vocabulary in generated codemaps. If those files are missing, do not invent domain terms; describe modules by observed responsibility.
+Use the requested scope; otherwise inspect the project structure to choose useful maps. Follow existing codemap placement, or use `docs/CODEMAPS/` when none exists. Create only maps supported by the project: architecture, backend, frontend, data, dependencies, or contexts as relevant.
 
-## Step 1: Scan Project Structure
+Read `CONTEXT.md` for domain language and `CONTEXT-MAP.md` when mapping domain boundaries. Follow relevant ADRs rather than loading every document. Describe observed responsibilities when domain terminology is unavailable.
 
-1. Identify the project type (monorepo, single app, library, microservice)
-2. Find all source directories (src/, lib/, app/, packages/)
-3. Map entry points (main.ts, index.ts, app.py, main.go, etc.)
+## Content
 
-## Step 2: Generate Codemaps
+- Prefer source paths, public interfaces, and compact flow diagrams over copied implementation.
+- Link a top-level map to deeper maps with the task or question each answers.
+- Trace important relationships to inspected code. Distinguish observed behavior from uncertain or stale documentation.
+- Include external services and shared dependencies where they affect boundaries.
+- Add freshness metadata with the actual inspection date and scope. Do not invent scan counts or token estimates.
 
-Create or update codemaps in `docs/CODEMAPS/` (or `.reports/codemaps/`):
+For existing maps, preserve hand-written context and update facts supported by the change. A large diff is a reason to inspect carefully, not an automatic approval gate. Continue authorized edits and repairs; report an unresolved semantic conflict rather than silently replacing it. Apply the repository's approval rule before deleting files.
 
-| File | Contents |
-|------|----------|
-| `architecture.md` | High-level system diagram, service boundaries, data flow |
-| `backend.md` | API routes, middleware chain, service → repository mapping |
-| `frontend.md` | Page tree, component hierarchy, state management flow |
-| `data.md` | Database tables, relationships, migration history |
-| `dependencies.md` | External services, third-party integrations, shared libraries |
-| `contexts.md` | Context map, module responsibilities, upstream/downstream relationships |
+Verify referenced paths and key relationships, then review the diff for unsupported claims and accidental loss of useful context. Documentation-only changes need content and diff checks, not application suites.
 
-### Codemap Format
-
-Each codemap should be token-lean — optimized for AI context consumption:
-
-```markdown
-# Backend Architecture
-
-## Routes
-POST /api/users → UserController.create → UserService.create → UserRepo.insert
-GET  /api/users/:id → UserController.get → UserService.findById → UserRepo.findById
-
-## Key Files
-src/services/user.ts (business logic, 120 lines)
-src/repos/user.ts (database access, 80 lines)
-
-## Dependencies
-- PostgreSQL (primary data store)
-- Redis (session cache, rate limiting)
-- Stripe (payment processing)
-```
-
-## Step 3: Diff Detection
-
-1. If previous codemaps exist, calculate the diff percentage
-2. If changes > 30%, show the diff and request user approval before overwriting
-3. If changes <= 30%, update in place
-
-## Step 4: Add Metadata
-
-Add a freshness header to each codemap:
-
-```markdown
-<!-- Generated: 2026-02-11 | Files scanned: 142 | Token estimate: ~800 -->
-```
-
-## Step 5: Save Analysis Report
-
-Write a summary to `.reports/codemap-diff.txt`:
-- Files added/removed/modified since last scan
-- New dependencies detected
-- Architecture changes (new routes, new services, etc.)
-- Context-map changes or stale domain terms
-- Staleness warnings for docs not updated in 90+ days
-
-## Tips
-
-- Focus on **high-level structure**, not implementation details
-- Prefer **file paths and function signatures** over full code blocks
-- Keep each codemap under **1000 tokens** for efficient context loading
-- Use ASCII diagrams for data flow instead of verbose descriptions
-- Run after major feature additions or refactoring sessions
+Return changed map paths, meaningful architecture changes, verification results, and uninspected or uncertain areas. Write a separate scan report only when requested or required by the project.
