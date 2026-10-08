@@ -11,8 +11,7 @@ Use this skill when DDD may help, but do not assume DDD is always the right answ
 
 Use related skills for implementation-level follow-through:
 
-- `project-structure-advisor` for arranging folders and modules once the architectural direction is chosen.
-- `repository-boundary-review` for checking whether concrete repository/service/use-case code owns the right behavior.
+- `module-boundaries` for folder/module organization or concrete repository/service/use-case responsibility. Ordinary layering decisions do not require DDD.
 - `testing-strategy` for domain, application, repository, and adapter test coverage.
 
 ## Fit First
@@ -34,23 +33,6 @@ Classify domains:
 Use bounded contexts to separate language and behavior. The same word can mean different things in different contexts, such as `account` in a blog, bank, or social product.
 
 Legacy systems and external services should usually be their own context behind adapters. Do not let an external domain model leak inward.
-
-## Layering
-
-Default dependency direction:
-
-```text
-UI layer -> Application layer -> Domain layer <- Infrastructure adapters
-```
-
-Outer layers may call inward. Inner layers must not know about outer mechanisms.
-
-- UI: routes, presenters, formatters, request parsing, validators.
-- Application: use cases, application services, DTOs, interface adapters.
-- Domain: aggregate roots, entities, value objects, domain services, repository interfaces.
-- Infrastructure: ORM, DAO, DB, repository implementations, vendor SDKs.
-
-The inner circle is policy. The outer circle is mechanism.
 
 ## Aggregates
 
@@ -81,13 +63,9 @@ Value object:
 - Should be immutable or replace-as-a-whole.
 - Should have no side effects.
 
-## Repository Guidance
+## Aggregate Persistence
 
 Repositories operate on aggregate roots and hide persistence details from application/domain code.
-
-Repository interfaces belong with the domain/application boundary. Repository implementations live in infrastructure or interface adapters.
-
-The repository may use ORM entities, DAO, DTO, or query builders internally, but callers should see domain concepts or application-level results.
 
 When ORM models already contain useful behavior, decide pragmatically whether to wrap, adapt, or keep them. Do not force separate DDD entities for every table if the domain does not benefit.
 
