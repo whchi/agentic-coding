@@ -62,6 +62,9 @@ assert_not_exists "$RUN_CWD/.agents"
 assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
 assert_not_exists "$RUN_CWD/.agents"
 
+output="$("$ROOT/setup.sh" codex install skills --project frontend-patterns --target "$TARGET")"
+assert_contains "$output" "already consistent: $TARGET/.agents/skills/frontend-patterns"
+
 GEMINI_HOME="$TMP_ROOT/gemini-home"
 output="$(
   HOME="$GEMINI_HOME" \
@@ -92,6 +95,12 @@ description = source.splitlines()[1].removeprefix("description:").strip().strip(
 assert command["description"] == description
 assert command["prompt"].strip() == source.split("---", 2)[2].strip()
 PY
+
+output="$(
+  HOME="$GEMINI_HOME" \
+    "$ROOT/setup.sh" gemini install commands --global debug-triage
+)"
+assert_contains "$output" "already consistent: $GEMINI_HOME/.gemini/commands/debug-triage.toml"
 
 (
   HOME="$GEMINI_HOME" \

@@ -134,7 +134,13 @@ require_known_item() {
 
 install_dir() {
   local src="$1" dest="$2"
-  [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
+  if [[ -e "$dest" ]]; then
+    if diff -qr "$src" "$dest" >/dev/null; then
+      echo "  already consistent: $dest"
+      return 0
+    fi
+    die "already exists: $dest (use reinstall)"
+  fi
   if [[ "$DRY_RUN" == true ]]; then
     echo "  dry-run install $src → $dest"
   else
@@ -170,7 +176,13 @@ uninstall_path() {
 
 install_file() {
   local src="$1" dest="$2"
-  [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
+  if [[ -e "$dest" ]]; then
+    if cmp -s "$src" "$dest"; then
+      echo "  already consistent: $dest"
+      return 0
+    fi
+    die "already exists: $dest (use reinstall)"
+  fi
   if [[ "$DRY_RUN" == true ]]; then
     echo "  dry-run install $src → $dest"
   else
@@ -188,19 +200,29 @@ install_gemini_command() {
   description="${description//\\/\\\\}"
   description="${description//\"/\\\"}"
 
+  render_gemini_command() {
+    printf "description = \"%s\"\n\nprompt = '''\n" "$description"
+    awk '
+      NR == 1 && $0 == "---" { frontmatter = 1; next }
+      frontmatter && $0 == "---" { frontmatter = 0; body = 1; next }
+      body { print }
+    ' "$src"
+    printf "\n'''\n"
+  }
+
+  if [[ "$action" == "install" && -e "$dest" ]]; then
+    if diff -q <(render_gemini_command) "$dest" >/dev/null; then
+      echo "  already consistent: $dest"
+      return 0
+    fi
+    die "already exists: $dest (use reinstall)"
+  fi
+
   if [[ "$DRY_RUN" == true ]]; then
     echo "  dry-run $action $src → $dest"
   else
     echo "  $action $src → $dest"
-    {
-      printf "description = \"%s\"\n\nprompt = '''\n" "$description"
-      awk '
-        NR == 1 && $0 == "---" { frontmatter = 1; next }
-        frontmatter && $0 == "---" { frontmatter = 0; body = 1; next }
-        body { print }
-      ' "$src"
-      printf "\n'''\n"
-    } > "$dest"
+    render_gemini_command > "$dest"
   fi
 }
 
@@ -334,7 +356,6 @@ setup_one_command() {
   if [[ "$PROVIDER" == "gemini" ]]; then
     dest="$dest_root/$name.toml"
     if [[ "$action" == "install" ]]; then
-      [[ ! -e "$dest" ]] || die "already exists: $dest (use reinstall)"
       install_gemini_command install "$src" "$dest"
     elif [[ "$action" == "reinstall" ]]; then
       if [[ "$DRY_RUN" != true ]]; then
