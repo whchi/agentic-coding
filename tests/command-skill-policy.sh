@@ -53,7 +53,8 @@ assert_not_contains "$ROOT/setup.sh" "antigravity-cli"
 
 assert_contains "$ROOT/commands/debug-triage.md" "diagnosis only"
 assert_not_contains "$ROOT/commands/debug-triage.md" "Fix the smallest confirmed cause"
-assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "If the user has explicitly asked for a fix"
+assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "For diagnosis-only requests, report the cause and proposed fix without changing application code"
+assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "already-authorized fix"
 assert_not_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "Fix the confirmed cause"
 
 assert_contains "$ROOT/commands/anthropic-skill-review.md" "existing SKILL.md or command draft"
