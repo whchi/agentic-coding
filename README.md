@@ -186,8 +186,37 @@ Essential constraints may appear in independently installable skills. Do not rem
 
 Verify the catalog and installed contents with `bash tests/command-skill-policy.sh` and `python3 tests/skill-consolidation-smoke.py`. The latter installs into temporary homes/projects for all supported providers; it does not alter existing user installations.
 
+## Initialize a project's AGENTS.md
+
+Run from this checkout, with the target Git repository root explicitly selected:
+
+```bash
+./init-project-agents.sh --target /path/to/project
+# Preview the task and standard without a model call or file changes:
+./init-project-agents.sh --target /path/to/project --dry-run
+```
+
+Requires an installed, authenticated Codex CLI. The script passes the local
+[project AGENTS standard](docs/agents/project-agents-standard.md) to Codex, which
+inspects the target with a read-only shell sandbox and returns a proposed document.
+The script creates or updates only the target root `AGENTS.md`; it does not merely
+print a prompt. Existing content is included in the review, with a backup retained
+at the printed temporary path. Identical output skips the write. Model failures,
+invalid output, symlink destinations, and detected changes during generation stop
+the write. Avoid concurrent edits while running it. Review the generated guidance
+before relying on it; command existence is inspected, not proof that tests passed.
+
+This repository's own root is rejected because its `AGENTS.md` holds global rules.
+The script neither commits nor pushes, and does not depend on `pstack/`. It uses
+the configured Codex model and account, so a normal run makes a model request.
+Other providers are not currently supported by this entry point.
+
+Check the wrapper without a model call using
+`python3 tests/init-project-agents-smoke.py`.
+
 ## References
 ### AGENTS.md
+- [專案 AGENTS.md 初始化與審查標準](docs/agents/project-agents-standard.md)：初始化或修改其他 repo 的專案規則時使用；與本 repo 根目錄的全域行為規則分開。
 - https://github.com/forrestchang/andrej-karpathy-skills
 ### skills
 - https://github.com/ayghri/i-have-adhd
