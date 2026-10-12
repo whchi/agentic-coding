@@ -14,6 +14,8 @@ Maintain a project-local `verify-<app>` skill that launches, checks, drives, and
 - **Refresh:** Correct an existing skill and feature map after the app changes. Read [refresh.md](references/refresh.md) for coverage, live-pass invariants, and triage.
 - When comparing an existing fix against a baseline, also read [verify-existing-fix.md](references/verify-existing-fix.md).
 
+Both modes use the [case and run contract](references/run-contract.md). Carry this contract into the generated skill so another agent can execute it without this generator or any reference checkout. For requested visual, performance, equivalence, or agent evaluations, use only the relevant section of [specialized checks](references/specialized-checks.md).
+
 Use the provider's existing project skills folder. Infer the destination from the active provider and repository convention; ask only when multiple plausible destinations remain or no provider convention can be established.
 
 ## Shared constraints
@@ -41,3 +43,5 @@ A refresh edits the `verify-<app>/` folder, not product code. Distinguish:
 ## Completion
 
 A runnable skill needs evidence from the real path, not only a build or source inspection. Report the mode, selected features, evidence paths, changes, and missing prerequisites. Use `clean` when all scoped source and live checks passed without edits, `changed` when corrections were proved, or `blocked` when required coverage remains unavailable.
+
+These are maintenance outcomes, not product acceptance verdicts. Report case results, coverage, environment readiness, and harness changes separately using the run contract. Do not add PR watching or merging to the QA runner.

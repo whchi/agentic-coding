@@ -15,7 +15,23 @@ description: "Build and run acceptance checks for a specified change, including 
 - Unit Tests 的第三方依賴全部 mock；此規則不表示 UI 驗收只能看 mock 畫面。
 - 同一程式狀態、環境與範圍的可查證結果可共用。只有修改、失敗、證據不足或新風險才補跑。
 - QA 不自動啟動完整 code review；在 `feature-loop verify` 內時，沿用該流程的輪次、狀態與修復管理。
-- 若有 `verify-<app>` skill，依其 Launch、Doctor、Drive、Evidence、Cleanup 操作真實 app，覆蓋 feature map 中本次受影響功能的入口。地圖與實際不符時回報，建議 scoped refresh；QA 本身不授權改寫 harness。
+- 從目標專案的 README、scripts、測試設定與現有測試查證啟動、操作及驗證方式，使用實際存在的命令與工具。啟動後確認環境可用，再操作受影響的功能入口、保存證據並清理本次建立的資源。缺少操作方式時回報具體缺口，不假設已有專用驗證 skill、功能地圖或控制指令；QA 本身不授權改寫 harness。
+
+## 案例與執行紀錄
+
+先列出本次案例 ID、需求／契約來源、入口、前置資料、操作與預期結果、證據、reset 方法及 timeout。既有測試可用 test ID 引用，不重寫同一套測試。排除或不適用項目要附理由；預期行為不明時不得照目前畫面自行定義通過。
+
+沿用目標專案實際存在的測試執行方式與報告格式，依下列要求記錄，不依賴額外的驗證 skill 或契約文件：
+
+- Run ID、base／tested revision、未提交變更指紋、build、依賴、非敏感設定、fixture、工具與案例版本。結果只能在相關輸入相同且證據仍存在時重用。
+- 每次 attempt 的案例 ID、操作／命令、Expected／Actual、時間、結果與證據路徑。保留首次失敗；重跑成功不覆蓋失敗紀錄。
+- 分開記錄案例結果（passed／failed／blocked／unstable／not-run）、覆蓋範圍、環境狀態與 harness 修改。產生簡短摘要及 `run.json` 或既有等價機器可讀報告。
+
+失敗依證據分成 product、harness、environment、test-data 或 unknown；不得僅因檔案不在 diff 或第二次仍失敗就斷定原因。疑似暫時性失敗預設最多一次診斷重跑，先確認待測版本、程序、連線與必要登入狀態，再恢復本次擁有的測試資料；先失敗再成功標為 unstable，不算乾淨通過。偶發問題需要先訂取樣與時間上限，不能一直重跑到綠。
+
+執行前確認資源 ownership 與隔離。失敗、timeout 或取消也要清理本次建立的資源，記錄清理失敗，保留證據；不得重設共用或使用者資料。依專案保留政策存放證據，遮罩 trace、log、截圖中的秘密與個資，不自動發布或刪除。
+
+只有需求涉及視覺、效能或行為等價時才加入對應模式。先固定 baseline、比較條件與門檻，不調整基準來消除失敗。Code review、PR watching 和合併不屬於 QA 執行器。
 
 ## 真實瀏覽器與狀態
 
@@ -53,6 +69,7 @@ description: "Build and run acceptance checks for a specified change, including 
 - **Passed**：適用的自動化測試與必要瀏覽器驗證均通過。
 - **Failed**：已驗證行為違反需求或契約。
 - **Partial**：仍缺必要驗收項目；只有 mock 結果或頁面載入成功不足以通過。
+- 尚未解決的 unstable 或 blocked 案例屬於未完成驗收，不得列為 Passed。
 - **Pending Integration**：局部驗證完成，完整套件待計畫中的串行合併後執行。
 
 同時存在失敗與未驗證項目時，兩者都回報，不用單一狀態掩蓋限制。未執行的檢查不得宣稱通過。

@@ -33,6 +33,8 @@ Write these sections. Base each section on facts from step 1. Do not leave place
 
 ## 3. Proof standards for the Evidence section
 
+Use [run-contract.md](run-contract.md) for case IDs, run identity, attempts, failure classes, result dimensions, and cleanup. Include a self-contained copy in the generated skill's own `references/` and link it from its Evidence section. Do not leave links back to this generator or a reference checkout. Copy only needed specialized guidance, if any; use verified project commands rather than fictional example tools. State which existing runner or proven helper emits the machine-readable run result.
+
 - Use the real user path. Do not use internal setters or test-only endpoints.
 - Capture the user action and the resulting state, not only the final screen.
 - Check side effects when they define the requirement, such as a saved file or durable record. Do not send real messages or mutate shared services merely to gather proof without authorization.
@@ -63,6 +65,8 @@ Use the shape in [feature-map-example/README.md](feature-map-example/README.md).
 
 Write each file from the point of view of the user. Say what the feature is, how to reach it, and how to drive it. Say which observable end state proves it. The map is the maintained verification record for the repo. Record the entry points actually driven; do not claim untested alternatives passed. Creating the harness requires one representative live proof, while acceptance coverage follows the selected task scope.
 
+Within the driving section, identify cases using the run contract: requirement source, entry point, prerequisites, actions/expectations, evidence, reset, and execution limits. Link existing automated test IDs where available. The feature map indexes behavior; case definitions hold the proof, without duplicating runner code.
+
 ## 6. Prove the generated skill
 
 1. Run Launch.
@@ -73,6 +77,8 @@ Write each file from the point of view of the user. Say what the feature is, how
 6. Confirm that the evidence is still at its named location. A Cleanup that removes the evidence fails this step.
 7. If a step fails, run the generated Cleanup before the next attempt. This prevents stray processes and ports.
 8. Correct the skill and run the proof again.
+
+Check that the generated skill's local references and helpers resolve within its package or to documented project tools, and that its result report identifies the actual case, build, attempts, and surviving evidence. An initial one-case proof does not certify the other mapped cases. Do not claim portability based on source inspection alone; report which provider and environment were actually exercised.
 
 ## 7. Handoff
 

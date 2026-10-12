@@ -43,6 +43,8 @@ Each feature file starts with an H1 title and one paragraph describing the user-
 
 Keep implementation details out of the map. Name only user paths, stable handles, required state, commands, and observable proof.
 
+When turning this sketch into a runnable project map, attach each case to a requirement source and record evidence, reset, readiness/timeout, and retry policy per the generated skill's local run contract. Existing test IDs can supply the executable recipe. This fictional example has no verified build or executed results and must not be reported as a passing run.
+
 ## Features
 
 - [Create a note](./create-note.md) covers browser and CLI creation, cancellation, persistence, and cleanup.

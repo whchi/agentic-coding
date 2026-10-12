@@ -18,6 +18,8 @@ A feature map becomes incorrect when the app changes. A refresh makes the `verif
 
 ## Edit scope
 
+Use [run-contract.md](run-contract.md) when checking case completeness and result/evidence identity. Maintain the generated skill's own local copy of that contract, with no dependency on the generator checkout. Preserve project-specific commands and user configuration; do not overwrite them with generic examples. Load specialized checks only when the refresh scope requires them.
+
 Edit only the files in the `verify-<app>/` folder: its `SKILL.md`, `features/`, and its helper scripts. Do not edit product code. Do not overwrite the user configuration file. If the requested work already authorizes a configuration change, make only that change; otherwise show the proposed diff and obtain authorization.
 
 ## Pass
@@ -55,6 +57,8 @@ Drive each harness correction live again before you report it. Run the final Cle
 Write durable conclusions in the feature map, not in uncommitted notes. Durable conclusions include prerequisites, gotchas, corrected selectors, and corrected recipes. Keep evidence files out of source control. Report the run facts to the user: features covered, unreachable prerequisites, confirmed drift, and the outcome.
 
 ## Outcomes
+
+The following describe maintenance, not acceptance. Also report case results, coverage, environment readiness, cleanup, and changed harness files separately. A corrected recipe is not proof that the product passed; unresolved unstable cases remain coverage gaps.
 
 Give one outcome:
 
