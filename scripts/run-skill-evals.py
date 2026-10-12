@@ -17,7 +17,7 @@ import uuid
 
 SCHEMA = "skill-eval/v1"
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SKILL_SCOPES = ("global-skills", "project-skills", "general-skills")
+SKILL_SCOPES = ("global-skills", "project-skills")
 
 
 class CaseValidationError(ValueError):

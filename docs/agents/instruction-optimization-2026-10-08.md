@@ -2,7 +2,7 @@
 
 ## Scope and source
 
-The user requested changes to Markdown in `global-skills/`, `project-skills/`, `coding-agent-flow/`, `commands/`, and the three root `AGENTS*.md` files. Installed copies, plugins, `general-skills/`, and the untracked `pstack/` checkout are excluded.
+The user requested changes to Markdown in `global-skills/`, `project-skills/`, `coding-agent-flow/`, `commands/`, and the three root `AGENTS*.md` files. Installed copies, plugins, and the untracked `pstack/` checkout are excluded.
 
 The supplied article and two screenshots guide this revision. Their relevant principles are: describe concrete skill triggers concisely; load task-specific references only when needed; prefer outcomes and essential constraints over fixed itineraries; use proportional verification; continue already-authorized work through completion. The article's model capability claims are background, not independently verified facts or a requirement to change models.
 

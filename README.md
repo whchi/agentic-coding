@@ -52,7 +52,6 @@ cd ~/agentic-coding
 | `project-skills/` | Provider project skills directory (see below) | Stack-specific or project-local engineering skills |
 | `commands/` | Provider commands / prompts directory (see below) | Reusable command templates |
 | `coding-agent-flow/` | Not installed | Skills for a future coding-agent workflow, kept together as one package; `setup.sh` does not install these yet. |
-| `general-skills/` | Not installed | Non-engineering or draft skills kept for reference; `setup.sh` does not install these. Copy manually when needed. |
 | `evals/` | Repository contributors | Versioned skill-routing and skill-behavior cases, and ignored run results; see [evals/README.md](evals/README.md). |
 | `CONTEXT.example.md` | Copy to a project's repo root | Example domain glossary; copy to `CONTEXT.md` when needed. |
 
