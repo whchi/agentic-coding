@@ -1,7 +1,7 @@
 ---
 name: reflect
 description: Review session learnings and propose skill improvements. Use only when the user explicitly invokes reflect or /reflect.
-origin: backnotprop/pstack@3a60467 (MIT)
+disable-model-invocation: true
 ---
 
 # Reflect

@@ -4,12 +4,14 @@ Use the matching language example when a concrete handler shape helps. These are
 
 ## TypeScript: Next.js Route Handler
 
+This example uses Zod 4's `z.email()`. For projects on Zod 3, retain `z.string().email()`; do not upgrade dependencies just to match this sketch. The method form still works but is deprecated in Zod 4 ([migration guide](https://zod.dev/v4/changelog)).
+
 ```typescript
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 
 const createUserSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   name: z.string().min(1).max(100),
 });
 

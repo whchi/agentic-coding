@@ -81,7 +81,7 @@ Check:
 2. Returning `null` or a primitive is acceptable for simple cases if the contract is explicit.
 3. Use explicit, documented result variants; flag ambiguous unrelated shapes rather than enforcing an arbitrary variant count.
 4. Avoid parameters that accept many unrelated types.
-5. Use generics only when runtime behavior genuinely depends on caller-provided type or shape.
+5. Use generics to express useful type relationships, such as preserving an item type in `Page<T>` or connecting input and output types. Runtime behavior need not vary; avoid type parameters that express no useful relationship.
 6. Use named constants or discriminated unions where they clarify a real contract; do not wrap every literal mechanically.
 7. Make error cases explicit instead of mixing magic values into success returns.
 

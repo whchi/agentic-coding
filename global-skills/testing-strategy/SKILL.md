@@ -1,7 +1,7 @@
 ---
 name: testing-strategy
 description: Choose or review test levels, dependencies, and fixtures; use test-first implementation when explicitly requested or an authorized bug fix has an obvious, cheap local test path.
-origin: ECC,superpowers
+disable-model-invocation: true
 ---
 
 # Testing Strategy

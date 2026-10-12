@@ -52,7 +52,7 @@ Fetch one extra row to determine whether `has_next` is true.
 ```
 
 Pros:
-- Consistent performance regardless of position
+- Avoids scanning skipped offsets when the query can seek through a suitable index; cursor pagination alone does not guarantee stable performance
 - More stable with concurrent inserts/deletes
 
 Cons:
@@ -65,3 +65,4 @@ Cons:
 - Always include a deterministic tie-breaker, usually `id`.
 - Keep cursors opaque; clients should not depend on cursor internals.
 - Do not use only `id > :cursor_id` unless the API sorts by ascending `id`.
+- Match indexes to the actual filters and sort order, and inspect the query plan before making performance claims. See [PostgreSQL indexes and ordering](https://www.postgresql.org/docs/current/indexes-ordering.html).
