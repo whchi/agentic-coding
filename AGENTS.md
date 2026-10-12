@@ -69,17 +69,19 @@ Before any destructive operation:
 - If unsure, work on a single branch. Do not introduce worktrees just for structure.
 
 ### Rules once worktrees are in use
-- Development worktrees may run unit tests, lint, and type checks. All third-party dependencies in unit tests must be mocked; do not call real third-party services in unit tests.
+- Development worktrees may run unit tests, lint, and type checks.
 - Feature and e2e tests in a development worktree must be limited to the behavior changed by that worktree. Do not run full suites, unrelated tests, or broader integration / cross-component verification in development worktrees.
+- If a cross-component concern arises in a development worktree, record it in the report and defer it to post-merge verification instead of broadening tests locally.
 - Merge worktree changes into the integration target one at a time. Never perform concurrent merges.
 - Run the full e2e and feature suites against the combined result in the integration target only after the planned serial merges are complete.
+- If post-merge suites fail, fix the failure on the integration target, rerun the affected suites, and report which merge introduced it when identifiable.
 - Do not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.
-- General verification requirements elsewhere in this file do not authorize broader testing in development worktrees. Report local checks and the scope of feature / e2e tests run; explicitly mark full-suite verification as pending until it has run after merging.
+- Section 4's allowance to broaden verification does not apply in development worktrees. Report local checks and the scope of feature / e2e tests run; explicitly mark full-suite verification as pending until it has run after merging.
 
 ### When not using worktrees
-- Follow the normal verification requirements in this file. The scoped-verification limits above do not apply.
+- Follow the normal verification requirements in section 4. The scoped-verification limits above do not apply, but unit tests must still mock all third-party dependencies.
 
-This rule prevents redundant cross-validation from delaying merges. Do not expand the verification scope on your own while working in worktrees.
+This order exists to keep redundant cross-validation from delaying merges.
 
 ---
 
