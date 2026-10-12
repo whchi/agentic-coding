@@ -2,6 +2,7 @@
 name: benchmark-checklist
 description: Validate benchmark or eval measurements before claiming a performance difference or choosing between measured alternatives.
 origin: backnotprop/pstack@3a60467 (MIT)
+disable-model-invocation: true
 ---
 
 # Benchmark Checklist
