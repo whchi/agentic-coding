@@ -20,6 +20,7 @@ Follow local conventions. Apply the standards relevant to the changed code rathe
 Read a reference only when that convention needs attention:
 
 - [Naming](references/naming-conventions.md): names, boolean predicates, domain vocabulary.
+- [Type design](references/type-design.md): narrowing untrusted inputs, modeling state variants, exhaustive handling, and choosing stronger types only where operations need them.
 - [File organization](references/file-organization.md): existing module boundaries, imports, exports.
 - [Testing](references/testing.md): test organization and examples when editing tests.
 
