@@ -1,113 +1,21 @@
 ---
 name: testing-strategy
-description: Choose test levels, dependency boundaries, and fixtures when deciding how to verify behavior or reviewing whether existing tests protect it.
+description: Choose or review test levels, dependencies, and fixtures; use test-first implementation when explicitly requested or an authorized bug fix has an obvious, cheap local test path.
+origin: ECC,superpowers
 ---
 
 # Testing Strategy
 
-Use this skill to choose the right test shape for a behavior change.
+Use the project's existing tests and tools. A request for test advice does not authorize product changes or start TDD.
 
-## Boundaries
+- **Design or review tests:** Read [test-design.md](references/test-design.md) for test levels, dependency boundaries, and fixtures.
+- **Test-first implementation:** Read [test-first.md](references/test-first.md) when the user requests TDD, a failing test, or a regression test, or an authorized bug fix has a clear, cheap local test target. Unknown-cause diagnosis remains diagnosis.
+- **Suspicious mocks or test utilities:** Read [testing-anti-patterns.md](references/testing-anti-patterns.md) only when they may hide the behavior under test.
 
-Use `better-test-driven-development` when the task requires strict test-first implementation: write a failing test, watch it fail, then implement. Use this skill to decide what kind of test is appropriate and what dependencies should be real, fake, or mocked.
+Prefer the smallest useful check. Do not build a broad harness, brittle mocks, or unrelated fixtures merely to follow TDD; use the closest practical verification and explain the limitation. Documentation and configuration changes may need content or runtime checks instead of new tests.
 
-## Test Levels
+Assert intended behavior, not implementation details. Do not weaken assertions to fit a bug. Mock third-party services in unit tests, keep the behavior under test real, and respect existing frameworks and coverage policy.
 
-Unit tests:
+Run affected checks within repository scope. In development worktrees, select changed feature/e2e cases; full suites wait until integration after serial merges.
 
-- Target use cases, models, services, or pure functions.
-- Usually assert input/output.
-- Avoid asserting internal flow unless the flow itself is complex and important.
-
-Integration tests:
-
-- Test interaction between components and interfaces.
-- Useful across ORM, services, controllers, queues, repositories, and internal APIs.
-
-E2E tests:
-
-- Test a full user or system flow.
-- For backend-only work, an HTTP API request through persistence and side effects often acts as e2e/integration coverage.
-
-## Database Choice
-
-Use the repository's established test database when it represents the contract under test. SQLite can suit isolated persistence behavior when its semantics are close enough; project size alone does not decide equivalence.
-
-Use the production-like database when:
-
-- SQL dialect behavior matters.
-- Transaction, lock, index, JSON, timezone, or migration behavior differs materially.
-- The test is specifically about database behavior.
-
-## Mocking Rules
-
-Mock:
-
-- Third-party APIs and external providers.
-- Uncontrollable services.
-- Expensive, slow, or nondeterministic dependencies.
-- Core library IO boundaries when you need precise control over DB, Redis, storage, or network behavior.
-
-Avoid:
-
-- Mocking native function call counts unless that call is the contract.
-- Mocking so much that the test no longer verifies real interfaces.
-- Adding test-only production APIs just to make mocking easier.
-
-## DDD Testing Notes
-
-For DDD-style code:
-
-- Test aggregate invariants close to the domain model with unit tests.
-- Test use cases/application services around workflow and orchestration.
-- Test repository implementations with integration tests against the chosen persistence layer.
-- Mock or fake repository interfaces in application-layer tests when persistence is not the behavior under test.
-- Do not mock the aggregate root's own behavior when testing domain rules.
-- Add tests that prove child entities cannot be modified in ways that bypass aggregate root invariants.
-- For bounded context adapters, test translation between external models and internal domain language.
-
-## Review Smells
-
-- Requirements changed but tests did not.
-- Tests assert implementation details more than behavior.
-- Happy path is covered but boundary cases are not.
-- Mocks hide a broken integration boundary.
-- Seed data is too artificial to catch real scenarios.
-- A plausible mutation of the required behavior still passes. Strengthen assertions around the observable contract rather than around incidental helper return values.
-- The test asserts that a value exists, or that no error occurred, but not the expected value. Call the code the way its users do, and compare the result with a literal expected value.
-
-## Realistic Test Data
-
-Fixtures, factories, and local demo data should look like real production scenarios, not only minimal happy paths.
-
-Include:
-
-- Ordinary valid records
-- Empty or minimal states
-- Realistic relationships and ownership
-- Status variation, such as draft, active, archived, deleted, failed, or expired
-- Dates across useful ranges
-- Realistic text lengths, optional fields, and nullable values
-
-Keep seeds deterministic enough for tests and demos. Avoid fake data that trains developers to ignore real constraints.
-
-## Workflow
-
-1. Name the behavior under test.
-2. Pick the narrowest test level that gives confidence.
-3. Select boundary and failure cases that matter to the behavior; do not generate every shape for unrelated changes.
-4. Decide which dependencies are real, fake, or mocked.
-5. Use realistic fixtures or seeds.
-6. If DDD layers exist, choose the test level by layer: domain, application, repository, or adapter.
-7. Confirm the test would fail before the fix when working on a bug.
-8. Run the targeted test and affected checks. In development worktrees, select only changed feature/e2e cases; reserve full suites for the integration target after serial merges.
-
-## Output
-
-Return:
-
-- Recommended test levels
-- Concrete test cases
-- Mock/fake/real dependency decisions
-- Test data needs
-- Verification commands when known
+Report proposed cases for advice-only work. For implementation, report failing-before and passing-after evidence, affected checks, and any missing proof with its reason.

@@ -10,7 +10,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 RETIRED = {
-    "--global": ("grill-with-docs", "project-structure-advisor", "repository-boundary-review"),
+    "--global": ("grill-with-docs", "project-structure-advisor", "repository-boundary-review", "better-test-driven-development"),
     "--project": ("better-useeffect",),
 }
 PROVIDERS = {
@@ -52,7 +52,7 @@ class PackageTests(unittest.TestCase):
                     self.assert_success(self.run_setup(scope, provider))
                     source = ROOT / source_dir
                     installed = base / relative
-                    expected = {"grilling", "module-boundaries"} if scope == "--global" else {"frontend-patterns"}
+                    expected = {"grilling", "module-boundaries", "testing-strategy"} if scope == "--global" else {"frontend-patterns"}
                     discovered = {p.name for p in installed.iterdir()}
                     self.assertTrue(expected.issubset(discovered))
                     self.assertFalse(discovered.intersection(RETIRED[scope]))

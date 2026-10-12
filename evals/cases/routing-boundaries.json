@@ -39,14 +39,14 @@
       "prompt": "API 偶發 500，log 看不出規律。請先找出 root cause 並說明證據，不要修改程式。",
       "expect": {
         "activate": ["debugging-playbook"],
-        "not_activate": ["better-test-driven-development"]
+        "not_activate": ["testing-strategy"]
       }
     },
     {
       "id": "implement-known-fix",
       "prompt": "已確認錯誤是 user 為 null 時少了 guard。請加 regression test 並完成最小修正。",
       "expect": {
-        "activate": ["better-test-driven-development"],
+        "activate": ["testing-strategy"],
         "not_activate": ["debugging-playbook"]
       }
     },
@@ -55,7 +55,7 @@
       "prompt": "這個付款流程應該寫 unit、integration 還是 e2e test？資料庫要 mock、fake 還是用真的？",
       "expect": {
         "activate": ["testing-strategy"],
-        "not_activate": ["better-test-driven-development"]
+        "not_activate": []
       }
     },
     {
@@ -158,7 +158,7 @@
       "id": "pure-domain-rule",
       "prompt": "用 test-first 方式實作 TypeScript 折扣計算規則，保持 pure function、明確 dependencies，而且不能有 IO side effects。",
       "expect": {
-        "activate": ["better-test-driven-development", "pure-function-pattern"],
+        "activate": ["testing-strategy", "pure-function-pattern"],
         "not_activate": []
       }
     },

@@ -242,7 +242,6 @@ reinstall_file() {
 GLOBAL_SKILLS=(
   api-design
   benchmark-checklist
-  better-test-driven-development
   blast-radius
   concurrency-review
   correct

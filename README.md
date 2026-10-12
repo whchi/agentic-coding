@@ -87,7 +87,6 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 |---|---|
 | `api-design` | REST API design and review guidance |
 | `benchmark-checklist` | Vet a measured number (limiter, tuning, errors, repeat runs, relevance) before you report it |
-| `better-test-driven-development` | Strict test-first workflow with meaningful behavior coverage |
 | `blast-radius` | Find what a change breaks outside its diff and prove the one fact that makes it safe |
 | `concurrency-review` | Shared-state race, locking, idempotency, and cache-invalidation review |
 | `correct` | Explicit `/correct` only: turn repeated agent mistakes into architecture, type, lint, or test enforcement |
@@ -100,7 +99,7 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `module-boundaries` | Folder/module organization and persistence, application, and domain responsibility placement |
 | `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
 | `reflect` | Explicit `reflect` only: mine the session transcript for skill edits, applied after approval |
-| `testing-strategy` | Test level, mocking, fixture, and coverage strategy |
+| `testing-strategy` | Test design/review, plus conditional test-first implementation |
 | `verification-harness` | Create or refresh a project-local `verify-<app>` skill that drives the real app |
 | `why` | Find why code has its shape from the historical record, with confidence tiers |
 | `write-a-prd` | PRD / spec writing workflow |
@@ -158,7 +157,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 |---|---|
 | Alignment | `grilling`, `write-a-prd`, `product-engineering-mvp` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
-| Delivery | `feature-loop`, `better-test-driven-development`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
+| Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
 | Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |
 | Architecture | `maintainable-code-review`, `module-boundaries`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
 | Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
@@ -176,7 +175,7 @@ Keep distinct outcomes independently discoverable:
 
 - `frontend-robust-data-handling` handles payload normalization across UI frameworks; it is not limited to React.
 - `domain-driven-design-advisor` owns DDD fit and aggregate modeling; `module-boundaries` handles concrete organization and ownership without requiring DDD.
-- `testing-strategy` chooses test levels and collaborators; `better-test-driven-development` guides red-green-refactor implementation.
+- `testing-strategy` separates test design/review from test-first implementation. Asking which tests to write does not start TDD or authorize product edits; requested TDD and regression-guided known fixes use its test-first reference.
 - `js-ts-coding-standards` covers language conventions; `pure-function-pattern` isolates deterministic domain decisions from side effects.
 - `zoom-out`, `why`, and `blast-radius` answer current structure, historical rationale, and change impact respectively.
 - `reflect` proposes skill improvements; `correct` implements enforcement for repeated mistakes. Both retain their explicit invocation boundaries.
