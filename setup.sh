@@ -261,6 +261,7 @@ GLOBAL_SKILLS=(
   why
   write-a-prd
   zoom-out
+  bro
 )
 
 PROJECT_SKILLS=(
