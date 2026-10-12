@@ -90,7 +90,6 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `better-test-driven-development` | Strict test-first workflow with meaningful behavior coverage |
 | `blast-radius` | Find what a change breaks outside its diff and prove the one fact that makes it safe |
 | `concurrency-review` | Shared-state race, locking, idempotency, and cache-invalidation review |
-| `content-engine` | Multi-platform content creation and repurposing |
 | `correct` | Explicit `/correct` only: turn repeated agent mistakes into architecture, type, lint, or test enforcement |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
@@ -166,7 +165,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 | Review | `code-review` |
 | Skill authoring | `anthropic-skill-review`, `content-to-skill`, `reflect` |
 | Feedback loop | `correct` |
-| Writing | `edit-article`, `content-engine` |
+| Writing | `edit-article` |
 | Handoff | `handoff` |
 
 ### Skill boundaries

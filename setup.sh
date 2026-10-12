@@ -245,7 +245,6 @@ GLOBAL_SKILLS=(
   better-test-driven-development
   blast-radius
   concurrency-review
-  content-engine
   correct
   debugging-playbook
   domain-driven-design-advisor
