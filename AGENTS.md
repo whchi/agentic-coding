@@ -59,29 +59,22 @@ Before any destructive operation:
 - Wait for explicit approval in the current conversation.
 - Past approval, general cleanup requests, or inferred intent do not count.
 
-## 9. Worktree Development and Verification Order (When Using Worktrees)
+## 9. Worktree Development and Verification
 
-**Using worktrees is optional. Decide based on the task. Once you choose worktree-based development, the following order is mandatory: parallel development with scoped verification → serial merges → full post-merge e2e / feature suites. Do not bypass this order.**
+**Worktrees are optional. When used, follow: parallel development → scoped verification → serial merges → risk-based post-merge verification.**
 
-### When to use worktrees
-- Prefer worktrees when the work splits into independent, parallelizable units with low overlap in files or modules.
-- Prefer working directly on a single branch when the change is small, tightly coupled, sequential, or touches shared files heavily enough that parallel work would mostly create merge conflicts.
-- If unsure, work on a single branch. Do not introduce worktrees just for structure.
+- Use worktrees for independent, parallelizable changes with low file overlap. Otherwise, use a single branch.
+- In development worktrees, run unit tests, lint, type checks, and only feature/e2e tests relevant to local changes.
+- Defer cross-component verification until after merging.
+- Merge worktrees serially. Never perform concurrent merges.
+- After merging, verify affected integration boundaries. Run full suites only when required by risk, CI policy, or release criteria.
+- Fix post-merge failures on the integration branch and rerun affected checks.
+- Avoid redundant tests, temporary merge combinations, and cross-worktree validation matrices.
+- Mock unmanaged third-party services in unit tests. Do not mock managed dependencies or deterministic libraries solely because they are external packages.
+- Use real, isolated managed dependencies in integration tests when their behavior matters.
+- Without worktrees, follow Section 4's normal verification rules.
 
-### Rules once worktrees are in use
-- Development worktrees may run unit tests, lint, and type checks.
-- Feature and e2e tests in a development worktree must be limited to the behavior changed by that worktree. Do not run full suites, unrelated tests, or broader integration / cross-component verification in development worktrees.
-- If a cross-component concern arises in a development worktree, record it in the report and defer it to post-merge verification instead of broadening tests locally.
-- Merge worktree changes into the integration target one at a time. Never perform concurrent merges.
-- Run the full e2e and feature suites against the combined result in the integration target only after the planned serial merges are complete.
-- If post-merge suites fail, fix the failure on the integration target, rerun the affected suites, and report which merge introduced it when identifiable.
-- Do not create temporary branch combinations, trial merges, or cross-worktree validation matrices to test permutations of unmerged changes. Do not duplicate post-merge verification across worktrees.
-- Section 4's allowance to broaden verification does not apply in development worktrees. Report local checks and the scope of feature / e2e tests run; explicitly mark full-suite verification as pending until it has run after merging.
-
-### When not using worktrees
-- Follow the normal verification requirements in section 4. The scoped-verification limits above do not apply, but unit tests must still mock all third-party dependencies.
-
-This order exists to keep redundant cross-validation from delaying merges.
+**Goal:** Minimize redundant verification without compromising correctness.
 
 ---
 
