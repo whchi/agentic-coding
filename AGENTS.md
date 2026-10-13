@@ -70,8 +70,10 @@ Before any destructive operation:
 - After merging, verify affected integration boundaries. Run full suites only when required by risk, CI policy, or release criteria.
 - Fix post-merge failures on the integration branch and rerun affected checks.
 - Avoid redundant tests, temporary merge combinations, and cross-worktree validation matrices.
-- Mock unmanaged third-party services in unit tests. Do not mock managed dependencies or deterministic libraries solely because they are external packages.
-- Use real, isolated managed dependencies in integration tests when their behavior matters.
+- Test observable behavior, not implementation details.
+- Mock or stub unmanaged dependencies when isolation is needed.
+- Prefer real, isolated managed dependencies in integration tests.
+- Avoid mocking internal collaborators and deterministic libraries without a specific reason.
 - Without worktrees, follow Section 4's normal verification rules.
 
 **Goal:** Minimize redundant verification without compromising correctness.
