@@ -272,6 +272,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://x.com/trq212/status/2033949937936085378
 
 ### MCPs
+- https://github.com/jkudish/jev-mcp
 - https://github.com/upstash/context7
 - https://github.com/github/github-mcp-server
 - https://docs.devin.ai/work-with-devin/deepwiki-mcp
