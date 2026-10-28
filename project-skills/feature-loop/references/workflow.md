@@ -57,6 +57,20 @@ Plan defines the scope and acceptance criteria. Build implements the plan and re
 - You may propose returning to an earlier stage, but report first and let the user decide.
 - Feature documents stay in the same workspace as the code and go into the same version change. Running the loop does not authorize automatic commit, push, merge, release, or workspace deletion; follow the user's instructions and repo rules.
 
+## One loop, few subagents
+
+Run every stage in one main agent loop. Stage files load on demand, so one context can hold the plan, the build, and both verify rounds. The agent that wrote the plan also carries it out, so it can revise the plan as results come in. Do not split stages or roles into planner, builder, or verifier subagents.
+
+Spawn a subagent only when one of these applies, and name the reason in the stage's log:
+
+- **Context bloat:** a broad search or log sweep where only the conclusion is needed, not the raw output.
+- **Parallel work:** independent tasks that plan recorded as disjoint streams under "Tasks". Each can run in a fresh context that is thrown away afterwards.
+- **Independent review:** verify's diff review, when a read that isn't anchored on build's reasoning is worth the cost. Give the reviewer the diff, plan, and acceptance criteria, not build's conclusions.
+
+A subagent's result is a lossy summary. The main agent owns the feature document, status, counts, and the conversation with the user. It checks every returned conclusion against the code, the diff, or check output before recording it, and it runs the stage's required checks itself. Subagents never edit the feature document or change status.
+
+Rationale: [When to fold subagents into your main agent loop](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop). Shared context avoids lossy handoffs; keep subagents for context bloat, parallel fresh-context work, and verification.
+
 ## Verification budget and re-planning
 
 - A new feature starts at `Plan cycle: 1` with `Verify count: 0 / 2`. Each plan cycle allows at most two verification rounds.

@@ -11,10 +11,11 @@ Read the [shared verification rules](gates.md) first.
 
 ## Implement
 
-1. Implement tasks in dependency order. If the code invalidates a key assumption in the plan, record the difference and the re-plan proposal in "Open items", report it, and stop.
-2. Run relevant local checks and record commands, results, and evidence per the shared verification rules. Full verification belongs to the verify stage.
-3. **If a task's local checks still fail after 3 fix attempts, stop working on that task.** Note each failed attempt in the task entry as it happens, so a resumed session inherits the count. When stopping, record the failing checks, the approaches tried, and the remaining errors in "Open items", then report and ask the user how to proceed. The count is per task; it is unrelated to verify rounds.
-4. Update the feature document after finishing tasks; retain unfinished, failed, or blocked items. Never make a task "done" by deleting acceptance criteria or loosening tests.
+1. Implement tasks in dependency order, and keep the plan current as you learn. When the code shows that a task, design detail, or verification step must change, and the plan's scope and acceptance criteria still hold, update the feature document. Record the change and the reason in "Decisions and handoffs", then continue. If the change would alter scope or acceptance criteria, record the difference and the re-plan proposal in "Open items", report it, and stop.
+2. Run parallel streams only if plan recorded them, and follow the shared workflow's subagent rules. Integrate the returned changes in the feature workspace yourself.
+3. Run relevant local checks and record commands, results, and evidence per the shared verification rules. Full verification belongs to the verify stage.
+4. **If a task's local checks still fail after 3 fix attempts, stop working on that task.** Note each failed attempt in the task entry as it happens, so a resumed session inherits the count. When stopping, record the failing checks, the approaches tried, and the remaining errors in "Open items", then report and ask the user how to proceed. The count is per task; it is unrelated to verify rounds.
+5. Update the feature document after finishing tasks; retain unfinished, failed, or blocked items. Never make a task "done" by deleting acceptance criteria or loosening tests.
 
 ## Hand off to verify
 

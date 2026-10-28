@@ -13,7 +13,7 @@ Read the [shared verification rules](gates.md) first.
 
 1. Run all applicable checks from the feature document's verification plan. Record commands, where they ran, results, and failure or non-execution reasons in this round's log; "not executed" is not a pass.
 2. Check every acceptance criterion against evidence from actual tests or operations; for UI features, also check the planned interactions and applicable design mocks.
-3. Review the feature diff since the base, covering committed, staged, and unstaged changes plus new files. Report only issues supported by code or reproducible evidence.
+3. Review the feature diff since the base, covering committed, staged, and unstaged changes plus new files. Report only issues supported by code or reproducible evidence. If the shared workflow's independent-review condition applies, a fresh-context reviewer may do this read. Confirm each of its findings yourself before recording it.
 4. **This stage does not modify product code or tests, and does not automatically re-run after failures.** Record implementation issues and hand them back to build; suggest returning to plan for requirement or design issues. Never package a post-fix re-verification as the same round.
 
 ## Results and stop

@@ -16,7 +16,7 @@ One feature moves through four stages: open → plan → build → verify. Each 
 | build | `feature-loop build <slug>` | [build.md](references/build.md) |
 | verify | `feature-loop verify <slug>` | [verify.md](references/verify.md) |
 
-1. Use the [shared workflow](references/workflow.md) for status transitions and verification budgets. Existing project instructions remain in force; do not reread them when they are already in context.
+1. Use the [shared workflow](references/workflow.md) for status transitions, verification budgets, and when a subagent is allowed. Existing project instructions remain in force; do not reread them when they are already in context.
 2. Take the stage from the user's explicit instruction: `feature-loop <stage>`. If the user says "continue" — including "continue per the Next step" — pick the stage from the document's **Status** via the shared status table. The `Next step` line is only a hint: it lags behind an interrupted chain; if it disagrees with Status, follow Status and say so in the report. "Continue" approves that stage and its permitted chain only.
    - Status `Verifying`: run only the verify stage's interrupted-round rule ("Before verification", step 4), then stop.
    - Report and ask instead when Status is `Verify limit` or `Done`, when "Open items" records a question the last run stopped on (a re-plan proposal, build's 3-attempt stop, or a missing external environment), or when nothing names a stage.
