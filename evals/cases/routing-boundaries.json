@@ -62,7 +62,7 @@
       "id": "general-plan-grill",
       "prompt": "用尖銳問題 challenge 我的 SaaS 上線計畫，逼我釐清假設、風險和取捨。",
       "expect": {
-        "activate": ["grilling"],
+        "activate": ["elenchos"],
         "not_activate": ["write-a-prd"]
       }
     },
@@ -70,7 +70,7 @@
       "id": "docs-grounded-grill",
       "prompt": "請對照 repository 的 CONTEXT.md、ADR 和現有 code，challenge 這份 checkout refactor 計畫。",
       "expect": {
-        "activate": ["grilling"],
+        "activate": ["elenchos"],
         "not_activate": []
       }
     },

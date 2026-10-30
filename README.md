@@ -12,33 +12,28 @@ git clone --depth 1 git@github.com:whchi/agentic-coding.git ~/agentic-coding
 cd ~/agentic-coding
 
 # Install all global skills + commands
-./setup.sh opencode install all --global
 ./setup.sh codex install all --global
 ./setup.sh claude install all --global
 ./setup.sh gemini install all --global
-./setup.sh pi install all --global
 # or every provider at once
 ./setup.sh all reinstall all --global
 
-# codex, gemini (project), and pi share `.agents/skills` (global: codex and pi share
-# `~/.agents/skills`). After one of them is installed, `install` for the next stops with
-# "already exists"; use `reinstall` for the rest, or for `all` as above.
+# Codex and Gemini share `.agents/skills` for project installs. Consistent
+# existing skills are skipped; use `reinstall` when their contents differ.
 
 # Install project skills + commands into another project
-./setup.sh opencode install all --project --target /path/to/your/project
 ./setup.sh codex install all --project --target /path/to/your/project
 ./setup.sh claude install all --project --target /path/to/your/project
 ./setup.sh gemini install all --project --target /path/to/your/project
-./setup.sh pi install all --project --target /path/to/your/project
 
 # Or run from inside the target project
 # cd /path/to/your/project
 # ~/agentic-coding/setup.sh codex install all --project
 
 # Or pick individual items
-./setup.sh opencode install skills --global api-design
+./setup.sh codex install skills --global api-design
 ./setup.sh codex reinstall skills --project frontend-patterns --target /path/to/your/project
-./setup.sh opencode uninstall commands --global mock-or-not
+./setup.sh claude uninstall commands --global mock-or-not
 
 # Preview changes without writing files
 ./setup.sh codex reinstall all --project --target /path/to/your/project --dry-run
@@ -59,27 +54,25 @@ Install targets, as defined in `setup.sh`:
 
 | Provider | Global skills | Global commands | Project skills | Project commands |
 |---|---|---|---|---|
-| opencode | `~/.config/opencode/skills/` | `~/.config/opencode/commands/` | `.opencode/skills/` | `.opencode/commands/` |
 | codex | `~/.agents/skills/` | `~/.codex/prompts/` | `.agents/skills/` | `.codex/prompts/` |
 | claude | `~/.claude/skills/` | `~/.claude/commands/` | `.claude/skills/` | `.claude/commands/` |
 | gemini | `~/.gemini/config/skills/` | `~/.gemini/commands/` (TOML) | `.agents/skills/` | `.gemini/commands/` (TOML) |
-| pi | `~/.agents/skills/` | `~/.pi/agent/prompts/` | `.agents/skills/` | `.pi/prompts/` |
 
-The repository-evidence workflow in `grilling` creates context and decision documents only when a project needs them. See `CONTEXT.example.md` for a reference implementation of the format.
+OpenCode and Pi are paused in `setup.sh`. Their target configurations are retained; add the provider to `ALL_PROVIDERS` to re-enable it. Pi may still discover skills installed by Codex in their shared `.agents/skills` directories.
+
+The repository-evidence workflow in `elenchos` creates context and decision documents only when a project needs them. See `CONTEXT.example.md` for a reference implementation of the format.
 
 ### Provider compatibility
 
 Skills are organized by scope (global vs project), which is orthogonal to which CLI they run on. Provider-specificity is declared in each skill's `SKILL.md` frontmatter:
 
 ```yaml
-compatibility: opencode        # or a list: [opencode, claude]
+compatibility: codex        # or a list: [codex, claude]
 ```
 
-A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install skills declared `compatibility: opencode`.
+A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install skills declared `compatibility: codex`.
 
 Gemini CLI custom commands live in `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. For skills, this setup installs Gemini globally to `~/.gemini/config/skills/` and per project to the interoperable `.agents/skills/` path (shared with Codex).
-
-[Pi](https://pi.dev/docs/latest/skills) discovers skills in `~/.agents/skills/` and `.agents/skills/` (shared with Codex). Its [prompt templates](https://pi.dev/docs/latest/prompt-templates) are Markdown files in `~/.pi/agent/prompts/` and `.pi/prompts/`, so `setup.sh pi ...` installs repository commands unchanged.
 
 ### Global Skills
 
@@ -93,7 +86,7 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
 | `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
 | `edit-article` | Article restructuring and editing workflow |
-| `grilling` | Stress-test plans through questioning, with optional repository evidence, terminology, and ADR guidance |
+| `elenchos` | Stress-test plans through questioning, with optional repository evidence, terminology, and ADR guidance |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
 | `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
 | `module-boundaries` | Folder/module organization and persistence, application, and domain responsibility placement |
@@ -155,7 +148,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `grilling`, `write-a-prd`, `product-engineering-mvp` |
+| Alignment | `elenchos`, `write-a-prd`, `product-engineering-mvp` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
 | Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
 | Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |
@@ -169,7 +162,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 
 ### Skill boundaries
 
-One entrypoint can route related tasks to conditional references: `grilling` covers both general interviews and repository-grounded questioning; `frontend-patterns` includes effect refactoring; `module-boundaries` separates folder organization from responsibility placement. Each installed skill contains its own required references.
+One entrypoint can route related tasks to conditional references: `elenchos` covers both general interviews and repository-grounded questioning; `frontend-patterns` includes effect refactoring; `module-boundaries` separates folder organization from responsibility placement. Each installed skill contains its own required references.
 
 Keep distinct outcomes independently discoverable:
 

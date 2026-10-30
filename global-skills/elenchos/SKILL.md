@@ -1,9 +1,9 @@
 ---
-name: grilling
+name: elenchos
 description: Stress-test an idea, plan, or decision when the user asks to challenge assumptions or check a repository plan against domain language, prior decisions, and code.
 ---
 
-# Grilling
+# Elenchos
 
 Find the assumptions and choices that could change the plan. Track dependencies between decisions so that a question does not rely on an answer the user has not given.
 

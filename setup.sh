@@ -3,17 +3,14 @@
 # setup.sh - Install, reinstall, or uninstall skills and commands from this repo.
 #
 # Usage:
-#   ./setup.sh opencode                             # menu
 #   ./setup.sh codex                                # menu
-#   ./setup.sh opencode install skills --global     # install all global skills
+#   ./setup.sh claude install skills --global       # install all global skills
 #   ./setup.sh codex reinstall all --global         # reinstall all global skills + commands
-#   ./setup.sh opencode install all --project --target /path/to/project
+#   ./setup.sh claude install all --project --target /path/to/project
 #   ./setup.sh codex reinstall skills --project frontend-patterns --dry-run
-#   ./setup.sh opencode uninstall commands --project mock-or-not --target /path/to/project
+#   ./setup.sh claude uninstall commands --project mock-or-not --target /path/to/project
 #   ./setup.sh all install all --global             # install everything for every provider
 #
-# OpenCode global installs -> ~/.config/opencode/
-# OpenCode project installs -> .opencode/ (current working directory)
 # Codex global skills -> ~/.agents/skills/
 # Codex global commands -> ~/.codex/prompts/
 # Codex project skills -> .agents/skills/ (current working directory)
@@ -24,16 +21,13 @@
 # Gemini global commands -> ~/.gemini/commands/
 # Gemini project skills -> .agents/skills/ (current working directory)
 # Gemini project commands -> .gemini/commands/ (current working directory)
-# Pi global skills -> ~/.agents/skills/
-# Pi global commands -> ~/.pi/agent/prompts/
-# Pi project skills -> .agents/skills/ (current working directory)
-# Pi project commands -> .pi/prompts/ (current working directory)
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
 set -euo pipefail
 
-ALL_PROVIDERS=(opencode codex claude gemini pi)
+# Add opencode or pi to re-enable them.
+ALL_PROVIDERS=(codex claude gemini)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROVIDER="${1:-}"
@@ -41,10 +35,21 @@ DRY_RUN=false
 PROJECT_TARGET=""
 PROJECT_ROOT=""
 
-if [[ "$PROVIDER" != "opencode" && "$PROVIDER" != "codex" && "$PROVIDER" != "claude" && "$PROVIDER" != "gemini" && "$PROVIDER" != "pi" && "$PROVIDER" != "all" ]]; then
-  echo "error: provider is required: opencode, codex, claude, gemini, pi, or all" >&2
+contains_item() {
+  local needle="$1"
+  shift
+  local item
+  for item in "$@"; do
+    [[ "$item" == "$needle" ]] && return 0
+  done
+  return 1
+}
+
+if [[ "$PROVIDER" != "all" ]] && ! contains_item "$PROVIDER" "${ALL_PROVIDERS[@]}"; then
+  provider_choices="$(IFS='|'; echo "${ALL_PROVIDERS[*]}|all")"
+  echo "error: provider is required: ${ALL_PROVIDERS[*]} or all" >&2
   echo "" >&2
-  echo "Usage: ./setup.sh <opencode|codex|claude|gemini|pi|all> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
+  echo "Usage: ./setup.sh <$provider_choices> [install|reinstall|uninstall] [skills|commands|all] [--global|--project] [name] [--target path] [--dry-run]" >&2
   exit 1
 fi
 
@@ -113,16 +118,6 @@ configure_project_target() {
   PROJECT_ROOT="$(cd "$target" && pwd)"
   PROJECT_SKILLS_DIR="$PROJECT_ROOT/$PROJECT_SKILLS_REL"
   PROJECT_COMMANDS_DIR="$PROJECT_ROOT/$PROJECT_COMMANDS_REL"
-}
-
-contains_item() {
-  local needle="$1"
-  shift
-  local item
-  for item in "$@"; do
-    [[ "$item" == "$needle" ]] && return 0
-  done
-  return 1
 }
 
 require_known_item() {
@@ -248,7 +243,7 @@ GLOBAL_SKILLS=(
   debugging-playbook
   domain-driven-design-advisor
   edit-article
-  grilling
+  elenchos
   handoff
   maintainable-code-review
   module-boundaries
@@ -274,7 +269,7 @@ PROJECT_SKILLS=(
 # Reads the `compatibility:` frontmatter field of a skill's SKILL.md.
 # No field  -> compatible with every provider (the default).
 # Field set -> compatible only with the listed providers. Accepts a bare value
-#              (compatibility: opencode) or a list (compatibility: [opencode, claude]).
+#              (compatibility: codex) or a list (compatibility: [codex, claude]).
 skill_compatible() {
   local source_dir="$1" name="$2"
   local skill_md="$SCRIPT_DIR/$source_dir/$name/SKILL.md"
