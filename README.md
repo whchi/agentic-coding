@@ -95,7 +95,6 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `testing-strategy` | Test design/review, plus conditional test-first implementation |
 | `verification-harness` | Create or refresh a project-local `verify-<app>` skill that drives the real app |
 | `why` | Find why code has its shape from the historical record, with confidence tiers |
-| `write-a-prd` | PRD / spec writing workflow |
 | `zoom-out` | Higher-level module map before editing unfamiliar code |
 
 ### Project Skills
@@ -148,7 +147,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `elenchos`, `write-a-prd`, `product-engineering-mvp` |
+| Alignment | `elenchos`, `product-engineering-mvp` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
 | Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
 | Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |

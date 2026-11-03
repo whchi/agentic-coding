@@ -7,7 +7,7 @@
       "prompt": "feature-loop plan coupon-checkout：幫這個已開好的 feature 做規劃，先不要寫程式。",
       "expect": {
         "activate": ["feature-loop"],
-        "not_activate": ["write-a-prd"]
+        "not_activate": []
       }
     },
     {
@@ -63,7 +63,7 @@
       "prompt": "用尖銳問題 challenge 我的 SaaS 上線計畫，逼我釐清假設、風險和取捨。",
       "expect": {
         "activate": ["elenchos"],
-        "not_activate": ["write-a-prd"]
+        "not_activate": []
       }
     },
     {

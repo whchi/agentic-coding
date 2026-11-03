@@ -252,7 +252,6 @@ GLOBAL_SKILLS=(
   testing-strategy
   verification-harness
   why
-  write-a-prd
   zoom-out
   bro
 )
