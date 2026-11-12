@@ -4,72 +4,72 @@ description: "Build and run acceptance checks for a specified change, including 
 
 # /qa
 
-產生本次變更的可查證驗收證據。先從需求、Acceptance Criteria 與既有契約確認預期行為、範圍和完成條件；不可把目前實作當作正確答案。只有影響驗收判定的缺失資訊才需要釐清。
+Produce verifiable acceptance evidence for the current change. Establish the expected behavior, scope, and completion criteria from the requirements, Acceptance Criteria, and existing contracts; do not treat the current implementation as the source of truth. Seek clarification only where missing information affects the acceptance decision.
 
-本 command 授權新增或調整測試並執行驗證。產品修復若已在使用者請求內，繼續修復與局部驗證，不重複要求許可；只有 QA 授權時，回報產品缺陷，不自行修改 production behavior。
+This command authorizes adding or adjusting tests and executing verification. If product fixes are already within the user's request, proceed with those fixes and scoped verification without requesting permission again. If authorization extends only to QA, report product defects without independently modifying production behavior.
 
-## 選擇必要的驗證
+## Select the Necessary Verification
 
-- 沿用專案框架與測試慣例；需要選測試層級、mock / fake / real 或 fixtures 時，使用可用的 `testing-strategy`，不因缺少 skill 自行安裝。
-- 覆蓋本次需求、重要錯誤路徑與受影響的 regression。權限、錯誤 ID、URL manipulation 等案例只在相關行為受影響時加入。
-- Unit Tests 的第三方依賴全部 mock；此規則不表示 UI 驗收只能看 mock 畫面。
-- 同一程式狀態、環境與範圍的可查證結果可共用。只有修改、失敗、證據不足或新風險才補跑。
-- QA 不自動啟動完整 code review；在 `feature-loop verify` 內時，沿用該流程的輪次、狀態與修復管理。
-- 從目標專案的 README、scripts、測試設定與現有測試查證啟動、操作及驗證方式，使用實際存在的命令與工具。啟動後確認環境可用，再操作受影響的功能入口、保存證據並清理本次建立的資源。缺少操作方式時回報具體缺口，不假設已有專用驗證 skill、功能地圖或控制指令；QA 本身不授權改寫 harness。
+- Follow the project's existing frameworks and testing conventions. When choosing test levels, mock / fake / real dependencies, or fixtures, use the available `testing-strategy` skill; do not install it merely because it is unavailable.
+- Cover the current requirements, significant error paths, and affected regression scenarios. Include cases involving permissions, invalid IDs, URL manipulation, and similar concerns only when the corresponding behavior is affected.
+- Mock all third-party dependencies in Unit Tests; this rule does not restrict UI acceptance verification to mock screens.
+- Reuse verifiable results for the same code state, environment, and scope. Run additional checks only when changes, failures, insufficient evidence, or new risks warrant them.
+- QA does not automatically initiate a full code review. Within `feature-loop verify`, follow that workflow's management of rounds, state, and fixes.
+- Establish how to launch, operate, and verify the target project by inspecting its README, scripts, test configuration, and existing tests; use commands and tools that actually exist. After launch, confirm that the environment is operational, exercise the affected feature entry points, preserve evidence, and clean up resources created during this run. If operating instructions are missing, report the specific gap. Do not assume that a dedicated verification skill, feature map, or control command exists; QA itself does not authorize rewriting the harness.
 
-## 案例與執行紀錄
+## Cases and Execution Records
 
-先列出本次案例 ID、需求／契約來源、入口、前置資料、操作與預期結果、證據、reset 方法及 timeout。既有測試可用 test ID 引用，不重寫同一套測試。排除或不適用項目要附理由；預期行為不明時不得照目前畫面自行定義通過。
+Before execution, list each case ID, requirement or contract source, entry point, prerequisite data, actions and expected results, evidence, reset method, and timeout. Reference existing tests by test ID rather than duplicating them. Explain exclusions and items deemed not applicable; when expected behavior is unclear, do not derive a passing criterion from the current screen.
 
-沿用目標專案實際存在的測試執行方式與報告格式，依下列要求記錄，不依賴額外的驗證 skill 或契約文件：
+Use the target project's existing test execution methods and report formats. Record the following without relying on an additional verification skill or contract document:
 
-- Run ID、base／tested revision、未提交變更指紋、build、依賴、非敏感設定、fixture、工具與案例版本。結果只能在相關輸入相同且證據仍存在時重用。
-- 每次 attempt 的案例 ID、操作／命令、Expected／Actual、時間、結果與證據路徑。保留首次失敗；重跑成功不覆蓋失敗紀錄。
-- 分開記錄案例結果（passed／failed／blocked／unstable／not-run）、覆蓋範圍、環境狀態與 harness 修改。產生簡短摘要及 `run.json` 或既有等價機器可讀報告。
+- Run ID, base / tested revision, fingerprint of uncommitted changes, build, dependencies, non-sensitive configuration, fixture, and tool and case versions. Reuse results only when the relevant inputs are unchanged and the evidence remains available.
+- For each attempt, record the case ID, actions / commands, Expected / Actual, time, outcome, and evidence paths. Preserve the initial failure; a successful rerun must not overwrite the failure record.
+- Record case outcomes (passed / failed / blocked / unstable / not-run), coverage, environment status, and harness changes separately. Produce a concise summary and `run.json`, or an existing equivalent machine-readable report.
 
-失敗依證據分成 product、harness、environment、test-data 或 unknown；不得僅因檔案不在 diff 或第二次仍失敗就斷定原因。疑似暫時性失敗預設最多一次診斷重跑，先確認待測版本、程序、連線與必要登入狀態，再恢復本次擁有的測試資料；先失敗再成功標為 unstable，不算乾淨通過。偶發問題需要先訂取樣與時間上限，不能一直重跑到綠。
+Classify failures as product, harness, environment, test-data, or unknown based on evidence. Do not infer the cause solely because a file is outside the diff or a second attempt also fails. For a suspected transient failure, allow at most one diagnostic rerun by default. First verify the version under test, processes, connectivity, and required authentication state, then restore test data owned by this run. Mark a failure followed by success as unstable, not a clean pass. For intermittent issues, define sampling and time limits in advance; do not keep rerunning until green.
 
-執行前確認資源 ownership 與隔離。失敗、timeout 或取消也要清理本次建立的資源，記錄清理失敗，保留證據；不得重設共用或使用者資料。依專案保留政策存放證據，遮罩 trace、log、截圖中的秘密與個資，不自動發布或刪除。
+Confirm resource ownership and isolation before execution. Clean up resources created during this run even after failure, timeout, or cancellation; record cleanup failures and retain evidence. Do not reset shared or user data. Store evidence according to the project's retention policy, redact secrets and personal information from traces, logs, and screenshots, and do not automatically publish or delete evidence.
 
-只有需求涉及視覺、效能或行為等價時才加入對應模式。先固定 baseline、比較條件與門檻，不調整基準來消除失敗。Code review、PR watching 和合併不屬於 QA 執行器。
+Add visual, performance, or behavioral-equivalence verification modes only when the requirements call for them. Fix the baseline, comparison conditions, and thresholds in advance; do not adjust the baseline to eliminate failures. Code review, PR watching, and merging are outside the QA runner's remit.
 
-## 真實瀏覽器與狀態
+## Real-Browser Verification and State
 
-涉及 UI、Routing、Browser State 或互動流程時，必須有真實瀏覽器證據。靜態檢查、API Tests 或 Mock UI 不能替代。
+Changes involving UI, Routing, Browser State, or interaction flows require real-browser evidence. Static checks, API Tests, and Mock UI are not substitutes.
 
-優先用可用的 Chrome DevTools MCP 互動驗收，或用 Playwright／專案既有真實瀏覽器工具。已具備完整且可查證的 Playwright 證據時，不重複操作相同情境；記錄實際工具。工具缺失時回報限制，不自行安裝。
+Prefer the available Chrome DevTools MCP for interactive acceptance verification, or use Playwright / the project's existing real-browser tools. If complete, verifiable Playwright evidence already exists, do not repeat the same scenarios manually; record the tool actually used. Report limitations when tools are unavailable; do not install them independently.
 
-- 透過 UI 操作受影響流程，斷言具體欄位值、選取狀態、資料與結果，不只確認元素存在。
-- 檢查與驗收條件相關的 Network、HTTP Status 和 Console 異常；涉及寫入時確認持久化結果。
-- 等待可觀察的載入條件，避免固定 sleep。必要時保留 Screenshot、Trace、Console 或 Network Evidence。
-- 針對每種受影響的狀態規則選代表案例，不排列組合全部操作。
+- Exercise the affected flows through the UI and assert specific field values, selection states, data, and outcomes, rather than merely checking that elements exist.
+- Inspect Network, HTTP Status, and Console anomalies relevant to the acceptance criteria; verify persisted results when writes are involved.
+- Wait for observable loading conditions rather than using fixed sleep intervals. Retain Screenshot, Trace, Console, or Network Evidence where necessary.
+- Select representative cases for each affected state rule rather than exhaustively combining every operation.
 
-涉及導覽或狀態保存時，先依需求列明 Back、Forward、Reload 後哪些 URL、篩選／排序／頁碼、分頁籤、選取項目、草稿或已存資料應保留、重設或重新載入。
+When navigation or state retention is involved, first specify, according to the requirements, which URLs, filters / sort orders / page numbers, tabs, selections, drafts, or saved data must be retained, reset, or reloaded after Back, Forward, and Reload.
 
-透過 UI 建立有差異的歷史狀態，執行真正的 Browser Back / Forward，再 Reload；核對 URL、畫面和具體資料。不得用直接開啟 URL 代替歷史導覽。寫入流程需確認導覽或 Reload 不會重複提交。若本次改動也包含列表分頁，另測其上一頁／下一頁按鈕。沒有相關行為時標記 Not Applicable。
+Create distinct history states through the UI, perform actual Browser Back / Forward navigation, then Reload; verify the URL, rendered screen, and specific data. Do not substitute direct URL navigation for history navigation. For write flows, confirm that navigation or Reload does not cause duplicate submissions. If the change also affects list pagination, separately test its previous-page / next-page buttons. Mark these checks Not Applicable when no relevant behavior is involved.
 
-## Worktree 範圍
+## Worktree Scope
 
-遵守 **平行開發與局部驗證 → 串行合併 → 完整 Feature / E2E Suite**：
+Follow **parallel development and scoped verification → serial merges → full Feature / E2E Suite**:
 
-- Worktree 可跑 Unit Tests、Lint、Type-check；Feature / E2E 先選本次修改的測試檔案或案例。可跨元件驗證此行為，不擴及無關流程。
-- 無法限定範圍時，回報限制並留待合併後執行。真實瀏覽器操作遵守相同範圍。
-- 共用瀏覽器或環境無法隔離 Session、資料與狀態時，改為串行驗證。
-- 不建立臨時分支組合、試合併或跨 Worktree 測試矩陣。
-- 完整套件只在計畫中的串行合併完成後，對整合結果執行。QA 本身不授權合併。
+- Within a Worktree, run Unit Tests, Lint, and Type-check; initially restrict Feature / E2E execution to test files or cases relevant to the current change. Verification may span components to exercise that behavior, but must not extend to unrelated flows.
+- If execution cannot be scoped, report the limitation and defer it until after merging. Apply the same scope restrictions to real-browser interactions.
+- If Sessions, data, and state cannot be isolated in a shared browser or environment, perform verification serially.
+- Do not create temporary branch combinations, trial merges, or cross-Worktree test matrices.
+- Run the full suite against the integrated result only after the planned serial merges are complete. QA itself does not authorize merging.
 
-## 完成與回報
+## Completion and Reporting
 
-完成已授權範圍內的測試建立、執行，以及自身測試改動造成的問題修正；缺少必要帳號、環境、工具或產品修復授權時，明列未完成項目。
+Complete test creation and execution within the authorized scope, and fix issues caused by your own test changes. Explicitly list unfinished work when required accounts, environments, tools, or authorization for product fixes are unavailable.
 
-回報驗收範圍與條件、修改的測試、實際命令與結果、瀏覽器流程與狀態證據、問題的 Expected / Actual 和重現方式，以及未驗證原因。區分自動化 E2E 與互動式瀏覽器證據。
+Report the acceptance scope and criteria, tests changed, actual commands and results, browser flows and state evidence, Expected / Actual behavior and reproduction steps for issues, and reasons for any unverified items. Distinguish automated E2E evidence from interactive browser evidence.
 
-最終狀態依證據判定：
+Determine the final status from the evidence:
 
-- **Passed**：適用的自動化測試與必要瀏覽器驗證均通過。
-- **Failed**：已驗證行為違反需求或契約。
-- **Partial**：仍缺必要驗收項目；只有 mock 結果或頁面載入成功不足以通過。
-- 尚未解決的 unstable 或 blocked 案例屬於未完成驗收，不得列為 Passed。
-- **Pending Integration**：局部驗證完成，完整套件待計畫中的串行合併後執行。
+- **Passed**: All applicable automated tests and required browser checks passed.
+- **Failed**: Verified behavior violates a requirement or contract.
+- **Partial**: Required acceptance items remain outstanding; mock results alone or a successful page load are insufficient for a pass.
+- Unresolved unstable or blocked cases constitute incomplete acceptance verification and must not be reported as Passed.
+- **Pending Integration**: Scoped verification is complete; the full suite awaits the planned serial merges.
 
-同時存在失敗與未驗證項目時，兩者都回報，不用單一狀態掩蓋限制。未執行的檢查不得宣稱通過。
+When failures and unverified items coexist, report both; do not conceal limitations behind a single status. Never claim that an unexecuted check passed.
