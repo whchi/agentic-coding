@@ -1,7 +1,7 @@
 ---
 name: debugging-playbook
 description: Diagnose a reported failure or flaky behavior when its cause is unknown, using a reproducible symptom and evidence from environment, data, and logic.
-origin: Notion 工程習慣
+origin: Notion Engineering Practices
 ---
 
 # Debugging Playbook

@@ -91,11 +91,11 @@ Status describes output progress; **it never means the user has approved the nex
 | --- | --- | --- |
 | No document | feature-loop open | Open the feature first |
 | Planning | feature-loop plan | Requirement and workspace located |
-| Ready to build | feature-loop build（完成後自動接 verify） | Plan complete and user approves implementation |
+| Ready to build | feature-loop build (automatically chains into verify on completion) | Plan complete and user approves implementation |
 | Building | feature-loop build | Resume unfinished tasks |
-| Ready to verify | feature-loop verify | build 完成後通常同一輪直接進 verify；只有 chain 中斷、本 cycle verify 次數用盡、verify 第 1 輪因缺外部環境停下、或使用者單獨要求驗證時才會停在此狀態 |
+| Ready to verify | feature-loop verify | Build normally proceeds directly into verify within the same run. This status is a stopping point only when the chain is interrupted, the current cycle has exhausted its verify budget, verify round 1 stops because a required external environment is unavailable, or the user requests verification independently. |
 | Verifying | Consolidate the interrupted results | No silent re-runs; close the round from its results and the current cycle's count |
-| Needs fix | feature-loop build（同一輪內自動接續） | The current cycle's round 1 found implementation defects; build resumes automatically and verify round 2 follows — unless the round stopped on a missing external environment (recorded in "Open items"), which the user provides first |
+| Needs fix | feature-loop build (resumes automatically within the same run) | The current cycle's round 1 found implementation defects; build resumes automatically and verify round 2 follows — unless the round stopped on a missing external environment (recorded in "Open items"), which the user provides first |
 | Needs re-plan | feature-loop plan | Round 1 found a design or requirement problem; fixing it would change scope or acceptance criteria, so the user decides |
 | Done | none | All required checks and acceptance criteria have passing evidence |
 | Verify limit | Stop; await the user's decision, including whether to re-plan | The current cycle's round 2 failed or is incomplete |
