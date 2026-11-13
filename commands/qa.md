@@ -50,13 +50,8 @@ Create distinct history states through the UI, perform actual Browser Back / For
 
 ## Worktree Scope
 
-Follow **parallel development and scoped verification → serial merges → full Feature / E2E Suite**:
-
-- Within a Worktree, run Unit Tests, Lint, and Type-check; initially restrict Feature / E2E execution to test files or cases relevant to the current change. Verification may span components to exercise that behavior, but must not extend to unrelated flows.
-- If execution cannot be scoped, report the limitation and defer it until after merging. Apply the same scope restrictions to real-browser interactions.
-- If Sessions, data, and state cannot be isolated in a shared browser or environment, perform verification serially.
-- Do not create temporary branch combinations, trial merges, or cross-Worktree test matrices.
-- Run the full suite against the integrated result only after the planned serial merges are complete. QA itself does not authorize merging.
+- In a development worktree, verify the affected behavior within the scope of the change. Mark acceptance checks that require the integrated result as **Pending Integration**.
+- After merging, complete integration verification according to the project rules and acceptance plan. Do not report Passed while required evidence is missing. QA itself does not authorize merging.
 
 ## Completion and Reporting
 
@@ -70,6 +65,6 @@ Determine the final status from the evidence:
 - **Failed**: Verified behavior violates a requirement or contract.
 - **Partial**: Required acceptance items remain outstanding; mock results alone or a successful page load are insufficient for a pass.
 - Unresolved unstable or blocked cases constitute incomplete acceptance verification and must not be reported as Passed.
-- **Pending Integration**: Scoped verification is complete; the full suite awaits the planned serial merges.
+- **Pending Integration**: Scoped verification is complete; required acceptance checks await the integrated result.
 
 When failures and unverified items coexist, report both; do not conceal limitations behind a single status. Never claim that an unexecuted check passed.
