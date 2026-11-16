@@ -16,11 +16,12 @@ Follow local conventions. Apply the standards relevant to the changed code rathe
 - Run independent async operations concurrently when resource and rate limits allow it; preserve ordering for dependent work and side effects.
 - Handle failures explicitly. Do not swallow errors or expose secrets, raw SQL errors, tokens, or stack traces to users.
 - Keep functions and modules organized by responsibility; avoid arbitrary line limits or abstractions for single-use code.
+- Use at most three positional function parameters. When a function needs more than three inputs, pass them as a single object and destructure it in the parameter list.
 
 Read a reference only when that convention needs attention:
 
 - [Naming](references/naming-conventions.md): names, boolean predicates, domain vocabulary.
-- [Type design](references/type-design.md): narrowing untrusted inputs, modeling state variants, exhaustive handling, and choosing stronger types only where operations need them.
+- [Type design](references/type-design.md): function parameters, narrowing untrusted inputs, modeling state variants, exhaustive handling, and choosing stronger types only where operations need them.
 - [File organization](references/file-organization.md): existing module boundaries, imports, exports.
 - [Testing](references/testing.md): test organization and examples when editing tests.
 

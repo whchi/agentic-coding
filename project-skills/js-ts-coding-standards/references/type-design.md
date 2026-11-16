@@ -2,6 +2,23 @@
 
 Read the section relevant to the changed type or function. Preserve the project's schema library and branding conventions; do not add dependencies or redesign unrelated interfaces to match these examples.
 
+## Function parameters
+
+Use at most three positional parameters. When a function needs more than three inputs, pass them as a single object and destructure it in the parameter list:
+
+```typescript
+function createUser({ name, email, role, active }: {
+  name: string
+  email: string
+  role: string
+  active: boolean
+}) {
+  return { name, email, role, active }
+}
+
+createUser({ name: 'Ava', email: 'ava@example.com', role: 'editor', active: true })
+```
+
 ## Unknown inputs and schema ownership
 
 Treat untrusted payloads as `unknown` until validated. Prefer an existing runtime schema and derive its type rather than maintaining a schema, interface, and property-by-property guard independently. Generated protocol types are authoritative for their shape, but do not themselves validate incoming bytes.
@@ -84,4 +101,4 @@ Derive a type when the owning contract should propagate its changes:
 type UserSummary = Pick<User, 'id' | 'name'>
 ```
 
-Use `Pick`, `Omit`, `ReturnType`, or `Awaited` where that dependency is intentional. Keep a separate domain or public contract when it must evolve independently of storage, transport, or implementation details. Object parameters help distinguish several easily swapped arguments; they are not a requirement for every function.
+Use `Pick`, `Omit`, `ReturnType`, or `Awaited` where that dependency is intentional. Keep a separate domain or public contract when it must evolve independently of storage, transport, or implementation details. Object parameters also help distinguish easily swapped arguments when a function has three or fewer inputs.
