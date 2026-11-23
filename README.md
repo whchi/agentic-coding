@@ -109,7 +109,9 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 
 | Command | Description |
 |---|---|
+| `bro` | Restate the last message in plain human language, with no jargon |
 | `code-review` | Code review workflow |
+| `in-your-own-words` | Restate the user's goals and problem in your own words |
 | `qa` | Scoped acceptance tests and browser Back / Forward / Reload state verification |
 | `skill-authoring` | Review an existing skill/command draft or distill source material into a reusable skill/command |
 | `update-codemaps` | Code map update workflow |
@@ -131,7 +133,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `elenchos` |
+| Alignment | `elenchos`, `in-your-own-words` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
 | Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `concurrency-review` |
 | Testing | `testing-strategy`, `qa`, `benchmark-checklist` |
@@ -140,6 +142,7 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 | Review | `code-review` |
 | Skill authoring | `skill-authoring`, `reflect` |
 | Feedback loop | `correct` |
+| Communication | `bro` |
 | Handoff | `handoff` |
 
 ### Skill boundaries

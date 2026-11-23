@@ -381,7 +381,9 @@ setup_skills() {
 # ── commands ─────────────────────────────────────────────────────────────────
 
 COMMANDS=(
+  bro
   code-review
+  in-your-own-words
   qa
   skill-authoring
   update-codemaps
