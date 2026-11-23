@@ -1,6 +1,6 @@
 ---
 name: frontend-patterns
-description: Choose React or Next.js component, state, form, and accessibility patterns when designing interactive UI, or refactor effects that duplicate state or misplace event and lifecycle work.
+description: Choose React or Next.js component, state, form, accessibility, and render-safe API data-handling patterns when designing interactive UI, or refactor effects that duplicate state or misplace event and lifecycle work.
 origin: ECC
 ---
 
@@ -31,5 +31,7 @@ Use profiling or a clear expensive boundary to justify memoization, virtualizati
 ## Conditional guidance
 
 For effect review or refactoring, read [effect boundaries](references/effects.md). Classify derived state, event work, instance resets, and external synchronization before choosing a replacement; preserve lifecycle and cleanup behavior.
+
+For missing, null, partial, or unknown API payloads and render-safe adapters, read [data handling](references/data-handling.md).
 
 Read only the relevant section of [examples](references/examples.md): composition/compound components, hooks, Context/reducer, forms, error boundaries, performance, or keyboard/focus handling. The examples illustrate choices, not required dependencies.

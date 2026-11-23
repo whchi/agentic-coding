@@ -9,7 +9,7 @@ Levels, from strongest to weakest: Architecture, Types, Lint, CI, Test, Docs.
 | Each skill and command source is listed in the `setup.sh` arrays and in the README tables. | `afc53b4` catalog cleanup | Test | `tests/command-skill-policy.sh` (manifest and README check) | Active |
 | Each command starts with frontmatter that has `description:` on line 2, because the Gemini install reads line 2. | `setup.sh:185` | Test | `tests/command-skill-policy.sh` (command frontmatter loop) | Active |
 | Removed skills and commands (`frontend-slides`, `write-a-skill`, `learn`, `build-fix`) do not return. | `docs/audits/commands-skills-audit-2026-07-13.md` | Test | `tests/command-skill-policy.sh` (removed-item checks) | Active |
-| `debug-triage` and `debugging-playbook` diagnose only. They change code only after an explicit request for a fix. | `afc53b4` | Test | `tests/command-skill-policy.sh` (debug checks) | Active |
+| `debugging-playbook` diagnoses only by default. It changes code only after an explicit request for a fix. | `afc53b4` | Test | `tests/command-skill-policy.sh` (debug checks) | Active |
 | `code-review` keeps its scope, authority, and verification rules. | `f58394c` | Test | `tests/command-skill-policy.sh` (code-review checks) | Active |
 | Install paths in `setup.sh`, the README table, and the smoke test agree. | `e022f37` changed paths without the test; fixed 2026-10-08 | Test | `tests/setup-smoke.sh`, `tests/command-skill-policy.sh` (path checks) | Active |
 | Eval case counts come from the case files, not from a hardcoded number. | Hardcoded `30` failed after cases grew to `35`; fixed 2026-10-08 | Test | `tests/skill-evals-smoke.sh` | Active |

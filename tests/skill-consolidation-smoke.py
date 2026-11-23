@@ -10,8 +10,24 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 RETIRED = {
-    "--global": ("grilling", "grill-with-docs", "project-structure-advisor", "repository-boundary-review", "better-test-driven-development"),
-    "--project": ("better-useeffect",),
+    "--global": (
+        "grilling",
+        "grill-with-docs",
+        "project-structure-advisor",
+        "repository-boundary-review",
+        "better-test-driven-development",
+        "domain-driven-design-advisor",
+        "edit-article",
+        "product-engineering-mvp",
+        "verification-harness",
+        "bro",
+        "in-your-own-words",
+    ),
+    "--project": (
+        "better-useeffect",
+        "frontend-robust-data-handling",
+        "pure-function-pattern",
+    ),
 }
 PROVIDERS = {
     "codex": (".agents/skills", ".agents/skills"),
@@ -50,7 +66,11 @@ class PackageTests(unittest.TestCase):
                     self.assert_success(self.run_setup(scope, provider))
                     source = ROOT / source_dir
                     installed = base / relative
-                    expected = {"elenchos", "module-boundaries", "testing-strategy"} if scope == "--global" else {"frontend-patterns"}
+                    expected = (
+                        {"elenchos", "maintainable-code-review", "module-boundaries", "testing-strategy"}
+                        if scope == "--global"
+                        else {"frontend-patterns", "js-ts-coding-standards"}
+                    )
                     discovered = {p.name for p in installed.iterdir()}
                     self.assertTrue(expected.issubset(discovered))
                     self.assertFalse(discovered.intersection(RETIRED[scope]))

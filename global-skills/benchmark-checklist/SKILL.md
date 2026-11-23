@@ -86,7 +86,3 @@ Apply the same method to an eval result. Confirm that each trial did the task. C
 
 - A comparison omits run count, variation, or the limitations relevant to the claim.
 - The time saved is larger than the time that the changed part used.
-
-## Boundary with `web-perf`
-
-The `web-perf` skill measures Core Web Vitals and page-load behavior. This skill does not measure page load. This skill vets any measured number, including the results that `web-perf` produces.

@@ -6,7 +6,7 @@ Business logic is the operation between user-facing IO and data. Repository code
 
 Repository code usually contains CRUD, queries, persistence mapping, and aggregate retrieval. Use cases/services decide how those results serve the user or workflow.
 
-Apply aggregate checks only when the project already uses aggregate boundaries; ordinary repository/use-case separation does not require DDD. For aggregate discovery, invariants, or entity/value-object modeling, use `domain-driven-design-advisor` when available.
+Apply aggregate checks only when the project already uses aggregate boundaries; ordinary repository/use-case separation does not require DDD. For aggregate discovery, invariants, or entity/value-object modeling, read [ddd.md](ddd.md).
 
 ## Boundary Rules
 

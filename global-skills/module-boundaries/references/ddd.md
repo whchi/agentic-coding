@@ -1,24 +1,14 @@
----
-name: domain-driven-design-advisor
-description: Evaluate DDD adoption or model bounded contexts and aggregate invariants when business-domain complexity requires architectural decisions.
----
+# Domain-Driven Design Fit and Modeling
 
-# Domain Driven Design Advisor
-
-Use this skill when DDD may help, but do not assume DDD is always the right answer.
-
-## Boundaries
-
-Use related skills for implementation-level follow-through:
-
-- `module-boundaries` for folder/module organization or concrete repository/service/use-case responsibility. Ordinary layering decisions do not require DDD.
-- `testing-strategy` for domain, application, repository, and adapter test coverage.
+Evaluate whether DDD is worth its cost before adopting aggregates, repositories, domain services, or domain-based folders. Do not assume DDD is always the right answer.
 
 ## Fit First
 
+Read `CONTEXT.md` for relevant domain language, `CONTEXT-MAP.md` when context boundaries matter, and only ADRs that constrain the proposal. Missing documents are unknowns, not permission to invent a domain model.
+
 DDD is strongest when the core business domain is valuable, complex, and shared between engineers and domain experts. It gives better modularity, stronger business language, and clearer isolation for larger teams or service boundaries.
 
-DDD is often too expensive when the product is early, the team is small, domain expertise is missing, or most behavior is simple CRUD. In those cases, use MVC or feature-based structure and adopt only the smallest useful DDD ideas.
+DDD is often too expensive when the product is early, the team is small, domain expertise is missing, or most behavior is simple CRUD. In those cases, use MVC or feature-based structure and adopt only the smallest useful ideas. Say `No DDD adoption recommended` when appropriate; weak fit or insufficient evidence does not require inventing bounded contexts or aggregates.
 
 ## Problem Space
 
@@ -48,7 +38,7 @@ Rules:
 6. Use factories when aggregate creation becomes complex.
 7. One repository usually corresponds to one aggregate root.
 
-## Entities And Value Objects
+## Entities and Value Objects
 
 Entity:
 
@@ -69,27 +59,10 @@ Repositories operate on aggregate roots and hide persistence details from applic
 
 When ORM models already contain useful behavior, decide pragmatically whether to wrap, adapt, or keep them. Do not force separate DDD entities for every table if the domain does not benefit.
 
-## Applying the guidance
-
-Use the decisions relevant to the requested scope; an aggregate question does not require redesigning every context.
-
-1. Decide if DDD is worth its cost for this project and team.
-2. Name the core domain and candidate bounded contexts.
-3. Identify aggregate roots and invariants.
-4. Separate entities from value objects by lifecycle and identity.
-5. Define repository interfaces around aggregate roots.
-6. Keep application services focused on input/output orchestration and use case flow.
-7. Keep domain objects free from UI, framework, ORM, and vendor details.
-8. Start with one high-value domain before spreading the pattern across the codebase.
-
 ## Output
 
-Report the relevant decisions and their tradeoffs; omit categories outside the request:
+Report only the decisions relevant to the requested scope:
 
-- DDD fit assessment
-- Bounded contexts
-- Aggregate roots and invariants
-- Entity/value object candidates
-- Repository boundaries
-- Layering changes
-- Smallest adoption plan
+- DDD fit (strong, partial, weak, or insufficient evidence) with supporting evidence and material unknowns
+- Bounded contexts, aggregate roots and invariants, entity/value object candidates, repository boundaries, and layering changes (when applicable)
+- Smallest useful next step or adoption plan

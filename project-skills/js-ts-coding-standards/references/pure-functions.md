@@ -1,8 +1,3 @@
----
-name: pure-function-pattern
-description: Extract or implement deterministic TypeScript domain rules for validation, calculations, and transformations with explicit inputs and no observable side effects.
----
-
 # Pure Function Pattern
 
 Keep domain decisions separate from I/O. A pure function returns the same result for the same inputs and does not mutate inputs or shared state.
@@ -16,7 +11,7 @@ Keep domain decisions separate from I/O. A pure function returns the same result
 
 For a refactor, preserve rule order and observable error precedence. Verify relevant boundaries, success paths, failure codes, and non-mutation through the public function using the project's testing conventions.
 
-Read the matching section of [examples](references/examples.md) only when helpful:
+Read the matching section of [pure function examples](pure-functions-examples.md) only when helpful:
 
 - Coupon validation: time injection, usage limits, error precedence.
 - Order pricing: immutable accumulation and discount capping.

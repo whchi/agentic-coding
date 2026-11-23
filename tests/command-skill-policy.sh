@@ -51,18 +51,15 @@ assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".agents/skills"'
 assert_contains "$ROOT/setup.sh" 'PROJECT_COMMANDS_REL=".gemini/commands"'
 assert_not_contains "$ROOT/setup.sh" "antigravity-cli"
 
-assert_contains "$ROOT/commands/debug-triage.md" "diagnosis only"
-assert_not_contains "$ROOT/commands/debug-triage.md" "Fix the smallest confirmed cause"
 assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "For diagnosis-only requests, report the cause and proposed fix without changing application code"
 assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "already-authorized fix"
 assert_not_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "Fix the confirmed cause"
 
-assert_contains "$ROOT/commands/anthropic-skill-review.md" "existing SKILL.md or command draft"
-assert_not_contains "$ROOT/commands/anthropic-skill-review.md" "source notes or an article"
-assert_not_contains "$ROOT/commands/anthropic-skill-review.md" "content-to-skill"
-assert_contains "$ROOT/commands/content-to-skill.md" "Do not trigger for method analysis alone"
-assert_contains "$ROOT/commands/content-to-skill.md" "Draft mode"
-assert_contains "$ROOT/commands/content-to-skill.md" "Save-ready mode"
+assert_contains "$ROOT/commands/skill-authoring.md" "Review mode"
+assert_contains "$ROOT/commands/skill-authoring.md" "Extract mode"
+assert_contains "$ROOT/commands/skill-authoring.md" "Do not trigger for method analysis alone"
+assert_contains "$ROOT/commands/skill-authoring.md" "Draft mode"
+assert_contains "$ROOT/commands/skill-authoring.md" "Save-ready mode"
 
 assert_contains "$ROOT/commands/code-review.md" "git status --short --branch -uall"
 assert_contains "$ROOT/commands/code-review.md" "git rev-parse --show-toplevel"
@@ -82,10 +79,10 @@ assert_matches "$ROOT/commands/code-review.md" "(validate|verify) every candidat
 assert_matches "$ROOT/commands/code-review.md" "deduplicat.*specialist finding"
 assert_matches "$ROOT/commands/code-review.md" "do not claim.*passed unless"
 
-assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "does not mutate inputs or shared state"
-assert_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "preserve rule order and observable error precedence"
-assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "No \`vi.mock()\`"
-assert_not_contains "$ROOT/project-skills/pure-function-pattern/SKILL.md" "export every helper"
+assert_contains "$ROOT/project-skills/js-ts-coding-standards/references/pure-functions.md" "does not mutate inputs or shared state"
+assert_contains "$ROOT/project-skills/js-ts-coding-standards/references/pure-functions.md" "preserve rule order and observable error precedence"
+assert_not_contains "$ROOT/project-skills/js-ts-coding-standards/references/pure-functions.md" "No \`vi.mock()\`"
+assert_not_contains "$ROOT/project-skills/js-ts-coding-standards/references/pure-functions.md" "export every helper"
 
 for file in "$ROOT"/commands/*.md; do
   head -n 1 "$file" | rg -qx -- '---' || fail "command missing frontmatter: $file"

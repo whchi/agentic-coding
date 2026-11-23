@@ -8,7 +8,7 @@
 #   ./setup.sh codex reinstall all --global         # reinstall all global skills + commands
 #   ./setup.sh claude install all --project --target /path/to/project
 #   ./setup.sh codex reinstall skills --project frontend-patterns --dry-run
-#   ./setup.sh claude uninstall commands --project mock-or-not --target /path/to/project
+#   ./setup.sh claude uninstall commands --project qa --target /path/to/project
 #   ./setup.sh all install all --global             # install everything for every provider
 #
 # Codex global skills -> ~/.agents/skills/
@@ -241,29 +241,21 @@ GLOBAL_SKILLS=(
   concurrency-review
   correct
   debugging-playbook
-  domain-driven-design-advisor
-  edit-article
   elenchos
   handoff
   maintainable-code-review
   module-boundaries
-  product-engineering-mvp
   reflect
   testing-strategy
-  verification-harness
   why
   zoom-out
-  bro
-  in-your-own-words
 )
 
 PROJECT_SKILLS=(
   animate
   feature-loop
   frontend-patterns
-  frontend-robust-data-handling
   js-ts-coding-standards
-  pure-function-pattern
 )
 
 # Reads the `compatibility:` frontmatter field of a skill's SKILL.md.
@@ -333,15 +325,10 @@ setup_skills() {
 # ── commands ─────────────────────────────────────────────────────────────────
 
 COMMANDS=(
-  anthropic-skill-review
   code-review
-  design-pattern-fit
-  ddd-fit-check
-  debug-triage
-  mock-or-not
   qa
+  skill-authoring
   update-codemaps
-  content-to-skill
 )
 
 setup_one_command() {
@@ -417,7 +404,7 @@ menu() {
   echo "  ./setup.sh $PROVIDER reinstall skills --project frontend-patterns"
   echo "  ./setup.sh $PROVIDER install all --project --target /path/to/project"
   echo "  ./setup.sh $PROVIDER reinstall all --project --target /path/to/project --dry-run"
-  echo "  ./setup.sh $PROVIDER uninstall commands --global mock-or-not"
+  echo "  ./setup.sh $PROVIDER uninstall commands --global qa"
   echo "  ./setup.sh $PROVIDER reinstall all --global"
   echo "  ./setup.sh all install all --global   # install for every agent at once"
   echo ""

@@ -102,7 +102,8 @@ from pathlib import Path
 import sys
 
 suites = [json.loads(path.read_text()) for path in sorted(Path(sys.argv[1]).glob("*.json"))]
-print(f"Validated {sum(len(suite['cases']) for suite in suites)} cases from {len(suites)} suites.")
+suite_word = "suite" if len(suites) == 1 else "suites"
+print(f"Validated {sum(len(suite['cases']) for suite in suites)} cases from {len(suites)} {suite_word}.")
 PY
 )"
 assert_contains "$output" "$expected_counts"
@@ -167,7 +168,6 @@ fi
 for source in \
   evals/README.md \
   evals/cases/routing-boundaries.json \
-  evals/cases/super-google-search.json \
   scripts/run-skill-evals.py \
   scripts/run-behavior-evals.py \
   evals/behavior/pstack-skills.json; do

@@ -24,7 +24,7 @@ DDD-oriented project:
 - Start from bounded contexts, not database tables.
 - Keep ubiquitous language consistent inside one bounded context.
 - Treat legacy systems and external services as separate contexts behind adapters.
-- Use `domain-driven-design-advisor` for the actual modeling work.
+- Use [ddd.md](ddd.md) for the actual modeling work.
 
 For a project that needs layered boundaries:
 

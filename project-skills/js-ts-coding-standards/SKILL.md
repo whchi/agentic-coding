@@ -1,6 +1,6 @@
 ---
 name: js-ts-coding-standards
-description: Review or standardize JavaScript and TypeScript naming, type boundaries, mutation, and async error handling when code conventions are the task.
+description: Review or standardize JavaScript and TypeScript naming, type boundaries, mutation, async error handling, or deterministic pure domain rules when code conventions or side-effect isolation are the task.
 origin: ECC
 ---
 
@@ -23,6 +23,7 @@ Read a reference only when that convention needs attention:
 - [Naming](references/naming-conventions.md): names, boolean predicates, domain vocabulary.
 - [Type design](references/type-design.md): function parameters, narrowing untrusted inputs, modeling state variants, exhaustive handling, and choosing stronger types only where operations need them.
 - [File organization](references/file-organization.md): existing module boundaries, imports, exports.
+- [Pure functions](references/pure-functions.md): extracting deterministic TypeScript domain rules with explicit inputs and no observable side effects.
 - [Testing](references/testing.md): test organization and examples when editing tests.
 
 These references are examples, not a mandate to replace the project's architecture or test framework. React architecture, effects, and REST contracts belong to their specific workflows.

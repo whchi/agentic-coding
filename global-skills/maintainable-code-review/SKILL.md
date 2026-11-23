@@ -1,6 +1,6 @@
 ---
 name: maintainable-code-review
-description: Review maintainability when abstraction, indirection, or unclear function contracts make code difficult for its owning team to change.
+description: Review maintainability or proposed design patterns when abstraction, indirection, or unclear function contracts make code difficult for its owning team to change.
 ---
 
 # Maintainable Code Review
@@ -15,6 +15,8 @@ Use related skills for narrower ownership questions:
 - `module-boundaries` for folder/module organization or persistence vs business behavior placement.
 - `testing-strategy` for test levels, mocks, fixtures, and coverage.
 - `js-ts-coding-standards` for JavaScript/TypeScript language-level conventions.
+
+When evaluating a proposed GoF design pattern or comparing pattern alternatives against direct code, read [design-patterns.md](references/design-patterns.md).
 
 ## Core Principle
 

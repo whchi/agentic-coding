@@ -33,7 +33,7 @@ cd ~/agentic-coding
 # Or pick individual items
 ./setup.sh codex install skills --global api-design
 ./setup.sh codex reinstall skills --project frontend-patterns --target /path/to/your/project
-./setup.sh claude uninstall commands --global mock-or-not
+./setup.sh claude uninstall commands --global qa
 
 # Preview changes without writing files
 ./setup.sh codex reinstall all --project --target /path/to/your/project --dry-run
@@ -84,16 +84,12 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 | `concurrency-review` | Shared-state race, locking, idempotency, and cache-invalidation review |
 | `correct` | Explicit `/correct` only: turn repeated agent mistakes into architecture, type, lint, or test enforcement |
 | `debugging-playbook` | Methodical environment/data/logic debugging workflow |
-| `domain-driven-design-advisor` | DDD fit, bounded context, aggregate, and layering guidance |
-| `edit-article` | Article restructuring and editing workflow |
 | `elenchos` | Stress-test plans through questioning, with optional repository evidence, terminology, and ADR guidance |
 | `handoff` | Compact current work into a durable handoff for another session or agent |
-| `maintainable-code-review` | Maintainability, module depth, abstraction, and readability review guidance |
-| `module-boundaries` | Folder/module organization and persistence, application, and domain responsibility placement |
-| `product-engineering-mvp` | MVP build-vs-buy, cost, and product engineering tradeoffs |
+| `maintainable-code-review` | Maintainability, module depth, abstraction, design pattern fit, and readability review guidance |
+| `module-boundaries` | Folder/module organization, persistence/application/domain responsibility placement, and DDD fit/modeling |
 | `reflect` | Explicit `reflect` only: mine the session transcript for skill edits, applied after approval |
-| `testing-strategy` | Test design/review, plus conditional test-first implementation |
-| `verification-harness` | Create or refresh a project-local `verify-<app>` skill that drives the real app |
+| `testing-strategy` | Test design/review, mock/fake/real collaborator decisions, plus conditional test-first implementation |
 | `why` | Find why code has its shape from the historical record, with confidence tiers |
 | `zoom-out` | Higher-level module map before editing unfamiliar code |
 
@@ -103,24 +99,17 @@ Gemini CLI custom commands live in `.gemini/commands/`. Because this repository 
 |---|---|
 | `animate` | Build a single web animation with the right purpose, curve, duration, interruption, and reduced-motion handling |
 | `feature-loop` | Staged feature workflow: open → plan → build → verify, with a feature document and a 2-round verify budget |
-| `frontend-patterns` | React / Next.js components, state/effect boundaries, performance, and accessibility |
-| `frontend-robust-data-handling` | Frontend adapters, defaults, null-object, and partial-data handling |
-| `js-ts-coding-standards` | JS / TS / React / Node coding standards |
-| `pure-function-pattern` | Pure business logic extraction and side-effect isolation |
+| `frontend-patterns` | React / Next.js components, state/effect boundaries, render-safe API data handling, performance, and accessibility |
+| `js-ts-coding-standards` | JS / TS / React / Node coding standards and pure domain rule extraction |
 
 
 ### Commands
 
 | Command | Description |
 |---|---|
-| `anthropic-skill-review` | Existing skill/command draft review |
 | `code-review` | Code review workflow |
-| `content-to-skill` | Distill explicit source material into a reusable skill draft |
-| `design-pattern-fit` | Design pattern fit and overengineering check |
-| `ddd-fit-check` | DDD adoption fit check |
-| `debug-triage` | Environment/data/logic debugging triage |
-| `mock-or-not` | Test dependency mock/fake/real decision checklist |
 | `qa` | Scoped acceptance tests and browser Back / Forward / Reload state verification |
+| `skill-authoring` | Review an existing skill/command draft or distill source material into a reusable skill/command |
 | `update-codemaps` | Code map update workflow |
 
 Install the QA command with `./setup.sh <provider> install commands --global qa` (replace `<provider>` with a provider from the table above). Its source is [commands/qa.md](commands/qa.md); installation follows the same provider-specific paths and format conversion as other commands.
@@ -136,39 +125,28 @@ Skills that will make up a future coding-agent workflow. Kept in `coding-agent-f
 | `requirement-breakdown` | Turn requirements into user goals, Gherkin scenarios, and a tracker-agnostic `cards.json` backlog |
 | `requirement-to-jira` | Create, update, or reconcile Jira cards from a `cards.json` via Jira MCP (depends on `requirement-breakdown`) |
 
-### General Skills (not installed)
-
-| Skill | Description |
-|---|---|
-| `serenity-seek-alpha` | Turn news, adoption, and industry events into a testable investment research path (no buy/sell calls or price targets) |
-| `super-google-search` | Source-backed web search and research collection |
-
 ## Skill Taxonomy
 
 | Area | Skills / Commands |
 |---|---|
-| Alignment | `elenchos`, `product-engineering-mvp` |
+| Alignment | `elenchos` |
 | Context | `zoom-out`, `update-codemaps`, `why`, `blast-radius` |
-| Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `debug-triage`, `concurrency-review` |
-| Testing | `testing-strategy`, `mock-or-not`, `qa`, `verification-harness`, `benchmark-checklist` |
-| Architecture | `maintainable-code-review`, `module-boundaries`, `domain-driven-design-advisor`, `api-design`, `design-pattern-fit`, `ddd-fit-check` |
-| Frontend | `frontend-patterns`, `frontend-robust-data-handling`, `js-ts-coding-standards`, `pure-function-pattern`, `animate` |
+| Delivery | `feature-loop`, `testing-strategy`, `debugging-playbook`, `concurrency-review` |
+| Testing | `testing-strategy`, `qa`, `benchmark-checklist` |
+| Architecture | `maintainable-code-review`, `module-boundaries`, `api-design` |
+| Frontend | `frontend-patterns`, `js-ts-coding-standards`, `animate` |
 | Review | `code-review` |
-| Skill authoring | `anthropic-skill-review`, `content-to-skill`, `reflect` |
+| Skill authoring | `skill-authoring`, `reflect` |
 | Feedback loop | `correct` |
-| Writing | `edit-article` |
 | Handoff | `handoff` |
 
 ### Skill boundaries
 
-One entrypoint can route related tasks to conditional references: `elenchos` covers both general interviews and repository-grounded questioning; `frontend-patterns` includes effect refactoring; `module-boundaries` separates folder organization from responsibility placement. Each installed skill contains its own required references.
+One entrypoint can route related tasks to conditional references: `elenchos` covers both general interviews and repository-grounded questioning; `frontend-patterns` includes effect refactoring and render-safe API data handling; `module-boundaries` separates folder organization, responsibility placement, and DDD fit/modeling; `maintainable-code-review` includes design pattern fit; `js-ts-coding-standards` includes pure domain rule extraction. Each installed skill contains its own required references.
 
 Keep distinct outcomes independently discoverable:
 
-- `frontend-robust-data-handling` handles payload normalization across UI frameworks; it is not limited to React.
-- `domain-driven-design-advisor` owns DDD fit and aggregate modeling; `module-boundaries` handles concrete organization and ownership without requiring DDD.
 - `testing-strategy` separates test design/review from test-first implementation. Asking which tests to write does not start TDD or authorize product edits; requested TDD and regression-guided known fixes use its test-first reference.
-- `js-ts-coding-standards` covers language conventions; `pure-function-pattern` isolates deterministic domain decisions from side effects.
 - `zoom-out`, `why`, and `blast-radius` answer current structure, historical rationale, and change impact respectively.
 - `reflect` proposes skill improvements; `correct` implements enforcement for repeated mistakes. Both retain their explicit invocation boundaries.
 
@@ -251,7 +229,7 @@ bunx @every-env/compound-plugin install compound-engineering --to opencode
 - https://github.com/yetone/native-feel-skill
 - https://github.com/tw93/waza engineer 思維
 - https://github.com/mattpocock/skills real engineer skills
-- https://github.com/backnotprop/pstack poteto 的工程流程（`cursor/plugins/pstack` mirror）；`why`、`blast-radius`、`benchmark-checklist`、`verification-harness`、`correct`、`reflect` 改寫自此，其餘規則融入既有 skills（決策紀錄：`docs/audits/pstack-fit-2026-10-08.md`）
+- https://github.com/backnotprop/pstack poteto 的工程流程（`cursor/plugins/pstack` mirror）；`why`、`blast-radius`、`benchmark-checklist`、`correct`、`reflect` 改寫自此（`verification-harness` 曾改寫，後移除），其餘規則融入既有 skills（決策紀錄：`docs/audits/pstack-fit-2026-10-08.md`）
 
 #### UI/UX
 - https://github.com/pbakaus/impeccable

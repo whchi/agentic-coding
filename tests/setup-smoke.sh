@@ -73,18 +73,18 @@ output="$(
 )"
 
 assert_contains "$output" "dry-run mkdir -p $GEMINI_HOME/.gemini/config/skills"
-assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $GEMINI_HOME/.gemini/commands/debug-triage.toml"
+assert_contains "$output" "dry-run install $ROOT/commands/update-codemaps.md → $GEMINI_HOME/.gemini/commands/update-codemaps.toml"
 assert_not_contains "$output" "$GEMINI_HOME/.gemini/antigravity-cli"
 
 (
   HOME="$GEMINI_HOME" \
-    "$ROOT/setup.sh" gemini install commands --global debug-triage
+    "$ROOT/setup.sh" gemini install commands --global update-codemaps
 )
 
-assert_file "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
-rg -Fq "prompt = '''" "$GEMINI_HOME/.gemini/commands/debug-triage.toml" || fail "Gemini command missing TOML prompt"
-assert_not_contains "$(cat "$GEMINI_HOME/.gemini/commands/debug-triage.toml")" "---"
-python3 - "$GEMINI_HOME/.gemini/commands/debug-triage.toml" "$ROOT/commands/debug-triage.md" <<'PY'
+assert_file "$GEMINI_HOME/.gemini/commands/update-codemaps.toml"
+rg -Fq "prompt = '''" "$GEMINI_HOME/.gemini/commands/update-codemaps.toml" || fail "Gemini command missing TOML prompt"
+assert_not_contains "$(cat "$GEMINI_HOME/.gemini/commands/update-codemaps.toml")" "---"
+python3 - "$GEMINI_HOME/.gemini/commands/update-codemaps.toml" "$ROOT/commands/update-codemaps.md" <<'PY'
 from pathlib import Path
 import sys
 import tomllib
@@ -99,18 +99,18 @@ PY
 
 output="$(
   HOME="$GEMINI_HOME" \
-    "$ROOT/setup.sh" gemini install commands --global debug-triage
+    "$ROOT/setup.sh" gemini install commands --global update-codemaps
 )"
-assert_contains "$output" "already consistent: $GEMINI_HOME/.gemini/commands/debug-triage.toml"
+assert_contains "$output" "already consistent: $GEMINI_HOME/.gemini/commands/update-codemaps.toml"
 
 (
   HOME="$GEMINI_HOME" \
-    "$ROOT/setup.sh" gemini reinstall commands --global debug-triage
+    "$ROOT/setup.sh" gemini reinstall commands --global update-codemaps
   HOME="$GEMINI_HOME" \
-    "$ROOT/setup.sh" gemini uninstall commands --global debug-triage
+    "$ROOT/setup.sh" gemini uninstall commands --global update-codemaps
 )
 
-assert_not_exists "$GEMINI_HOME/.gemini/commands/debug-triage.toml"
+assert_not_exists "$GEMINI_HOME/.gemini/commands/update-codemaps.toml"
 
 for provider in opencode pi; do
   for action in install reinstall uninstall; do
@@ -133,9 +133,9 @@ assert_not_contains "$output" '=== pi ==='
 assert_file "$ALL_HOME/.agents/skills/api-design/SKILL.md"
 assert_file "$ALL_HOME/.claude/skills/api-design/SKILL.md"
 assert_file "$ALL_HOME/.gemini/config/skills/api-design/SKILL.md"
-assert_file "$ALL_HOME/.codex/prompts/debug-triage.md"
-assert_file "$ALL_HOME/.claude/commands/debug-triage.md"
-assert_file "$ALL_HOME/.gemini/commands/debug-triage.toml"
+assert_file "$ALL_HOME/.codex/prompts/update-codemaps.md"
+assert_file "$ALL_HOME/.claude/commands/update-codemaps.md"
+assert_file "$ALL_HOME/.gemini/commands/update-codemaps.toml"
 assert_not_exists "$ALL_HOME/.config/opencode"
 assert_not_exists "$ALL_HOME/.pi"
 
@@ -147,9 +147,9 @@ assert_not_contains "$output" '=== opencode ==='
 assert_not_contains "$output" '=== pi ==='
 assert_file "$ALL_TARGET/.agents/skills/frontend-patterns/SKILL.md"
 assert_file "$ALL_TARGET/.claude/skills/frontend-patterns/SKILL.md"
-assert_file "$ALL_TARGET/.codex/prompts/debug-triage.md"
-assert_file "$ALL_TARGET/.claude/commands/debug-triage.md"
-assert_file "$ALL_TARGET/.gemini/commands/debug-triage.toml"
+assert_file "$ALL_TARGET/.codex/prompts/update-codemaps.md"
+assert_file "$ALL_TARGET/.claude/commands/update-codemaps.md"
+assert_file "$ALL_TARGET/.gemini/commands/update-codemaps.toml"
 assert_not_exists "$ALL_TARGET/.opencode"
 assert_not_exists "$ALL_TARGET/.pi"
 
@@ -159,7 +159,7 @@ output="$(
 )"
 
 assert_contains "$output" "dry-run mkdir -p $GEMINI_TARGET/.agents/skills"
-assert_contains "$output" "dry-run install $ROOT/commands/debug-triage.md → $GEMINI_TARGET/.gemini/commands/debug-triage.toml"
+assert_contains "$output" "dry-run install $ROOT/commands/update-codemaps.md → $GEMINI_TARGET/.gemini/commands/update-codemaps.toml"
 assert_not_contains "$output" "$GEMINI_TARGET/.gemini/skills"
 
 output="$(

@@ -12,7 +12,13 @@ Choose by the contract, not layer names alone. An API-through-persistence check 
 
 ## Dependencies and fixtures
 
-- Mock third-party services in unit tests. Use a fake for controlled state or real local dependencies when their interaction is the subject; do not mock away the requirement.
+Choose collaborators from the behavior under test, test level, and dependency boundary:
+
+- **Real:** use the actual collaborator when it is deterministic, practical, and part of the behavior being verified.
+- **Fake:** use a lightweight working implementation when behavior and state matter, but real infrastructure is impractical.
+- **Mock:** use a controlled boundary when the external interaction or response is the contract.
+
+- Mock third-party services in unit tests without extending that restriction to integration or real-browser acceptance tests; do not mock away the requirement.
 - Use the established test database when its semantics fit. Dialect, transaction, lock, index, JSON, timezone, or migration behavior may require the production database engine in an isolated test environment.
 - Build deterministic fixtures from actual schemas. Include the relationships, ownership, boundaries, and failure states needed for this behavior, not a universal catalogue of every status and optional field.
 - In DDD code, keep aggregate behavior real for invariant tests; fake repository interfaces for orchestration and exercise repository implementations against the relevant persistence layer.
