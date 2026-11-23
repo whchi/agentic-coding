@@ -39,12 +39,9 @@ assert_not_exists "$ROOT/commands/build-fix.md"
 
 for needle in frontend-slides write-a-skill; do
   assert_not_contains "$ROOT/README.md" "\`$needle\`"
-  assert_not_contains "$ROOT/setup.sh" "  $needle"
 done
 assert_not_contains "$ROOT/README.md" "\`learn\`"
-assert_not_contains "$ROOT/setup.sh" "  learn"
 assert_not_contains "$ROOT/README.md" "\`build-fix\`"
-assert_not_contains "$ROOT/setup.sh" "  build-fix"
 assert_contains "$ROOT/setup.sh" 'GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills"'
 assert_contains "$ROOT/setup.sh" 'GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"'
 assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".agents/skills"'
@@ -121,6 +118,10 @@ expected = {
 for name, actual in expected.items():
     listed = sorted(set(setup_array(name)))
     assert listed == actual, f"{name}: setup={listed}, source={actual}"
+    retired = setup_array(f"RETIRED_{name}")
+    assert len(retired) == len(set(retired)), f"RETIRED_{name} has duplicates"
+    overlap = set(listed).intersection(retired)
+    assert not overlap, f"{name} overlaps RETIRED_{name}: {sorted(overlap)}"
 
 readme_lines = (root / "README.md").read_text().splitlines()
 sections = {"### Global Skills": "GLOBAL_SKILLS", "### Project Skills": "PROJECT_SKILLS", "### Commands": "COMMANDS"}

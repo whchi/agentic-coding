@@ -157,7 +157,7 @@ reinstall_dir() {
 
 uninstall_path() {
   local dest="$1"
-  if [[ -e "$dest" ]]; then
+  if [[ -e "$dest" || -L "$dest" ]]; then
     if [[ "$DRY_RUN" == true ]]; then
       echo "  dry-run uninstall $dest"
     else
@@ -166,6 +166,17 @@ uninstall_path() {
     fi
   else
     echo "  skip missing $dest"
+  fi
+}
+
+prune_retired_path() {
+  local dest="$1"
+  [[ -e "$dest" || -L "$dest" ]] || return 0
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  dry-run remove retired $dest"
+  else
+    echo "  remove retired $dest"
+    rm -rf "$dest"
   fi
 }
 
@@ -258,6 +269,41 @@ PROJECT_SKILLS=(
   js-ts-coding-standards
 )
 
+RETIRED_GLOBAL_SKILLS=(
+  better-test-driven-development
+  bro
+  content-engine
+  domain-driven-design-advisor
+  edit-article
+  frontend-slides
+  grill-me
+  grill-with-docs
+  grilling
+  in-your-own-words
+  iterative-retrieval
+  planning-with-files
+  product-engineering-mvp
+  project-structure-advisor
+  repository-boundary-review
+  super-google-search
+  verification-harness
+  write-a-prd
+  write-a-skill
+)
+
+RETIRED_PROJECT_SKILLS=(
+  better-useeffect
+  database-migrations
+  docker-patterns
+  engineering-context
+  frontend-robust-data-handling
+  loop-build
+  loop-feature
+  loop-plan
+  loop-verify
+  pure-function-pattern
+)
+
 # Reads the `compatibility:` frontmatter field of a skill's SKILL.md.
 # No field  -> compatible with every provider (the default).
 # Field set -> compatible only with the listed providers. Accepts a bare value
@@ -306,6 +352,11 @@ setup_skills() {
       for s in "${GLOBAL_SKILLS[@]}"; do
         install_one_skill "$action" "global-skills" "$GLOBAL_SKILLS_DIR" "$s"
       done
+      if [[ "$action" == "reinstall" ]]; then
+        for s in "${RETIRED_GLOBAL_SKILLS[@]}"; do
+          prune_retired_path "$GLOBAL_SKILLS_DIR/$s"
+        done
+      fi
     fi
   elif [[ "$scope" == "--project" ]]; then
     [[ "$action" == "uninstall" ]] || ensure_dir "$PROJECT_SKILLS_DIR"
@@ -316,6 +367,11 @@ setup_skills() {
       for s in "${PROJECT_SKILLS[@]}"; do
         install_one_skill "$action" "project-skills" "$PROJECT_SKILLS_DIR" "$s"
       done
+      if [[ "$action" == "reinstall" ]]; then
+        for s in "${RETIRED_PROJECT_SKILLS[@]}"; do
+          prune_retired_path "$PROJECT_SKILLS_DIR/$s"
+        done
+      fi
     fi
   else
     die "skills requires --global or --project"
@@ -330,6 +386,28 @@ COMMANDS=(
   skill-authoring
   update-codemaps
 )
+
+RETIRED_COMMANDS=(
+  anthropic-skill-review
+  build-fix
+  content-to-skill
+  ddd-fit-check
+  debug-triage
+  design-pattern-fit
+  learn
+  mock-or-not
+  setup-agentic-coding-project
+)
+
+prune_retired_commands() {
+  local dest_root="$1"
+  local ext=".md"
+  [[ "$PROVIDER" == "gemini" ]] && ext=".toml"
+  local c
+  for c in "${RETIRED_COMMANDS[@]}"; do
+    prune_retired_path "$dest_root/$c$ext"
+  done
+}
 
 setup_one_command() {
   local action="$1" dest_root="$2" name="$3"
@@ -369,6 +447,9 @@ setup_commands() {
       for c in "${COMMANDS[@]}"; do
         setup_one_command "$action" "$GLOBAL_COMMANDS_DIR" "$c"
       done
+      if [[ "$action" == "reinstall" ]]; then
+        prune_retired_commands "$GLOBAL_COMMANDS_DIR"
+      fi
     fi
   elif [[ "$scope" == "--project" ]]; then
     [[ "$action" == "uninstall" ]] || ensure_dir "$PROJECT_COMMANDS_DIR"
@@ -379,6 +460,9 @@ setup_commands() {
       for c in "${COMMANDS[@]}"; do
         setup_one_command "$action" "$PROJECT_COMMANDS_DIR" "$c"
       done
+      if [[ "$action" == "reinstall" ]]; then
+        prune_retired_commands "$PROJECT_COMMANDS_DIR"
+      fi
     fi
   else
     die "commands requires --global or --project"

@@ -170,4 +170,69 @@ output="$(
 assert_contains "$output" "dry-run uninstall"
 assert_file "$TARGET/.agents/skills/frontend-patterns/SKILL.md"
 
+# Retired pruning during bulk reinstall: removes retired repo items, preserves unrelated ones.
+mkdir -p \
+  "$ALL_HOME/.agents/skills/bro" \
+  "$ALL_HOME/.agents/skills/custom-third-party" \
+  "$ALL_HOME/.claude/skills/verification-harness" \
+  "$ALL_HOME/.claude/skills/custom-third-party" \
+  "$ALL_HOME/.gemini/config/skills/bro" \
+  "$ALL_HOME/.gemini/config/skills/custom-third-party" \
+  "$ALL_TARGET/.agents/skills/pure-function-pattern" \
+  "$ALL_TARGET/.agents/skills/custom-project-skill" \
+  "$ALL_TARGET/.claude/skills/frontend-robust-data-handling" \
+  "$ALL_TARGET/.claude/skills/custom-project-skill"
+touch \
+  "$ALL_HOME/.codex/prompts/debug-triage.md" \
+  "$ALL_HOME/.codex/prompts/custom-command.md" \
+  "$ALL_HOME/.claude/commands/mock-or-not.md" \
+  "$ALL_HOME/.claude/commands/custom-command.md" \
+  "$ALL_HOME/.gemini/commands/debug-triage.toml" \
+  "$ALL_HOME/.gemini/commands/custom-command.toml" \
+  "$ALL_TARGET/.codex/prompts/ddd-fit-check.md" \
+  "$ALL_TARGET/.codex/prompts/custom-command.md" \
+  "$ALL_TARGET/.claude/commands/design-pattern-fit.md" \
+  "$ALL_TARGET/.claude/commands/custom-command.md" \
+  "$ALL_TARGET/.gemini/commands/mock-or-not.toml" \
+  "$ALL_TARGET/.gemini/commands/custom-command.toml"
+
+# Single-item reinstall must NOT prune unrelated retired items.
+HOME="$ALL_HOME" "$ROOT/setup.sh" codex reinstall skills --project frontend-patterns --target "$ALL_TARGET" >/dev/null
+[[ -d "$ALL_TARGET/.agents/skills/pure-function-pattern" ]] || fail "single-item reinstall should not prune other retired skills"
+
+# Dry-run bulk reinstall previews removal without deleting.
+output="$(HOME="$ALL_HOME" "$ROOT/setup.sh" all reinstall all --global --dry-run)"
+assert_contains "$output" "dry-run remove retired $ALL_HOME/.agents/skills/bro"
+assert_contains "$output" "dry-run remove retired $ALL_HOME/.gemini/commands/debug-triage.toml"
+[[ -d "$ALL_HOME/.agents/skills/bro" ]] || fail "dry-run should not remove retired skill"
+assert_file "$ALL_HOME/.gemini/commands/debug-triage.toml"
+
+# Actual bulk reinstall removes retired items and keeps custom third-party ones.
+HOME="$ALL_HOME" "$ROOT/setup.sh" all reinstall all --global >/dev/null
+HOME="$ALL_HOME" "$ROOT/setup.sh" all reinstall all --project --target "$ALL_TARGET" >/dev/null
+
+assert_not_exists "$ALL_HOME/.agents/skills/bro"
+assert_not_exists "$ALL_HOME/.claude/skills/verification-harness"
+assert_not_exists "$ALL_HOME/.gemini/config/skills/bro"
+assert_not_exists "$ALL_HOME/.codex/prompts/debug-triage.md"
+assert_not_exists "$ALL_HOME/.claude/commands/mock-or-not.md"
+assert_not_exists "$ALL_HOME/.gemini/commands/debug-triage.toml"
+assert_not_exists "$ALL_TARGET/.agents/skills/pure-function-pattern"
+assert_not_exists "$ALL_TARGET/.claude/skills/frontend-robust-data-handling"
+assert_not_exists "$ALL_TARGET/.codex/prompts/ddd-fit-check.md"
+assert_not_exists "$ALL_TARGET/.claude/commands/design-pattern-fit.md"
+assert_not_exists "$ALL_TARGET/.gemini/commands/mock-or-not.toml"
+
+[[ -d "$ALL_HOME/.agents/skills/custom-third-party" ]] || fail "reinstall should preserve custom global codex skill"
+[[ -d "$ALL_HOME/.claude/skills/custom-third-party" ]] || fail "reinstall should preserve custom global claude skill"
+[[ -d "$ALL_HOME/.gemini/config/skills/custom-third-party" ]] || fail "reinstall should preserve custom global gemini skill"
+[[ -d "$ALL_TARGET/.agents/skills/custom-project-skill" ]] || fail "reinstall should preserve custom project codex skill"
+[[ -d "$ALL_TARGET/.claude/skills/custom-project-skill" ]] || fail "reinstall should preserve custom project claude skill"
+assert_file "$ALL_HOME/.codex/prompts/custom-command.md"
+assert_file "$ALL_HOME/.claude/commands/custom-command.md"
+assert_file "$ALL_HOME/.gemini/commands/custom-command.toml"
+assert_file "$ALL_TARGET/.codex/prompts/custom-command.md"
+assert_file "$ALL_TARGET/.claude/commands/custom-command.md"
+assert_file "$ALL_TARGET/.gemini/commands/custom-command.toml"
+
 echo "setup smoke checks passed"

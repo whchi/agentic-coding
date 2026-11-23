@@ -20,6 +20,8 @@ cd ~/agentic-coding
 
 # Codex and Gemini share `.agents/skills` for project installs. Consistent
 # existing skills are skipped; use `reinstall` when their contents differ.
+# Bulk `reinstall` also removes retired skills/commands tracked in `setup.sh`
+# (`RETIRED_*`), leaving unrelated third-party items untouched.
 
 # Install project skills + commands into another project
 ./setup.sh codex install all --project --target /path/to/your/project
