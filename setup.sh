@@ -254,6 +254,7 @@ GLOBAL_SKILLS=(
   why
   zoom-out
   bro
+  in-your-own-words
 )
 
 PROJECT_SKILLS=(
