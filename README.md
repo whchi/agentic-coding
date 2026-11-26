@@ -14,11 +14,11 @@ cd ~/agentic-coding
 # Install all global skills + commands
 ./setup.sh codex install all --global
 ./setup.sh claude install all --global
-./setup.sh gemini install all --global
+./setup.sh agy install all --global
 # or every provider at once
 ./setup.sh all reinstall all --global
 
-# Codex and Gemini share `.agents/skills` for project installs. Consistent
+# Codex and Antigravity (agy) share `.agents/skills` for project installs. Consistent
 # existing skills are skipped; use `reinstall` when their contents differ.
 # Bulk `reinstall` also removes retired skills/commands tracked in `setup.sh`
 # (`RETIRED_*`), leaving unrelated third-party items untouched.
@@ -26,7 +26,7 @@ cd ~/agentic-coding
 # Install project skills + commands into another project
 ./setup.sh codex install all --project --target /path/to/your/project
 ./setup.sh claude install all --project --target /path/to/your/project
-./setup.sh gemini install all --project --target /path/to/your/project
+./setup.sh agy install all --project --target /path/to/your/project
 
 # Or run from inside the target project
 # cd /path/to/your/project
@@ -58,7 +58,7 @@ Install targets, as defined in `setup.sh`:
 |---|---|---|---|---|
 | codex | `~/.agents/skills/` | `~/.codex/prompts/` | `.agents/skills/` | `.codex/prompts/` |
 | claude | `~/.claude/skills/` | `~/.claude/commands/` | `.claude/skills/` | `.claude/commands/` |
-| gemini | `~/.gemini/config/skills/` | `~/.gemini/commands/` (TOML) | `.agents/skills/` | `.gemini/commands/` (TOML) |
+| agy | `~/.gemini/config/skills/` | `~/.gemini/config/skills/` (`SKILL.md`) | `.agents/skills/` | `.agents/skills/` (`SKILL.md`) |
 
 OpenCode and Pi are paused in `setup.sh`. Their target configurations are retained; add the provider to `ALL_PROVIDERS` to re-enable it. Pi may still discover skills installed by Codex in their shared `.agents/skills` directories.
 
@@ -74,7 +74,7 @@ compatibility: codex        # or a list: [codex, claude]
 
 A skill **with** this field installs only for the listed providers; a skill **without** it installs for every provider (the default). `setup.sh` reads the field and skips incompatible skills, so e.g. `./setup.sh claude install all --global` will not install skills declared `compatibility: codex`.
 
-Gemini CLI custom commands live in `.gemini/commands/`. Because this repository stores provider-neutral commands as Markdown, `setup.sh gemini ...` converts each command to Gemini's required TOML format during installation. For skills, this setup installs Gemini globally to `~/.gemini/config/skills/` and per project to the interoperable `.agents/skills/` path (shared with Codex).
+Google Antigravity (`agy`) unifies slash commands with Agent Skills (`SKILL.md`). Because this repository stores provider-neutral commands as single-file Markdown, `setup.sh agy ...` packages each command into `<name>/SKILL.md` with `name` and `disable-model-invocation: true` so it can be invoked explicitly via `/<name>` without autonomous model triggering. Globally, both skills and packaged commands install to `~/.gemini/config/skills/`; per project, they install to `.agents/skills/` (shared with Codex).
 
 ### Global Skills
 

@@ -42,10 +42,11 @@ for needle in frontend-slides write-a-skill; do
 done
 assert_not_contains "$ROOT/README.md" "\`learn\`"
 assert_not_contains "$ROOT/README.md" "\`build-fix\`"
+assert_contains "$ROOT/setup.sh" 'ALL_PROVIDERS=(codex claude agy)'
 assert_contains "$ROOT/setup.sh" 'GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills"'
-assert_contains "$ROOT/setup.sh" 'GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"'
+assert_contains "$ROOT/setup.sh" 'GLOBAL_COMMANDS_DIR="$HOME/.gemini/config/skills"'
 assert_contains "$ROOT/setup.sh" 'PROJECT_SKILLS_REL=".agents/skills"'
-assert_contains "$ROOT/setup.sh" 'PROJECT_COMMANDS_REL=".gemini/commands"'
+assert_contains "$ROOT/setup.sh" 'PROJECT_COMMANDS_REL=".agents/skills"'
 assert_not_contains "$ROOT/setup.sh" "antigravity-cli"
 
 assert_contains "$ROOT/global-skills/debugging-playbook/SKILL.md" "For diagnosis-only requests, report the cause and proposed fix without changing application code"

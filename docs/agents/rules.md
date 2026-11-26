@@ -7,7 +7,7 @@ Levels, from strongest to weakest: Architecture, Types, Lint, CI, Test, Docs.
 | Rule | Origin | Level | Enforced by | Status |
 |---|---|---|---|---|
 | Each skill and command source is listed in the `setup.sh` arrays and in the README tables. | `afc53b4` catalog cleanup | Test | `tests/command-skill-policy.sh` (manifest and README check) | Active |
-| Each command starts with frontmatter that has `description:` on line 2, because the Gemini install reads line 2. | `setup.sh:185` | Test | `tests/command-skill-policy.sh` (command frontmatter loop) | Active |
+| Each command starts with frontmatter that has `description:` on line 2, because the `agy` command installer wraps that frontmatter into `SKILL.md`. | `setup.sh` | Test | `tests/command-skill-policy.sh` (command frontmatter loop) | Active |
 | Removed skills and commands (`frontend-slides`, `write-a-skill`, `learn`, `build-fix`) do not return. | `docs/audits/commands-skills-audit-2026-07-13.md` | Test | `tests/command-skill-policy.sh` (removed-item checks) | Active |
 | `debugging-playbook` diagnoses only by default. It changes code only after an explicit request for a fix. | `afc53b4` | Test | `tests/command-skill-policy.sh` (debug checks) | Active |
 | `code-review` keeps its scope, authority, and verification rules. | `f58394c` | Test | `tests/command-skill-policy.sh` (code-review checks) | Active |

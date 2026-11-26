@@ -32,7 +32,7 @@ RETIRED = {
 PROVIDERS = {
     "codex": (".agents/skills", ".agents/skills"),
     "claude": (".claude/skills", ".claude/skills"),
-    "gemini": (".gemini/config/skills", ".agents/skills"),
+    "agy": (".gemini/config/skills", ".agents/skills"),
 }
 
 

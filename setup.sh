@@ -17,17 +17,15 @@
 # Codex project commands -> .codex/prompts/ (current working directory)
 # Claude global installs -> ~/.claude/
 # Claude project installs -> .claude/ (current working directory)
-# Gemini global skills -> ~/.gemini/config/skills/
-# Gemini global commands -> ~/.gemini/commands/
-# Gemini project skills -> .agents/skills/ (current working directory)
-# Gemini project commands -> .gemini/commands/ (current working directory)
+# Antigravity (agy) global skills & commands -> ~/.gemini/config/skills/
+# Antigravity (agy) project skills & commands -> .agents/skills/ (current working directory)
 # Note: a skill with a `compatibility:` field in its SKILL.md is installed only for the
 #       listed providers; skills without the field install for every provider.
 
 set -euo pipefail
 
 # Add opencode or pi to re-enable them.
-ALL_PROVIDERS=(codex claude gemini)
+ALL_PROVIDERS=(codex claude agy)
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROVIDER="${1:-}"
@@ -81,11 +79,11 @@ elif [[ "$PROVIDER" == "claude" ]]; then
   GLOBAL_COMMANDS_DIR="$HOME/.claude/commands"
   PROJECT_SKILLS_REL=".claude/skills"
   PROJECT_COMMANDS_REL=".claude/commands"
-elif [[ "$PROVIDER" == "gemini" ]]; then
+elif [[ "$PROVIDER" == "agy" ]]; then
   GLOBAL_SKILLS_DIR="$HOME/.gemini/config/skills"
-  GLOBAL_COMMANDS_DIR="$HOME/.gemini/commands"
+  GLOBAL_COMMANDS_DIR="$HOME/.gemini/config/skills"
   PROJECT_SKILLS_REL=".agents/skills"
-  PROJECT_COMMANDS_REL=".gemini/commands"
+  PROJECT_COMMANDS_REL=".agents/skills"
 elif [[ "$PROVIDER" == "pi" ]]; then
   GLOBAL_SKILLS_DIR="$HOME/.agents/skills"
   GLOBAL_COMMANDS_DIR="$HOME/.pi/agent/prompts"
@@ -197,38 +195,44 @@ install_file() {
   fi
 }
 
-install_gemini_command() {
-  local action="$1" src="$2" dest="$3"
-  local description
-  description="$(sed -n '2s/^description:[[:space:]]*//p' "$src")"
-  description="${description#\"}"
-  description="${description%\"}"
-  description="${description//\\/\\\\}"
-  description="${description//\"/\\\"}"
+render_agy_command() {
+  local name="$1" src="$2"
+  awk -v name="$name" '
+    NR == 1 && $0 == "---" {
+      print "---"
+      print "name: " name
+      frontmatter = 1
+      next
+    }
+    frontmatter && $0 == "---" {
+      print "disable-model-invocation: true"
+      print "---"
+      frontmatter = 0
+      next
+    }
+    { print }
+  ' "$src"
+}
 
-  render_gemini_command() {
-    printf "description = \"%s\"\n\nprompt = '''\n" "$description"
-    awk '
-      NR == 1 && $0 == "---" { frontmatter = 1; next }
-      frontmatter && $0 == "---" { frontmatter = 0; body = 1; next }
-      body { print }
-    ' "$src"
-    printf "\n'''\n"
-  }
+install_agy_command() {
+  local action="$1" name="$2" src="$3" dest_dir="$4"
+  local dest_file="$dest_dir/SKILL.md"
 
-  if [[ "$action" == "install" && -e "$dest" ]]; then
-    if diff -q <(render_gemini_command) "$dest" >/dev/null; then
-      echo "  already consistent: $dest"
+  if [[ "$action" == "install" && -e "$dest_dir" ]]; then
+    if [[ -f "$dest_file" ]] && diff -q <(render_agy_command "$name" "$src") "$dest_file" >/dev/null; then
+      echo "  already consistent: $dest_dir"
       return 0
     fi
-    die "already exists: $dest (use reinstall)"
+    die "already exists: $dest_dir (use reinstall)"
   fi
 
   if [[ "$DRY_RUN" == true ]]; then
-    echo "  dry-run $action $src → $dest"
+    echo "  dry-run $action $src → $dest_file"
   else
-    echo "  $action $src → $dest"
-    render_gemini_command > "$dest"
+    echo "  $action $src → $dest_file"
+    rm -rf "$dest_dir"
+    mkdir -p "$dest_dir"
+    render_agy_command "$name" "$src" > "$dest_file"
   fi
 }
 
@@ -354,6 +358,9 @@ setup_skills() {
       done
       if [[ "$action" == "reinstall" ]]; then
         for s in "${RETIRED_GLOBAL_SKILLS[@]}"; do
+          if [[ "$PROVIDER" == "agy" ]] && contains_item "$s" "${COMMANDS[@]}"; then
+            continue
+          fi
           prune_retired_path "$GLOBAL_SKILLS_DIR/$s"
         done
       fi
@@ -369,6 +376,9 @@ setup_skills() {
       done
       if [[ "$action" == "reinstall" ]]; then
         for s in "${RETIRED_PROJECT_SKILLS[@]}"; do
+          if [[ "$PROVIDER" == "agy" ]] && contains_item "$s" "${COMMANDS[@]}"; then
+            continue
+          fi
           prune_retired_path "$PROJECT_SKILLS_DIR/$s"
         done
       fi
@@ -403,26 +413,25 @@ RETIRED_COMMANDS=(
 
 prune_retired_commands() {
   local dest_root="$1"
-  local ext=".md"
-  [[ "$PROVIDER" == "gemini" ]] && ext=".toml"
   local c
+  if [[ "$PROVIDER" == "agy" ]]; then
+    for c in "${RETIRED_COMMANDS[@]}"; do
+      prune_retired_path "$dest_root/$c"
+    done
+    return 0
+  fi
   for c in "${RETIRED_COMMANDS[@]}"; do
-    prune_retired_path "$dest_root/$c$ext"
+    prune_retired_path "$dest_root/$c.md"
   done
 }
 
 setup_one_command() {
   local action="$1" dest_root="$2" name="$3"
   local src="$SCRIPT_DIR/commands/$name.md" dest="$dest_root/$name.md"
-  if [[ "$PROVIDER" == "gemini" ]]; then
-    dest="$dest_root/$name.toml"
-    if [[ "$action" == "install" ]]; then
-      install_gemini_command install "$src" "$dest"
-    elif [[ "$action" == "reinstall" ]]; then
-      if [[ "$DRY_RUN" != true ]]; then
-        rm -f "$dest"
-      fi
-      install_gemini_command reinstall "$src" "$dest"
+  if [[ "$PROVIDER" == "agy" ]]; then
+    dest="$dest_root/$name"
+    if [[ "$action" == "install" || "$action" == "reinstall" ]]; then
+      install_agy_command "$action" "$name" "$src" "$dest"
     else
       uninstall_path "$dest"
     fi
