@@ -1,49 +1,48 @@
 # AGENTS.md
 
-Shared constraints for this repository. Read additional guidance only when the task needs it:
-
-- `docs/agents/rules.md`: maintaining a repeated-mistake rule or its enforcement.
-- `commands/qa.md`: acceptance verification, including browser navigation and persisted state.
+Cross-project engineering and collaboration rules.
 
 ## 1. Repository Is the System of Record
 
-Keep decisions and operational knowledge needed by future contributors in versioned repo artifacts, preferably an existing relevant document. Distinguish inspected facts from assumptions. Do not create a note for every routine action or load unrelated docs before editing.
+Keep decisions and operational knowledge that future contributors need under version control. Prefer existing project documentation and distinguish verified facts from assumptions. Do not create a note for every routine action or load unrelated docs before editing.
 
 ## 2. Clarify Ambiguity Before Coding
 
 Ask when missing information changes correctness, data safety, public APIs, migrations, or user-visible behavior. Otherwise, choose the smallest reversible interpretation and state material assumptions. Continue independent work while a necessary answer is pending.
 
-## 3. Keep Changes Small and Local
+## 3. Scope and Local Conventions
 
-Make the smallest complete change that satisfies the request and follows local conventions. Avoid speculative abstractions, configuration, and impossible defensive branches. Mention unrelated problems without changing them; preserve existing user work.
+Make the smallest complete change that satisfies the request. Follow local conventions, preserve existing user work, and flag unrelated issues without changing them. Avoid speculative abstractions, unnecessary configuration, and unreachable branches.
 
-## 4. Verify Intent and Report Honestly
+When conventions conflict, choose the pattern closest to the changed module among those supported by current tests or documented behavior. Explain material conflicts and why the chosen pattern applies; do not blend incompatible conventions.
 
-For non-trivial work, state the success condition and verification method before implementing. Continue through implementation, inspection, and fixes to failures caused by the change. Do not stop at a first draft or ask again for already-authorized, reversible work.
+## 4. Verification and Reporting
 
-Match checks to the changed behavior and the worktree limits in section 9. Documentation edits need content, reference, and diff checks. Tests should fail when the protected contract breaks; avoid assertions that merely mirror implementation. For navigation or persisted UI state, verify Back, Forward, and Reload against explicit retention or reset expectations.
+For non-trivial work, state the acceptance criteria and how to verify them before implementation. Carry authorized work through verification and fix failures the change introduces. Proceed with already-authorized reversible steps without asking again.
 
-Reuse evidence for the same code state, environment, and scope. Rerun affected checks after a change or failure; broaden only for an unresolved concern or a required integration check.
+Choose checks that exercise observable behavior and fail when the affected contract breaks; avoid assertions that merely mirror implementation. For documentation edits, check content, references, and the diff. When UI navigation or state persistence changes, verify what should persist or reset across browser history and reloads.
 
-Report what changed, actual verification results, and material assumptions or unverified work with reasons. Inconclusive evidence or the wrong verification surface is not a pass.
+Mock or stub unmanaged dependencies when isolation is needed. In integration tests, prefer real, isolated instances of managed dependencies. Keep internal collaborators and deterministic libraries real unless a specific test constraint calls for a double.
 
-## 5. Surface Conflicts Explicitly
+Reuse evidence only when the code state, environment, and scope match. Rerun affected checks after changes or failures. Expand coverage only for an unresolved risk or a required integration check.
 
-Choose the pattern closest to the touched module and supported by current tests or documentation. Explain material conflicts and the chosen precedent; do not blend incompatible conventions or expand into unrelated cleanup.
+Report changes, observed results, material assumptions, and unverified items with reasons. A pass requires evidence that confirms the expected behavior; inconclusive evidence or the wrong verification surface is not a pass.
 
-## 6. Do Not Replace Deterministic Logic With LLM Calls
+## 5. UI Copy
 
-Use normal code for explicit rules and structured computation. Use models when language understanding or judgment is part of the requirement. Inspect tools and source evidence for deterministic facts.
+When building or editing a UI, use layout, spacing, and grouping to show how elements relate. Omit decorative labels and descriptions that merely repeat nearby headings or controls. Preserve control labels, accessible names, and text that explains constraints, consequences, or state.
 
-## 7. Respect Context Budgets
+## 6. Deterministic Logic and LLM Use
 
-Honor any project budget recorded in `docs/`. Before context loss threatens reliable continuation, save decisions, changed files, verification status, blockers, and remaining work. Resume from that checkpoint; do not equate exhausted context with completion.
+Implement explicit rules and structured computations in deterministic code. Use an LLM when the requirement calls for language understanding or judgment. Verify facts against source material or tool output.
 
-## 8. Protect Destructive Operations
+## 7. Context Budgets and Checkpoints
 
-**Destructive or irreversible operations require explicit approval.**
+Honor the project's context budget when one is specified. Before context loss threatens continuity, record decisions, changed files, verification status, blockers, and remaining work in a checkpoint. Resume from that checkpoint; do not equate exhausted context with completion.
 
-This includes:
+## 8. Operations Requiring Explicit Approval
+
+Before any destructive or irreversible operation, or any operation listed below, **show the exact target list and wait for explicit approval of that action on those targets in the current conversation**. General cleanup requests, inferred intent, and approvals from previous conversations do not qualify.
 
 - Deleting files.
 - Batch cleanup or glob-based deletion.
@@ -53,31 +52,10 @@ This includes:
 - Production configuration changes.
 - Broad dependency upgrades.
 
-Before any destructive operation:
-
-- Show the exact target list.
-- Wait for explicit approval in the current conversation.
-- Past approval, general cleanup requests, or inferred intent do not count.
-
 ## 9. Worktree Development and Verification
 
-**Worktrees are optional. When used, follow: parallel development → scoped verification → serial merges → risk-based post-merge verification.**
+Use a single branch by default. Consider additional worktrees for independent changes that can proceed in parallel with little file overlap.
 
-- Use worktrees for independent, parallelizable changes with low file overlap. Otherwise, use a single branch.
-- In development worktrees, run unit tests, lint, type checks, and only feature/e2e tests relevant to local changes.
-- Defer cross-component verification until after merging.
-- Merge worktrees serially. Never perform concurrent merges.
-- After merging, verify affected integration boundaries. Run full suites only when required by risk, CI policy, or release criteria.
-- Fix post-merge failures on the integration branch and rerun affected checks.
-- Avoid redundant tests, temporary merge combinations, and cross-worktree validation matrices.
-- Test observable behavior, not implementation details.
-- Mock or stub unmanaged dependencies when isolation is needed.
-- Prefer real, isolated managed dependencies in integration tests.
-- Avoid mocking internal collaborators and deterministic libraries without a specific reason.
-- Without worktrees, follow Section 4's normal verification rules.
-
-**Goal:** Minimize redundant verification without compromising correctness.
-
----
-
-**These guidelines are working if:** diffs become smaller, unnecessary rewrites decrease, overcomplication decreases, silent failures become visible, risky operations require approval, and agents ask clarifying questions before making correctness-affecting mistakes.
+1. In each development worktree, run unit tests, lint, and type checks. Limit feature and E2E tests to the local change. Defer cross-component checks until after merging.
+2. Merge one branch at a time into the integration branch. Skip temporary merge combinations and cross-worktree test matrices.
+3. After merging, verify affected integration boundaries. Fix post-merge failures on the integration branch and rerun affected checks. Run full suites only when risk, CI policy, or release criteria require them.
