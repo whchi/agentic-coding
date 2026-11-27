@@ -6,28 +6,33 @@ origin: Notion Engineering Practices
 
 # Debugging Playbook
 
-Diagnose the reported symptom with a reproducible feedback loop. A diagnosis-only request ends with the cause and evidence; a request to fix the problem includes implementation and verification once the cause is known.
+Diagnose the reported symptom with a reproducible feedback loop. Distinguish **proximate cause** (the immediate crash or symptom), **root cause** (the defective invariant or state transition), and **contributing factors**. A diagnosis-only request ends with the cause and evidence; a request to fix the problem includes implementation and verification once the cause is known.
 
-## Evidence loop
+## Reproduce and narrow
 
-Establish the expected behavior and the surface where the failure occurs. Use a failing test, command, browser action, trace replay, or other repeatable check that shows the same symptom. Minimize the reproduction when that helps distinguish causes.
+1. **Build an MRE (Minimal Reproducible Example):** establish the expected contract and the exact failing surface via a failing test, CLI command, browser step, or trace replay. Shrink the input/surface until removing anything else makes the symptom disappear.
+2. **Form falsifiable hypotheses** and run the cheapest experiment that eliminates candidates across three axes (search directions, not mandatory checklists):
+   - **Environment:** runtime/dependency versions, config, feature flags, deployment skew, network/DNS/TLS, timezone/locale, cache, or upstream availability.
+   - **Data:** actual persisted records and wire payloads, duplicates, nulls, stale/corrupt state, schema/migration drift, or authorization/tenant boundaries.
+   - **Logic:** control flow, boundary values, state transitions, async ordering, or implicit assumptions.
+3. **Use high-leverage narrowing techniques before reading code line by line:**
+   - **Binary search / `git bisect` / delta debugging:** bisect the commit range, input payload, or execution pipeline to cut the search space in half each step.
+   - **Differential debugging:** diff a working case against the failing case (env vars, headers, payloads, DB rows, feature flags, versions).
+   - **Observability triad:** correlate structured logs, metrics, and distributed traces via **correlation / trace IDs** before adding ad-hoc logging.
+   - **Heisenbugs & nondeterministic failures:** when symptoms vanish under a debugger or retry, inspect race conditions, shared mutable state, clock/RNG dependence, or uninitialized state; keep instrumentation non-invasive so it does not mask timing.
 
-Form falsifiable hypotheses and choose the cheapest check that distinguishes them:
+## Experimental discipline
 
-- **Environment:** versions, configuration, feature flags, deployment, network, time zone, cache, or service availability.
-- **Data:** actual records and payloads, duplicates, stale state, nulls, permissions, or migrations.
-- **Logic:** branches, transformations, async order, state transitions, or boundary values.
-
-These are search directions, not required buckets. If rereading logic produces no evidence, revisit data and environment assumptions. Instrument only where the result distinguishes hypotheses; preserve useful trace IDs without exposing secrets or low-level IO details to users.
-
-Change one relevant variable at a time. When evidence disproves a hypothesis, undo only the experimental changes it caused. When two attempted fixes sharing a premise fail the same check, reassess that premise and identify which component holds the wrong state before trying another.
+- Change one variable at a time; instrument only where output distinguishes competing hypotheses, and never expose secrets or raw IO internals to users.
+- **Revert disproved experiments immediately:** when evidence refutes a hypothesis, undo the speculative changes it introduced before testing the next one.
+- **Attack the premise:** when two attempted fixes sharing the same premise fail the same reproduction, stop patching — challenge the premise and verify which component actually owns the wrong state.
 
 ## Fix and verify within scope
 
-Keep the reproduction as a regression check when practical. For an authorized fix, implement the smallest supported change, rerun the original loop, and run affected checks within repository worktree limits. Load another skill only when its specific guidance helps; do not stop simply to switch skills or ask again for an already-authorized fix.
+Keep the reproduction as a regression check when practical. For an already-authorized fix, implement the smallest supported change, rerun the original failing surface, and run affected checks within repository worktree limits. Load another skill only when its specific guidance helps; do not stop simply to switch skills or ask again for an already-authorized fix.
 
 For diagnosis-only requests, report the cause and proposed fix without changing application code. If reproduction or evidence is unavailable, name the missing prerequisite and keep the conclusion provisional.
 
-A passing unit test does not establish that the user's reported failure is gone. Verify on the relevant surface, or explicitly report that verification as incomplete. Remove temporary instrumentation introduced for the investigation according to repository rules.
+A passing unit test does not establish that the user's reported failure is gone. Verify on the relevant surface, or explicitly report verification as incomplete. Remove temporary diagnostic instrumentation according to repository rules.
 
-Report the confirmed cause or remaining hypothesis, supporting evidence, reproduction status, and verification outcome. Include a next action only when work remains.
+Report the confirmed root cause (or remaining falsifiable hypothesis), supporting evidence, reproduction status, and verification outcome. Include a next action only when work remains.

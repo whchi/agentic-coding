@@ -4,7 +4,7 @@ Read the section relevant to the changed type or function. Preserve the project'
 
 ## Function parameters
 
-Use at most three positional parameters. When a function needs more than three inputs, pass them as a single object and destructure it in the parameter list:
+Prefer at most three positional parameters; when a function needs more than three inputs (or easily swapped arguments of the same primitive type), accept a single options object and destructure it in the parameter list. Preserve existing public signatures and standard callback/framework signatures (e.g., `Array.prototype.reduce`, Express `(err, req, res, next)`).
 
 ```typescript
 function createUser({ name, email, role, active }: {
@@ -15,16 +15,14 @@ function createUser({ name, email, role, active }: {
 }) {
   return { name, email, role, active }
 }
-
-createUser({ name: 'Ava', email: 'ava@example.com', role: 'editor', active: true })
 ```
 
-## Unknown inputs and schema ownership
+## Parse, don't validate (schema ownership)
 
-Treat untrusted payloads as `unknown` until validated. Prefer an existing runtime schema and derive its type rather than maintaining a schema, interface, and property-by-property guard independently. Generated protocol types are authoritative for their shape, but do not themselves validate incoming bytes.
+Treat untrusted payloads as `unknown` until parsed at the boundary. Derive static types from the authoritative runtime schema rather than maintaining a schema, interface, and manual guard independently. Generated protocol types define wire shape but do not validate incoming bytes.
 
 ```typescript
-// When the project already uses Zod:
+// When the project uses Zod:
 const UserSchema = z.object({ id: z.string(), name: z.string() })
 type User = z.infer<typeof UserSchema>
 
@@ -33,7 +31,7 @@ function parseUser(input: unknown): User {
 }
 ```
 
-Use the library's non-throwing parse result when invalid input is an expected branch. For a small check with no schema system, a guard is sufficient, but it must establish everything its predicate promises:
+Use a non-throwing parse result (`safeParse`) when invalid input is an expected branch. Without a schema library, a type predicate must prove every property it claims:
 
 ```typescript
 function isStringArray(value: unknown): value is string[] {
@@ -41,11 +39,11 @@ function isStringArray(value: unknown): value is string[] {
 }
 ```
 
-Prefer direct discriminant, `typeof`, or `in` narrowing when it proves the needed fact. A property existing does not establish its value's type. An `as` assertion provides no runtime proof; keep unavoidable assertions local to a documented invariant, such as a validated brand constructor. Do not blanket-ban `as const` or replace working narrowing with new wrappers.
+Prefer discriminant, `typeof`, or `in` narrowing over `as` assertions. Checking `'prop' in obj` proves key presence, not its value's type. Keep unavoidable `as` assertions localized to a validated invariant (such as a branded constructor); do not blanket-ban `as const`.
 
-## State variants and exhaustive handling
+## Make illegal states unrepresentable (sum types & exhaustiveness)
 
-Use a discriminated union when fields depend on the state. This excludes contradictory combinations without making every property optional.
+Use a **discriminated (tagged) union** whenever field presence depends on state so contradictory combinations cannot compile, and enforce **`never` exhaustiveness checking** across handlers:
 
 ```typescript
 type LoadState<T> =
@@ -66,39 +64,21 @@ function statusText(state: LoadState<string>): string {
 }
 ```
 
-Adding a variant now requires updating handlers that cover every case. This is a compile-time check for trusted typed values, not runtime validation of external inputs.
+Exhaustiveness is a compile-time proof over trusted typed values, not runtime validation of external input.
 
-## Stronger inputs only when needed
+## Nominal typing & stronger invariants only when earned
 
-Keep plain arrays for operations that already handle empty input, such as summing from zero. For an operation needing a first element, either accept absence in the return type or require a non-empty input when callers can establish it.
+TypeScript uses **structural typing** by default. Introduce **nominal (branded/opaque) primitives** only when confusing domain values (e.g., `UserId` vs `OrderId`, `Cents` vs `Dollars`) or bypassing a validated invariant is a concrete bug risk.
 
-```typescript
-type NonEmpty<T> = readonly [T, ...T[]]
-
-function first<T>(items: NonEmpty<T>): T {
-  return items[0]
-}
-
-function hasItems<T>(items: readonly T[]): items is NonEmpty<T> {
-  return items.length > 0
-}
-```
-
-Non-empty does not prove an arbitrary numeric index is in bounds. Prefer `readonly` when mutation could invalidate the guarantee. Grouping values as pairs can encode pair structure; changing a time range to `{ start: Date; durationMs: number }` cannot prove a non-negative duration. Numeric constraints still need validation at creation. Introduce branded primitives only for a concrete domain distinction or validated invariant that callers need to preserve.
+Keep plain arrays for operations that handle empty input (e.g., summing from zero). Require a non-empty tuple (`readonly [T, ...T[]]`) only when callers can establish non-emptiness and the operation requires a head element; prefer `readonly` so mutation cannot invalidate the guarantee. Numeric ranges (e.g., non-negative duration) still require runtime validation at construction.
 
 ## Checked configuration and derived types
 
-Use `satisfies` to check assignability without replacing an expression's inferred type with an assertion. Use `as const` when literal preservation and readonly properties are intended; neither construct validates external data.
+Use `satisfies` to validate assignability while preserving narrower literal inference; combine with `as const` when deep `readonly` literals are intended (neither validates runtime input):
 
 ```typescript
 type DisplayConfig = { theme: 'light' | 'dark'; columns: number }
 const config = { theme: 'dark', columns: 3 } as const satisfies DisplayConfig
 ```
 
-Derive a type when the owning contract should propagate its changes:
-
-```typescript
-type UserSummary = Pick<User, 'id' | 'name'>
-```
-
-Use `Pick`, `Omit`, `ReturnType`, or `Awaited` where that dependency is intentional. Keep a separate domain or public contract when it must evolve independently of storage, transport, or implementation details. Object parameters also help distinguish easily swapped arguments when a function has three or fewer inputs.
+Use utility types (`Pick`, `Omit`, `ReturnType`, `Awaited`) when coupling to an owning contract is intentional. Keep an independent domain or public type when it must evolve separately from storage or transport models.

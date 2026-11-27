@@ -1,35 +1,28 @@
-# Testing Conventions
+# JS / TS Testing Pitfalls
 
-Read when editing JS/TS tests. Use the repository's framework, fixture conventions, and test locations; do not introduce Jest, Vitest, a directory hierarchy, or a coverage threshold just to match an example.
+Read when writing or debugging JS/TS tests. For test levels, real/fake/mock selection, and fixture strategy, defer to `testing-strategy`; preserve the project's existing test runner and conventions.
 
-Name the behavior and condition, such as `rejects an expired coupon`. Arrange/act/assert can clarify complex tests; obvious short tests do not need those labels.
-
-- Assert the public contract, including side effects when they define the behavior.
-- Derive fixtures from the scenario and vary the values that distinguish the rule. Avoid assertions that can pass after the rule is broken.
-- Mock third-party services in unit tests; keep integration and end-to-end checks within the repository's permitted scope.
-- Await promises and UI conditions. Use fake timers for timer behavior and restore timers/mocks after the test.
-- Use factories only when repeated fixture setup obscures the scenario; override the fields relevant to each case.
-- Follow existing coverage policy. A coverage percentage is not evidence that a business rule is protected.
-
-Example of a timer boundary, using Jest syntax only if Jest is the project's framework:
+- **Fake timers + microtask flushing:** sync `advanceTimersByTime` does not flush chained `Promise` microtasks; use `advanceTimersByTimeAsync` (Vitest/Jest) when timers schedule async work, and always restore real timers in `finally` / `afterEach`.
+- **System clock vs injected clock:** prefer injecting `now: Date` into pure rules; use `setSystemTime` only when testing code that genuinely owns clock reads.
+- **Mock cleanup semantics:** know the difference — `clearAllMocks` clears call history only, `resetAllMocks` also wipes mock implementations/return values, and `restoreAllMocks` restores original spied implementations.
+- **Async rejection assertions:** always `await expect(promise).rejects.toThrow(...)`; dropping `await` lets the test pass before rejection or triggers unhandled-rejection flakes.
+- **Abort & resource cleanup:** abort `AbortController` instances, clear intervals, and close handles/servers in `finally` or `afterEach` so open handles do not hang the runner.
+- **Type-level contracts:** when public generic inference or discriminated narrowing is part of the API contract, guard it with `expectTypeOf` (Vitest) or `@ts-expect-error` negative assertions.
 
 ```typescript
-test('waits for the full debounce delay', () => {
-  jest.useFakeTimers()
+test('fires debounce after delay and cleans up timers', async () => {
+  vi.useFakeTimers()
   try {
-    const callback = jest.fn()
-    const delayMs = 500
-    const debounced = debounce(callback, delayMs)
+    const callback = vi.fn()
+    const debounced = debounce(callback, 500)
 
     debounced()
-    jest.advanceTimersByTime(delayMs - 1)
+    await vi.advanceTimersByTimeAsync(499)
     expect(callback).not.toHaveBeenCalled()
-    jest.advanceTimersByTime(1)
+    await vi.advanceTimersByTimeAsync(1)
     expect(callback).toHaveBeenCalledTimes(1)
   } finally {
-    jest.useRealTimers()
+    vi.useRealTimers()
   }
 })
 ```
-
-Run the affected checks with commands discovered in the project. Do not broaden to full feature/e2e suites in a development worktree.

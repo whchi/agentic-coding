@@ -1,176 +1,96 @@
 # React Effect Refactoring Examples
 
-Use these examples when you need a concrete rewrite pattern. Apply the lifecycle and dependency decisions in [effect boundaries](effects.md); fewer effects alone is not the goal.
+Read only the rewrite matching the smell under review. Apply the invariants in [effect boundaries](effects.md); fewer effects alone is not the goal.
 
-## 1. Derive state during render
-
-```typescript
-// Bad: derived state is synchronized through an effect
-function ProductList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    setFilteredProducts(products.filter((product) => product.inStock));
-  }, [products]);
-}
-
-// Good: derive in the same render pass
-function ProductList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const filteredProducts = products.filter((product) => product.inStock);
-}
-```
-
-### Derived-state loop hazard
+## 1. Derived state during render (eliminate effect waterfall)
 
 ```typescript
-// Bad: chained synchronized state increases loop risk
+// Bad: cascading state sync causes extra renders and loop risk
 function Cart({ subtotal }: { subtotal: number }) {
-  const [tax, setTax] = useState(0);
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    setTax(subtotal * 0.1);
-  }, [subtotal]);
-
-  useEffect(() => {
-    setTotal(subtotal + tax);
-  }, [subtotal, tax, total]);
+  const [tax, setTax] = useState(0)
+  const [total, setTotal] = useState(0)
+  useEffect(() => { setTax(subtotal * 0.1) }, [subtotal])
+  useEffect(() => { setTotal(subtotal + tax) }, [subtotal, tax])
 }
 
-// Good: compute directly from inputs
+// Good: compute directly in the render pass (SSOT)
 function Cart({ subtotal }: { subtotal: number }) {
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const tax = subtotal * 0.1
+  const total = subtotal + tax
 }
 ```
 
-## 2. Use a query abstraction for fetching
+## 2. User-triggered work belongs in event handlers
 
 ```typescript
-// Bad: component owns fetching lifecycle details
-function ProductPage({ productId }: { productId: string }) {
-  const [product, setProduct] = useState<Product | null>(null);
+// Bad: boolean relay flag defers a user action to an effect
+const [pendingLike, setPendingLike] = useState(false)
+useEffect(() => {
+  if (!pendingLike) return
+  postLike()
+  setPendingLike(false)
+}, [pendingLike])
+
+// Good: execute directly at the event boundary
+<button onClick={() => postLike()}>Like</button>
+```
+
+## 3. Async fetch race cancellation (`AbortController`)
+
+When no query layer exists, cancel in-flight requests in cleanup so an older slow response cannot overwrite a newer selection (also survives StrictMode double-invocation).
+
+```typescript
+function ProductDetail({ productId }: { productId: string }) {
+  const [product, setProduct] = useState<Product | null>(null)
 
   useEffect(() => {
-    fetchProduct(productId).then(setProduct);
-  }, [productId]);
-}
+    const controller = new AbortController()
 
-// Good: query library owns caching and async coordination
-function ProductPage({ productId }: { productId: string }) {
-  const { data: product } = useQuery({
-    queryKey: ["product", productId],
-    queryFn: () => fetchProduct(productId),
-  });
+    fetchProduct(productId, { signal: controller.signal })
+      .then(setProduct)
+      .catch(error => {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+        throw error
+      })
+
+    return () => controller.abort()
+  }, [productId])
 }
 ```
 
-## 3. Put user-triggered work in handlers
+## 4. Reset local state on identity change with `key`
 
 ```typescript
-// Bad: state flag relays an action to an effect
-function LikeButton() {
-  const [liked, setLiked] = useState(false);
-
-  useEffect(() => {
-    if (liked) {
-      postLike();
-      setLiked(false);
-    }
-  }, [liked]);
-
-  return <button onClick={() => setLiked(true)}>Like</button>;
-}
-
-// Good: handler is the action boundary
-function LikeButton() {
-  return <button onClick={() => postLike()}>Like</button>;
+// Remounts form state cleanly when userId changes (only when full subtree reset is intended)
+function ProfileEditorPage({ userId }: { userId: string }) {
+  return <ProfileForm key={userId} userId={userId} />
 }
 ```
 
-## 4. Mount-only external synchronization
+## 5. External mutable store (`useSyncExternalStore`)
 
-Use this wrapper only when all captured inputs remain valid for that mounted instance. It is a local convention, not a substitute for reactive dependencies. Setup that allocates a resource needs matching cleanup and must tolerate repeated setup/cleanup.
+Prefer `useSyncExternalStore` over `useEffect` + `useState` when subscribing to browser or non-React stores so concurrent renders cannot observe torn snapshots.
 
 ```typescript
-function useMountEffect(callback: () => void | (() => void)) {
-  useEffect(callback, []);
+function useOnlineStatus(): boolean {
+  return useSyncExternalStore(
+    onStoreChange => {
+      window.addEventListener('online', onStoreChange)
+      window.addEventListener('offline', onStoreChange)
+      return () => {
+        window.removeEventListener('online', onStoreChange)
+        window.removeEventListener('offline', onStoreChange)
+      }
+    },
+    () => navigator.onLine,
+  )
 }
 ```
 
-### Conditional mounting instead of guarding inside an effect
+## Smell checklist
 
-```typescript
-// Keep this reactive form when playback must track isLoading changes.
-function VideoPlayer({ isLoading }: { isLoading: boolean }) {
-  useEffect(() => {
-    if (!isLoading) {
-      playVideo();
-    }
-  }, [isLoading]);
-}
-
-// Alternative: mount only when ready, if resetting the instance is intended.
-function VideoPlayerWrapper({ isLoading }: { isLoading: boolean }) {
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
-  return <VideoPlayer />;
-}
-
-function VideoPlayer() {
-  useMountEffect(() => playVideo());
-}
-```
-
-### Persistent shell plus conditional instance
-
-```typescript
-function VideoPlayerInstance() {
-  useMountEffect(() => playVideo());
-}
-
-function VideoPlayerContainer({ isLoading }: { isLoading: boolean }) {
-  return (
-    <>
-      <VideoPlayerShell isLoading={isLoading} />
-      {!isLoading && <VideoPlayerInstance />}
-    </>
-  );
-}
-```
-
-## 5. Reset with `key`
-
-```typescript
-// Appropriate when video changes without resetting the rest of the instance.
-function VideoPlayer({ videoId }: { videoId: string }) {
-  useEffect(() => {
-    loadVideo(videoId);
-  }, [videoId]);
-}
-
-// Alternative when each video should get a fresh instance and local state.
-function VideoPlayer({ videoId }: { videoId: string }) {
-  useMountEffect(() => {
-    loadVideo(videoId);
-  });
-}
-
-function VideoPlayerWrapper({ videoId }: { videoId: string }) {
-  return <VideoPlayer key={videoId} videoId={videoId} />;
-}
-```
-
-## Smell Checklist
-
-Inspect the responsibility and lifecycle of code like:
-
-- `useEffect(() => setX(...), [...])`
-- `useEffect(() => { fetch(...).then(setState) }, [...])`
-- `setFlag(true)` followed by effect-driven work and reset
-- effect guards that wait for readiness flags
-- effect-based resets when IDs or props change
+- `useEffect(() => setDerived(...), [source])` — compute during render
+- `setFlag(true)` followed by effect-driven work and `setFlag(false)` — move to event handler
+- `useEffect` fetching without `AbortController` / `ignore` flag cleanup — stale-response race
+- Custom empty-deps wrapper (`useMountEffect`) hiding reactive props/state — defeats `exhaustive-deps`
+- Effect manually resetting several `useState` fields when an entity `id` prop changes — evaluate `key={id}`

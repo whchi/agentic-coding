@@ -1,13 +1,13 @@
 # Frontend Robust Data Handling
 
-Separate the API payload from the UI model when their contracts differ. Put normalization near the data boundary rather than scattering fallback logic across components.
+Treat raw API payloads (DTOs) as untrusted transport shapes and separate them from UI **ViewModels** when their contracts differ. Place normalization in an **Anti-Corruption Adapter** at the data boundary rather than scattering optional chaining and fallbacks across components.
 
-- Normalize optional fields and unknown enum values only where the actual payload contract requires it.
-- Use a null object for a missing nested object when it simplifies rendering without erasing meaning.
-- Preserve distinctions between unknown, empty, unavailable, loading, and error when they affect the user.
-- Keep partial data usable: one missing relation should not break unrelated rows or the whole page.
-- Reuse the project's data layer; this guidance does not require a new adapter abstraction for an already stable payload.
+- **Boundary parsing & normalization:** parse/normalize optional fields, missing nested objects, and unknown enum values once in the adapter — only where the payload contract requires it. Reuse the project's existing data/query layer; do not invent an adapter for an already stable, schema-typed payload.
+- **Discriminated async state:** model lifecycle states explicitly (`idle | loading | ready | error`) instead of independent boolean flags that permit impossible combinations (e.g., `isLoading && error`).
+- **Null Object pattern:** substitute a typed fallback/null object for a missing nested record only when it simplifies rendering without erasing user-relevant meaning.
+- **State fidelity:** preserve the distinction between `empty`, `unknown`, `unavailable`, `loading`, and `error` whenever the user should see different feedback.
+- **Partial failure isolation:** one malformed item or missing relation in a collection must degrade locally rather than crashing sibling rows or the entire view.
 
-Check the malformed or partial inputs permitted by the contract, including mixed completeness within a list. Verify that defaults neither render raw `null`/`undefined`/`NaN` nor conceal a business error. Cover unknown enum values when the API can introduce them.
+Verify malformed and partial inputs permitted by the contract, including mixed completeness within the same list and forward-compatible unknown enum values. Confirm defaults neither leak raw `null`/`undefined`/`NaN` into the UI nor silently mask a business/API error.
 
-Explain the data risk, chosen UI state, and verification result. API contract redesign and general component architecture are separate decisions.
+Report the data-shape risk, chosen ViewModel/UI state contract, and verification outcome. API contract redesign and general component architecture remain separate decisions.

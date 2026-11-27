@@ -1,21 +1,11 @@
 # File Organization
 
-Use when adding a module or resolving a real ownership/import problem. Do not reorganize an existing tree merely to match a generic template.
+Use when adding a module or resolving a real ownership or import issue. Do not reorganize an existing tree merely to match a generic template.
 
-- Put code with the feature or layer that owns its behavior.
-- Keep a small component in one file. Split implementation, styles, types, or tests only when they have distinct responsibilities or local conventions require it.
-- Preserve framework-reserved filenames, such as Next.js `page.tsx`, `layout.tsx`, and `route.ts`, where that framework is actually in use.
-- Follow the configured formatter/linter for import order; use `import type` for type-only dependencies.
-- Keep barrel exports scoped to a stable public boundary. Split because of cycles, accidental coupling, or unclear ownership rather than a fixed export count.
-- Follow the project's environment-file conventions. Commit examples with placeholder values, not credentials.
+- **Colocate by owning responsibility:** keep a cohesive component or rule with its tests and private helpers. Split styles, types, or helpers only when responsibilities diverge or local conventions require it.
+- Preserve framework-reserved filenames where that framework is actually in use.
+- Use `import type` for type-only dependencies so bundlers and `verbatimModuleSyntax` erase them cleanly; follow the project's formatter/linter for import order.
+- **Barrel-file hazards:** restrict `index.ts` barrel exports to genuine package/public boundaries. Deep internal re-export barrels degrade bundler **tree-shaking**, slow test startup/HMR, and trigger **circular dependency / TDZ (`ReferenceError`)** failures at runtime.
+- Follow project environment-file conventions; commit `.env.example` with placeholders, never real credentials.
 
-A colocated feature might contain:
-
-```text
-markets/
-  MarketCard.tsx
-  MarketCard.test.tsx
-  market.ts
-```
-
-This is an example, not a required structure. Avoid creating empty directories or extra wrapper/index files without a caller.
+Avoid creating empty directories or single-caller pass-through wrapper files.

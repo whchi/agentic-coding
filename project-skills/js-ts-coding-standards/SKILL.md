@@ -6,24 +6,22 @@ origin: ECC
 
 # JavaScript and TypeScript Coding Standards
 
-Follow local conventions. Apply the standards relevant to the changed code rather than reformatting or reorganizing unrelated modules.
+Follow local conventions. Apply standards relevant to the changed code rather than reformatting or reorganizing unrelated modules.
 
-- Do not mutate inputs, state, shared objects, or caches. Contained local mutation is acceptable when it is clearer and cannot escape.
-- Make module boundaries explicit; let inference handle obvious locals.
-- Validate untrusted data at the boundary and derive types from authoritative schemas. Type assertions do not perform validation.
-- Use discriminated unions for states that would otherwise allow contradictory fields. Check exhaustiveness when all variants require handling.
-- Introduce branded primitives only when confusion between domain IDs is a real risk.
-- Run independent async operations concurrently when resource and rate limits allow it; preserve ordering for dependent work and side effects.
-- Handle failures explicitly. Do not swallow errors or expose secrets, raw SQL errors, tokens, or stack traces to users.
-- Keep functions and modules organized by responsibility; avoid arbitrary line limits or abstractions for single-use code.
-- Use at most three positional function parameters. When a function needs more than three inputs, pass them as a single object and destructure it in the parameter list.
+- **Immutability & referential transparency:** do not mutate inputs, state, shared objects, or caches. Contained local mutation is acceptable only when clearer and unobservable outside the function.
+- **Explicit module contracts:** annotate exported function/module boundaries; let inference handle obvious locals.
+- **Parse, don't validate:** treat external/untrusted payloads as `unknown` at the I/O boundary, parse with the project's authoritative schema, and derive static types from it. Type assertions (`as`) provide zero runtime safety.
+- **Make illegal states unrepresentable:** model mutually exclusive states with **discriminated (tagged) unions** and **`never` exhaustiveness checking**. Use **nominal (branded/opaque) types** only when structural typing creates a real risk of swapping domain IDs or units.
+- **Bounded concurrency & structured async:** run independent async work concurrently with **bounded concurrency / backpressure** when resource or rate limits apply; choose `Promise.all` (fail-fast) vs `Promise.allSettled` (partial failure) intentionally, propagate **`AbortSignal`** for cancellation, and preserve ordering for dependent side effects.
+- **Typed error channels & error cause chaining:** represent expected domain failures with explicit **Result / discriminated union** returns and reserve thrown exceptions for unexpected defects; wrap low-level errors with `new Error(msg, { cause })`. Never swallow errors or leak secrets, raw SQL errors, tokens, or stack traces.
+- Keep functions and modules cohesive by responsibility; avoid arbitrary line limits or premature abstractions for single-use code.
 
-Read a reference only when that convention needs attention:
+Read a reference only when that area needs attention:
 
-- [Naming](references/naming-conventions.md): names, boolean predicates, domain vocabulary.
-- [Type design](references/type-design.md): function parameters, narrowing untrusted inputs, modeling state variants, exhaustive handling, and choosing stronger types only where operations need them.
-- [File organization](references/file-organization.md): existing module boundaries, imports, exports.
-- [Pure functions](references/pure-functions.md): extracting deterministic TypeScript domain rules with explicit inputs and no observable side effects.
-- [Testing](references/testing.md): test organization and examples when editing tests.
+- [Naming](references/naming-conventions.md): domain vocabulary, boolean predicates, units, and file naming.
+- [Type design](references/type-design.md): Parse-don't-validate, positional vs options-object parameters, discriminated unions, exhaustiveness, branded types, and `satisfies`.
+- [File organization](references/file-organization.md): colocation, `import type`, and barrel-file tree-shaking / circular-dependency hazards.
+- [Pure functions](references/pure-functions.md): **Functional Core, Imperative Shell** — extracting deterministic TypeScript domain rules with explicit dependency injection and no observable side effects.
+- [Testing](references/testing.md): JS/TS runtime testing pitfalls (fake timers, mock lifecycle cleanup, async rejections, type-level assertions).
 
-These references are examples, not a mandate to replace the project's architecture or test framework. React architecture, effects, and REST contracts belong to their specific workflows.
+These references are conventions to apply proportionally, not a mandate to replace the project's architecture or test framework. React architecture/effects belong to `frontend-patterns`; REST contracts to `api-design`; test levels and dependency strategy to `testing-strategy`.

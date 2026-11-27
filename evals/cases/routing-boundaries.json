@@ -132,7 +132,7 @@
     },
     {
       "id": "react-architecture",
-      "prompt": "設計 Next.js checkout page 的 component boundaries、state placement、form flow、accessibility 和 performance boundaries。",
+      "prompt": "設計 React checkout page 的 component boundaries、state placement、form flow、accessibility 和 performance boundaries。",
       "expect": {
         "activate": ["frontend-patterns"],
         "not_activate": ["api-design"]

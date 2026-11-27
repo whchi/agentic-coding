@@ -1,18 +1,14 @@
-# Pure Function Pattern
+# Pure Function Pattern (Functional Core, Imperative Shell)
 
-Keep domain decisions separate from I/O. A pure function returns the same result for the same inputs and does not mutate inputs or shared state.
+Separate deterministic domain decisions (**Functional Core**) from I/O and orchestration (**Imperative Shell**). A pure function exhibits **referential transparency**: it returns the same result for the same inputs and does not mutate inputs or shared state.
 
-- Pass time, randomness, flags, and runtime lookups explicitly. Keep database, HTTP, and filesystem operations at the caller's boundary.
-- Represent expected domain failures with the project's result type; a discriminated union such as `{ ok: true; value: T } | { ok: false; error: ErrorCode }` works when no convention exists.
-- Keep helper return shapes consistent where the orchestrator must narrow them. Do not split each check into a helper unless it improves readability or reuse.
-- Validate untrusted input at the I/O boundary; retain domain validation inside the rule.
-- Use `import type` for ORM-generated types; use `Pick`/`Omit` when the function needs only part of that data shape.
-- Export the public rule and helpers that callers need, not internals solely for tests.
+- **Explicit dependency injection:** pass wall-clock time (`now: Date`), randomness, feature flags, and pre-fetched lookups as parameters. Keep database, HTTP, filesystem, and global config reads in the imperative shell.
+- **Typed error channel:** represent expected domain rejections with the project's **Result / Either** discriminated union (e.g., `{ ok: true; value: T } | { ok: false; error: ErrorCode }`), reserving thrown exceptions for unexpected defects.
+- **Uniform narrowing:** keep internal helper return shapes consistent where the orchestrator narrows them. Do not split trivial single checks into helpers unless it improves readability or reuse.
+- **Parse at the shell, enforce invariants in the core:** parse untrusted transport input at the I/O boundary; retain domain-invariant checks inside the pure rule.
+- **Minimal type coupling:** use `import type` for ORM/transport types and narrow inputs with `Pick`/`Omit` or a dedicated input interface when the rule needs only a subset of fields.
+- **Cohesive exports:** export the public rule and genuinely reused helpers — never expose private internals solely to appease unit tests.
 
-For a refactor, preserve rule order and observable error precedence. Verify relevant boundaries, success paths, failure codes, and non-mutation through the public function using the project's testing conventions.
+When refactoring existing logic, preserve rule order and observable error precedence. Verify boundary conditions, error precedence, and non-mutation through the public entry point using the project's testing conventions.
 
-Read the matching section of [pure function examples](pure-functions-examples.md) only when helpful:
-
-- Coupon validation: time injection, usage limits, error precedence.
-- Order pricing: immutable accumulation and discount capping.
-- Service extraction: moving hidden dependencies and effects to the caller.
+Read [pure function examples](pure-functions-examples.md) for a concise impure-to-pure Functional Core / Imperative Shell refactoring example.

@@ -1,161 +1,68 @@
 # Frontend Patterns Examples
 
-Read the section needed for the current decision. These are partial examples; preserve the project's libraries and complete the relevant behavior before shipping.
+Read only the section needed for the current decision. These are focused patterns for bug-prone UI boundaries; preserve the project's libraries and accessible primitives.
 
-## Component Patterns
+## Split Context + Discriminated Reducer
 
-### Composition
-
-```typescript
-interface CardProps {
-  children: React.ReactNode
-  variant?: 'default' | 'outlined'
-}
-
-export function Card({ children, variant = 'default' }: CardProps) {
-  return <div className={`card card-${variant}`}>{children}</div>
-}
-
-export function CardHeader({ children }: { children: React.ReactNode }) {
-  return <div className="card-header">{children}</div>
-}
-
-export function CardBody({ children }: { children: React.ReactNode }) {
-  return <div className="card-body">{children}</div>
-}
-```
-
-### Compound Components
-
-This demonstrates composition and shared state only. A production tabs widget also needs tab/panel relationships and keyboard/focus behavior; prefer the project's accessible primitive.
+Split frequently changing state from stable `dispatch` so action-only consumers do not rerender when state updates.
 
 ```typescript
-interface TabsContextValue {
-  activeTab: string
-  setActiveTab: (tab: string) => void
-}
+type ItemsState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ready'; items: Item[]; selectedId: string | null }
+  | { status: 'error'; message: string }
 
-const TabsContext = createContext<TabsContextValue | undefined>(undefined)
+type ItemsAction =
+  | { type: 'loadStarted' }
+  | { type: 'loadSucceeded'; items: Item[] }
+  | { type: 'loadFailed'; message: string }
+  | { type: 'selected'; id: string }
 
-export function Tabs({ children, defaultTab }: {
-  children: React.ReactNode
-  defaultTab: string
-}) {
-  const [activeTab, setActiveTab] = useState(defaultTab)
+const ItemsStateContext = createContext<ItemsState | undefined>(undefined)
+const ItemsDispatchContext = createContext<Dispatch<ItemsAction> | undefined>(undefined)
 
+export function ItemsProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = useReducer(itemsReducer, { status: 'idle' })
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      {children}
-    </TabsContext.Provider>
+    <ItemsStateContext.Provider value={state}>
+      <ItemsDispatchContext.Provider value={dispatch}>
+        {children}
+      </ItemsDispatchContext.Provider>
+    </ItemsStateContext.Provider>
   )
 }
 
-export function Tab({ id, children }: { id: string, children: React.ReactNode }) {
-  const context = useContext(TabsContext)
-  if (!context) throw new Error('Tab must be used within Tabs')
+export function useItemsState(): ItemsState {
+  const ctx = useContext(ItemsStateContext)
+  if (!ctx) throw new Error('useItemsState must be used within ItemsProvider')
+  return ctx
+}
 
-  return (
-    <button className={context.activeTab === id ? 'active' : ''} onClick={() => context.setActiveTab(id)}>
-      {children}
-    </button>
-  )
+export function useItemsDispatch(): Dispatch<ItemsAction> {
+  const ctx = useContext(ItemsDispatchContext)
+  if (!ctx) throw new Error('useItemsDispatch must be used within ItemsProvider')
+  return ctx
 }
 ```
 
-## Custom Hooks
+## Accessible Controlled Form
 
-### useToggle
-
-Use tiny custom hooks to standardize repeated UI state. Do not add `useCallback` by default unless the project expects stable function identities for this hook.
-
-```typescript
-export function useToggle(initialValue = false) {
-  const [value, setValue] = useState(initialValue)
-
-  const toggle = () => setValue(current => !current)
-  const setTrue = () => setValue(true)
-  const setFalse = () => setValue(false)
-
-  return { value, toggle, setTrue, setFalse, setValue }
-}
-```
-
-### useDebounce
-
-Keep debouncing as value transformation. Trigger user actions from handlers or query abstractions, not from a second effect that watches the debounced value.
-
-```typescript
-export function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(value)
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedValue(value), delay)
-    return () => window.clearTimeout(timer)
-  }, [value, delay])
-
-  return debouncedValue
-}
-
-const debouncedQuery = useDebounce(searchQuery, 300)
-```
-
-## State Management
-
-### Context + Reducer
-
-Use this for deep-tree client state with related transitions. Split contexts when values update at different frequencies.
-
-```typescript
-interface State {
-  items: Item[]
-  selectedId: string | null
-  status: 'idle' | 'loading' | 'ready' | 'error'
-}
-
-type Action =
-  | { type: 'itemsLoaded'; items: Item[] }
-  | { type: 'itemSelected'; id: string }
-  | { type: 'loadingStarted' }
-  | { type: 'loadingFailed' }
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'itemsLoaded':
-      return { ...state, items: action.items, status: 'ready' }
-    case 'itemSelected':
-      return { ...state, selectedId: action.id }
-    case 'loadingStarted':
-      return { ...state, status: 'loading' }
-    case 'loadingFailed':
-      return { ...state, status: 'error' }
-  }
-}
-
-const ItemsContext = createContext<{ state: State; dispatch: Dispatch<Action> } | undefined>(undefined)
-
-export function useItems() {
-  const context = useContext(ItemsContext)
-  if (!context) throw new Error('useItems must be used within ItemsProvider')
-  return context
-}
-```
-
-## Forms
-
-### Short Controlled Form
+Derive validation state during render, associate errors via `aria-invalid` + `aria-describedby`, and announce errors via `role="alert"` (`aria-live="assertive"`).
 
 ```typescript
 export function NameForm({ onSubmit }: { onSubmit: (name: string) => void }) {
   const [name, setName] = useState('')
-  const [showError, setShowError] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const error = name.trim() ? null : 'Name is required'
-  const visibleError = showError ? error : null
+  const visibleError = submitted ? error : null
 
   return (
     <form
+      noValidate
       onSubmit={event => {
         event.preventDefault()
-        setShowError(true)
+        setSubmitted(true)
         if (!error) onSubmit(name.trim())
       }}
     >
@@ -164,119 +71,52 @@ export function NameForm({ onSubmit }: { onSubmit: (name: string) => void }) {
         id="name"
         value={name}
         onChange={event => setName(event.target.value)}
-        onBlur={() => setShowError(true)}
         aria-invalid={Boolean(visibleError)}
         aria-describedby={visibleError ? 'name-error' : undefined}
       />
-      {visibleError && <p id="name-error">{visibleError}</p>}
+      {visibleError && (
+        <p id="name-error" role="alert">
+          {visibleError}
+        </p>
+      )}
       <button type="submit">Save</button>
     </form>
   )
 }
 ```
 
-## Error Boundaries
+## Virtualized List (`@tanstack/react-virtual`)
 
-### Class Error Boundary
-
-React error boundaries still require class components unless the project uses a dedicated library.
-
-```typescript
-interface ErrorBoundaryState {
-  error: Error | null
-}
-
-export class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback?: React.ReactNode },
-  ErrorBoundaryState
-> {
-  state: ErrorBoundaryState = { error: null }
-
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error boundary caught:', error, errorInfo)
-  }
-
-  render() {
-    if (this.state.error) {
-      return this.props.fallback ?? <p>Something went wrong.</p>
-    }
-
-    return this.props.children
-  }
-}
-```
-
-## Performance
-
-### Memoization
-
-Profile before memoizing. Use these only when render cost or prop identity churn is measured or obvious from the component boundary.
-
-```typescript
-const sortedItems = useMemo(() => {
-  return [...items].sort((a, b) => a.label.localeCompare(b.label))
-}, [items])
-
-const handleSelect = useCallback((id: string) => {
-  setSelectedId(id)
-}, [])
-
-export const ItemRow = React.memo(function ItemRow({ item }: { item: Item }) {
-  return <li>{item.label}</li>
-})
-```
-
-### Code Splitting
-
-```typescript
-import { lazy, Suspense } from 'react'
-
-const HeavyChart = lazy(() => import('./HeavyChart'))
-
-export function Dashboard({ data }: { data: ChartData }) {
-  return (
-    <Suspense fallback={<ChartSkeleton />}>
-      <HeavyChart data={data} />
-    </Suspense>
-  )
-}
-```
-
-### Virtualization
+Use when DOM node count causes measurable INP/scroll jank; position rows with `transform` rather than `top` to stay on the compositor path.
 
 ```typescript
 import { useVirtualizer } from '@tanstack/react-virtual'
 
 export function VirtualItemList({ items }: { items: Item[] }) {
   const parentRef = useRef<HTMLDivElement>(null)
-
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 100,
-    overscan: 5
+    estimateSize: () => 56,
+    overscan: 5,
   })
 
   return (
     <div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}>
       <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
-        {virtualizer.getVirtualItems().map(virtualRow => (
+        {virtualizer.getVirtualItems().map(row => (
           <div
-            key={virtualRow.index}
+            key={items[row.index].id}
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
+              insetBlockStart: 0,
+              insetInlineStart: 0,
               width: '100%',
-              height: `${virtualRow.size}px`,
-              transform: `translateY(${virtualRow.start}px)`
+              height: `${row.size}px`,
+              transform: `translateY(${row.start}px)`,
             }}
           >
-            <ItemRow item={items[virtualRow.index]} />
+            <ItemRow item={items[row.index]} />
           </div>
         ))}
       </div>
@@ -285,48 +125,12 @@ export function VirtualItemList({ items }: { items: Item[] }) {
 }
 ```
 
-## Accessibility
+## Native `<dialog>` Focus Containment & Restoration
 
-Prefer the project's accessible primitives or native elements (`<dialog>`, `<select>`) before hand-rolling; these sketches show the required keyboard and focus behavior.
-
-### Keyboard Navigation
-
-This is only a key-handler sketch, not a complete combobox. A complete control needs an accessible name, rendered options, active-option association, open/close behavior, empty-list handling, and focus management.
+Prefer native `<dialog>` (or the project's accessible primitive) over hand-rolled focus traps: `showModal()` makes background content `inert`, handles `Escape`, and restores focus to the opener on close.
 
 ```typescript
-export function Dropdown({ options, onSelect }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault()
-        setActiveIndex(index => Math.min(index + 1, options.length - 1))
-        break
-      case 'ArrowUp':
-        event.preventDefault()
-        setActiveIndex(index => Math.max(index - 1, 0))
-        break
-      case 'Enter':
-        event.preventDefault()
-        onSelect(options[activeIndex])
-        setIsOpen(false)
-        break
-      case 'Escape':
-        setIsOpen(false)
-        break
-    }
-  }
-
-  return <div role="combobox" tabIndex={0} aria-expanded={isOpen} aria-haspopup="listbox" onKeyDown={handleKeyDown} />
-}
-```
-
-### Focus Management
-
-```typescript
-export function Modal({ isOpen, onClose, children }: ModalProps) {
+export function Modal({ isOpen, onClose, titleId, children }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -336,7 +140,10 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     if (!isOpen && dialog.open) dialog.close()
   }, [isOpen])
 
-  // showModal() makes the page behind it inert and closes on Escape; on close, the browser returns focus to the opener.
-  return <dialog ref={dialogRef} onClose={onClose}>{children}</dialog>
+  return (
+    <dialog ref={dialogRef} aria-labelledby={titleId} onClose={onClose}>
+      {children}
+    </dialog>
+  )
 }
 ```

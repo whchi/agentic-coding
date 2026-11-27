@@ -101,7 +101,7 @@ Google Antigravity (`agy`) unifies slash commands with Agent Skills (`SKILL.md`)
 |---|---|
 | `animate` | Build a single web animation with the right purpose, curve, duration, interruption, and reduced-motion handling |
 | `feature-loop` | Staged feature workflow: open → plan → build → verify, with a feature document and a 2-round verify budget |
-| `frontend-patterns` | React / Next.js components, state/effect boundaries, render-safe API data handling, performance, and accessibility |
+| `frontend-patterns` | React components, state/effect boundaries, render-safe API data handling, performance, and accessibility |
 | `js-ts-coding-standards` | JS / TS / React / Node coding standards and pure domain rule extraction |
 
 
